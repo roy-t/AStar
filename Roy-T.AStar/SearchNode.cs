@@ -1,5 +1,8 @@
 ﻿namespace RoyT.AStar
 {
+    /// <summary>
+    /// Stores intermediate results in an A* path search
+    /// </summary>
     internal sealed class SearchNode
     {
         public SearchNode(Position position)

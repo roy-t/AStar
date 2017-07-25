@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>AStarBenchmark</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.10.8, OS=Windows 10 Redstone 2 (10.0.15063)
+Processor=Intel Core i5-4690 CPU 3.50GHz (Haswell), ProcessorCount=4
+Frequency=3415990 Hz, Resolution=292.7409 ns, Timer=TSC
+dotnet cli version=1.0.4
+  [Host]     : .NET Core 4.6.25211.01, 64bit RyuJIT [AttachedDebugger]
+  DefaultJob : .NET Core 4.6.25211.01, 64bit RyuJIT
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>      Method</th><th>Mean</th><th>Error</th><th>StdDev</th>
+</tr>
+</thead><tbody><tr><td>TestSmallEmptyGrid</td><td>100.9 us</td><td>1.138 us</td><td>1.065 us</td>
+</tr><tr><td>TestLargeEmptyGrid</td><td>1,260.7 us</td><td>24.510 us</td><td>35.152 us</td>
+</tr><tr><td>TestGridWithSlope</td><td>4,819.9 us</td><td>75.271 us</td><td>66.726 us</td>
+</tr></tbody></table>
+</body>
+</html>

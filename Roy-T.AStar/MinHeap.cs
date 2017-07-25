@@ -1,11 +1,22 @@
-﻿namespace RoyT.AStar
+﻿using System.Globalization;
+
+namespace RoyT.AStar
 {   
+    /// <summary>
+    /// Heap which keeps the node with the minimal path cost on the head position
+    /// </summary>
     internal sealed class MinHeap
     {
         private SearchNode head;
 
+        /// <summary>
+        /// If the heap has a next element
+        /// </summary>        
         public bool HasNext() => this.head != null;
 
+        /// <summary>
+        /// Pushes a node onto the heap        
+        /// </summary>
         public void Push(SearchNode node)
         {
             // If the heap is empty, just add the item to the top
@@ -13,11 +24,15 @@
             {
                 this.head = node;
             }
-            // Insertion sort on cost           
+            else if (node.PathCost < this.head.PathCost)
+            {
+                node.NextListElement = this.head;
+                this.head = node;
+            }            
             else
             {
                 var current = this.head;
-                while (current.NextListElement != null && current.NextListElement.Cost < node.Cost)
+                while (current.NextListElement != null && current.NextListElement.PathCost < node.PathCost)
                 {
                     current = current.NextListElement;
                 }
@@ -27,6 +42,10 @@
             }
         }
 
+        /// <summary>
+        /// Pops a node from the heap, this node is always the node
+        /// with the cheapest path cost
+        /// </summary>
         public SearchNode Pop()
         {
             var top = this.head;

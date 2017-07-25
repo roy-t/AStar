@@ -2,6 +2,9 @@
 
 namespace RoyT.AStar
 {
+    /// <summary>
+    /// A 2D position structure
+    /// </summary>
     public struct Position : IEquatable<Position>
     {
         public Position(int x, int y)
@@ -10,7 +13,14 @@ namespace RoyT.AStar
             this.Y = y;
         }
 
+        /// <summary>
+        /// X-position
+        /// </summary>
         public int X { get; }
+
+        /// <summary>
+        /// Y-position
+        /// </summary>
         public int Y { get; }
 
 

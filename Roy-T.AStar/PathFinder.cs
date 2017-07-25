@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace RoyT.AStar
 {
+    /// <summary>
+    /// Computes a path in a grid according to the A* algorithm
+    /// </summary>
     internal static class PathFinder
     {
         public static SearchNode FindPath(Grid grid, Position start, Position end)
@@ -34,7 +37,7 @@ namespace RoyT.AStar
                     if (!marked[index] && !double.IsInfinity(cellCost))
                     {
                         marked[index] = true;
-                        var pathCost = current.PathCost + cellCost;
+                        var pathCost = current.PathCost + DistanceSquared(current.Position, p) + cellCost;
                         var cost = pathCost + DistanceSquared(p, end);
 
                         open.Push(new SearchNode(p, cost, pathCost) {Next = current});
