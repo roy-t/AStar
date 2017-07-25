@@ -1,7 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.4</TargetFramework>
+    <TargetFramework>netstandard1.0</TargetFramework>
+    <RootNamespace>RoyT.AStar</RootNamespace>
+    <AssemblyName>RoyT.AStar</AssemblyName>
   </PropertyGroup>
 
 </Project>
