@@ -28,7 +28,7 @@ namespace Benchmark
             }
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void TestSmallEmptyGrid()
         {
             this.SmallEmptyGrid.GetPath(
@@ -36,7 +36,7 @@ namespace Benchmark
                 new Position(this.SmallEmptyGrid.DimX - 1, this.SmallEmptyGrid.DimY - 1));
         }
 
-        [Benchmark]
+        //[Benchmark]
         public void TestLargeEmptyGrid()
         {
             this.LargeEmptyGrid.GetPath(
@@ -57,7 +57,34 @@ namespace Benchmark
     {
         public static void Main(string[] args)
         {
-            BenchmarkRunner.Run<AStarBenchmark>();
+            //var bench = new AStarBenchmark();
+            //for (var i = 0; i < 100; i++)
+            //{
+            //    bench.TestLargeEmptyGrid();
+            //}
+            //BenchmarkRunner.Run<AStarBenchmark>();
+
+            int[] num = { 69, 56, 77, 44, 8, 0, 111, 566 };
+            for (int i = 1; i < num.Length; i++)
+            {
+                int key = num[i];
+                int j = i - 1;
+                while (j >= 0 && num[j] > key)
+                {
+                    //loop
+                    num[j + 1] = num[j];
+                    j--;
+                }
+                num[j + 1] = key;
+            }
+
+            //display
+            foreach (var item in num)
+            {
+                Console.WriteLine(item);
+            }
+
+
             Console.ReadLine();
         }
     }

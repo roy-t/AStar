@@ -23,6 +23,7 @@ namespace RoyT.AStar
         /// </summary>
         public int Y { get; }
 
+        public override string ToString() => $"({this.X}, {this.Y})";
 
         public bool Equals(Position other)
         {

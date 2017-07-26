@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace RoyT.AStar
 {
@@ -37,10 +39,12 @@ namespace RoyT.AStar
                     if (!marked[index] && !double.IsInfinity(cellCost))
                     {
                         marked[index] = true;
-                        var pathCost = current.PathCost + DistanceSquared(current.Position, p) + cellCost;
-                        var cost = pathCost + DistanceSquared(p, end);
+                        
+                        // Avoid zig-zag paths by correctly penalizing the cost of diagonal movement
+                        var costSoFar    = current.CostSoFar + Distance(current.Position, p) * cellCost;                        
+                        var expectedCost = costSoFar + Distance(p, end);
 
-                        open.Push(new SearchNode(p, cost, pathCost) {Next = current});
+                        open.Push(new SearchNode(p, expectedCost, costSoFar) {Next = current});
                     }
                 }               
             }
@@ -63,15 +67,16 @@ namespace RoyT.AStar
             return neighbours.Where(p => p.X >= 0 && p.X < dimX && p.Y >= 0 && p.Y < dimY);
         }
 
-        private static double DistanceSquared(Position p0, Position p1)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static double Distance(Position p0, Position p1)
         {
-            var x0 = p0.X;            
+            var x0 = p0.X;
             var y0 = p0.Y;
 
             var x1 = p1.X;
             var y1 = p1.Y;
 
-            return (x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0);
-        }
+            return Math.Sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
+        }      
     }
 }

@@ -1,13 +1,11 @@
-﻿using System.Globalization;
-
-namespace RoyT.AStar
+﻿namespace RoyT.AStar
 {   
     /// <summary>
-    /// Heap which keeps the node with the minimal path cost on the head position
+    /// Heap which keeps the node with the minimal expected path cost on the head position
     /// </summary>
     internal sealed class MinHeap
     {
-        private SearchNode head;
+        private SearchNode head;      
 
         /// <summary>
         /// If the heap has a next element
@@ -24,7 +22,7 @@ namespace RoyT.AStar
             {
                 this.head = node;
             }
-            else if (node.PathCost < this.head.PathCost)
+            else if (node.ExpectedCost < this.head.ExpectedCost)
             {
                 node.NextListElement = this.head;
                 this.head = node;
@@ -32,7 +30,7 @@ namespace RoyT.AStar
             else
             {
                 var current = this.head;
-                while (current.NextListElement != null && current.NextListElement.PathCost < node.PathCost)
+                while (current.NextListElement != null && current.NextListElement.ExpectedCost <= node.ExpectedCost)
                 {
                     current = current.NextListElement;
                 }
