@@ -3,11 +3,14 @@
 namespace RoyT.AStar
 {
     /// <summary>
-    /// A 2D position structure
+    /// A 2D offset structure. You can use an array of offsets to represent the range of motion
+    /// of your agent, for example an offset of (-1, 0) means your character is able
+    /// to move a single cell to the left <see cref="RangeOfMotion"/> for some predefined
+    /// options.
     /// </summary>
-    public struct Position : IEquatable<Position>
+    public struct Offset : IEquatable<Offset>
     {
-        public Position(int x, int y)
+        public Offset(int x, int y)
         {
             this.X = x;
             this.Y = y;
@@ -23,9 +26,9 @@ namespace RoyT.AStar
         /// </summary>
         public int Y { get; }
 
-        public override string ToString() => $"Position: ({this.X}, {this.Y})";
+        public override string ToString() => $"Offset: ({this.X}, {this.Y})";
 
-        public bool Equals(Position other)
+        public bool Equals(Offset other)
         {
             return this.X == other.X && this.Y == other.Y;
         }
@@ -35,7 +38,7 @@ namespace RoyT.AStar
             if (ReferenceEquals(null, obj))
                 return false;
 
-            return obj is Position && Equals((Position) obj);
+            return obj is Offset && Equals((Offset)obj);
         }
 
         public override int GetHashCode()

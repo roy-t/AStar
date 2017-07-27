@@ -5,14 +5,13 @@ namespace RoyT.AStar
 {
     /// <summary>
     /// Representation of your world for the pathfinding algorithm.
-    /// Use SetCellCost to give different costs to for traversing cells
-    /// Use Block/UnblockCell to make the cell inaccessible for the 
-    /// path finding algorithm
+    /// Use SetCellCost change the cost of traversing a cell
+    /// Use BlockCell to make a cell completely intraversable.
     /// </summary>
     public sealed class Grid
-    {
+    {       
         private readonly double DefaultCost;
-        private readonly double[] Weights;
+        private readonly double[] Weights;        
 
         /// <summary>
         /// Creates a grid
@@ -39,7 +38,14 @@ namespace RoyT.AStar
             }
         }
 
+        /// <summary>
+        /// X-dimension of the grid
+        /// </summary>
         public int DimX { get; }
+        
+        /// <summary>
+        /// Y-dimension of the grid
+        /// </summary>
         public int DimY { get; }
 
         /// <summary>
@@ -81,16 +87,28 @@ namespace RoyT.AStar
         }
 
         /// <summary>
-        /// Computs the path lowest-cost path from start to end inside the grid
+        /// Computs lowest-cost path from start to end inside the grid for an agent that can
+        /// move both diagonal and lateral
+        /// </summary>
+        /// <param name="start">The start position</param>
+        /// <param name="end">The end position</param>        
+        /// <returns>positions of cells, from start to end, on the shortest path from start to end</returns>
+        public IList<Position> GetPath(Position start, Position end)
+            => GetPath(start, end, RangeOfMotion.Full);
+
+        /// <summary>
+        /// Computs lowest-cost path from start to end inside the grid for an agent with a custom
+        /// range of motion
         /// </summary>
         /// <param name="start">The start position</param>
         /// <param name="end">The end position</param>
-        /// <returns>A list of positions inside the grid from start to end</returns>
-        public IList<Position> GetPath(Position start, Position end)
+        /// <param name="rangeOfMotion">The range of motion of the agent, <see cref="RangeOfMotion"/> for several built in options</param>
+        /// <returns>positions of cells, from start to end, on the shortest path from start to end</returns>
+        public IList<Position> GetPath(Position start, Position end, Offset[] rangeOfMotion)
         {
             var steps = new List<Position>();
 
-            var path = PathFinder.FindPath(this, start, end);            
+            var path = PathFinder.FindPath(this, start, end, rangeOfMotion);            
 
             var current = path;
             while (current != null)
@@ -120,3 +138,4 @@ namespace RoyT.AStar
         }
     }    
 }
+
