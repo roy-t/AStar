@@ -87,6 +87,17 @@ namespace RoyT.AStar
         }
 
         /// <summary>
+        /// Looks-up the cost for traversing a given cell, does not check
+        /// if the position is inside the grid
+        /// </summary>
+        /// <param name="position">A position inside the grid</param>
+        /// <returns>The cost</returns>
+        internal double GetCellCostUnchecked(Position position)
+        {
+            return this.Weights[this.DimX * position.X + position.Y];
+        }
+
+        /// <summary>
         /// Computs lowest-cost path from start to end inside the grid for an agent that can
         /// move both diagonal and lateral
         /// </summary>
@@ -120,6 +131,9 @@ namespace RoyT.AStar
             return steps;
         }
 
+        /// <summary>
+        /// Converts a 2d index to a 1d index and performs bounds checking
+        /// </summary>        
         private int GetIndex(int x, int y)
         {
             if (x < 0 || x >= this.DimX)
@@ -135,7 +149,7 @@ namespace RoyT.AStar
             }
 
             return this.DimX * y + x;
-        }
+        }        
     }    
 }
 

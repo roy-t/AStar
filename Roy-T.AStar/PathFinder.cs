@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -20,7 +19,7 @@ namespace RoyT.AStar
             var open = new MinHeap();
             open.Push(head);
 
-            var marked = new BitArray(grid.DimX * grid.DimY);
+            var marked = new bool[grid.DimX * grid.DimY];
 
             while (open.HasNext())
             {
@@ -34,7 +33,9 @@ namespace RoyT.AStar
                 foreach (var p in GetNeighbours(current.Position, grid.DimX, grid.DimY, rangeOfMotion))
                 {
                     var index = grid.DimX * p.Y + p.X;
-                    var cellCost = grid.GetCellCost(p);
+
+                    // Use the unchecked variant here since GetNeighbours already filters out positions that are out of bounds
+                    var cellCost = grid.GetCellCostUnchecked(p);
                     if (!marked[index] && !double.IsInfinity(cellCost))
                     {
                         marked[index] = true;
