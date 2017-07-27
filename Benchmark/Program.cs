@@ -7,15 +7,15 @@ namespace Benchmark
 {
     public class AStarBenchmark
     {
-        private readonly Grid SmallEmptyGrid;
-        private readonly Grid LargeEmptyGrid;
         private readonly Grid GridWithSlope;
 
         public AStarBenchmark()
         {
-            this.SmallEmptyGrid = new Grid(100, 100, 1.0);
-            this.LargeEmptyGrid = new Grid(1000, 1000, 1.0);
-            this.GridWithSlope  = new Grid(100, 100, 1.0);
+            // Create a grid with irratic costs, so the
+            // heuristic is often wrong. This way we test 
+            // the efficiency of our implementation
+            // not the efficiency of the A* algorithm
+            this.GridWithSlope  = new Grid(100, 100, 1.0f);
 
             var cost = 1.0f;
             for (var y = 0; y < this.GridWithSlope.DimY; y++)
@@ -26,23 +26,7 @@ namespace Benchmark
                     cost += 0.5f;
                 }
             }
-        }
-
-        //[Benchmark]
-        public void TestSmallEmptyGrid()
-        {
-            this.SmallEmptyGrid.GetPath(
-                new Position(0, 0),
-                new Position(this.SmallEmptyGrid.DimX - 1, this.SmallEmptyGrid.DimY - 1));
-        }
-
-        //[Benchmark]
-        public void TestLargeEmptyGrid()
-        {
-            this.LargeEmptyGrid.GetPath(
-                new Position(0, 0),
-                new Position(this.LargeEmptyGrid.DimX - 1, this.LargeEmptyGrid.DimY - 1));
-        }
+        }        
 
         [Benchmark]
         public void TestGridWithSlope()
@@ -56,12 +40,7 @@ namespace Benchmark
     public class Program
     {
         public static void Main(string[] args)
-        {
-            //var bench = new AStarBenchmark();
-            //for (var i = 0; i < 100; i++)
-            //{
-            //    bench.TestLargeEmptyGrid();
-            //}
+        {           
             BenchmarkRunner.Run<AStarBenchmark>();            
             Console.ReadLine();
         }

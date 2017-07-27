@@ -36,7 +36,7 @@ namespace RoyT.AStar
 
                     // Use the unchecked variant here since GetNeighbours already filters out positions that are out of bounds
                     var cellCost = grid.GetCellCostUnchecked(p);
-                    if (!marked[index] && !double.IsInfinity(cellCost))
+                    if (!marked[index] && !float.IsInfinity(cellCost))
                     {
                         marked[index] = true;
                         
@@ -63,7 +63,7 @@ namespace RoyT.AStar
         }       
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static double DistanceSquared(Position p0, Position p1)
+        private static float DistanceSquared(Position p0, Position p1)
         {
             var x0 = p0.X;
             var y0 = p0.Y;

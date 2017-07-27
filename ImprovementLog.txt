@@ -10,5 +10,6 @@
  TestGridWithSlope | 1.263 ms | 0.0054 ms | 0.0051 ms | With support for movement options, and better movement selection
  TestGridWithSlope | 1.248 ms | 0.0116 ms | 0.0109 ms | Replace BitArray with bool[]
  TestGridWithSlope | 1.177 ms | 0.0057 ms | 0.0048 ms | Remove internal unnecessary bound checks
+ TestGridWithSlope | 1.192 ms | 0.0070 ms | 0.0059 ms | Replace doubles with floats (significantly lower memory usage)
 
  

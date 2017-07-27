@@ -8,7 +8,7 @@
         public SearchNode(Position position)
             : this(position, 0, 0) { }
 
-        public SearchNode(Position position, double expectedCost, double costSoFar)
+        public SearchNode(Position position, float expectedCost, float costSoFar)
         {
             this.Position     = position;
             this.ExpectedCost = expectedCost;
@@ -16,8 +16,8 @@
         }
 
         public Position Position { get; }
-        public double ExpectedCost { get; set; }
-        public double CostSoFar { get; set; }
+        public float ExpectedCost { get; set; }
+        public float CostSoFar { get; set; }
 
         public SearchNode Next { get; set; }
         public SearchNode NextListElement { get; set; }
