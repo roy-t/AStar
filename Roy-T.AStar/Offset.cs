@@ -3,9 +3,9 @@
 namespace RoyT.AStar
 {
     /// <summary>
-    /// A 2D offset structure. You can use an array of offsets to represent the range of motion
+    /// A 2D offset structure. You can use an array of offsets to represent the movement pattern
     /// of your agent, for example an offset of (-1, 0) means your character is able
-    /// to move a single cell to the left <see cref="RangeOfMotion"/> for some predefined
+    /// to move a single cell to the left <see cref="MovementPatterns"/> for some predefined
     /// options.
     /// </summary>
     public struct Offset : IEquatable<Offset>

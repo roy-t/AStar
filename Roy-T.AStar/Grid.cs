@@ -106,21 +106,21 @@ namespace RoyT.AStar
         /// <param name="end">The end position</param>        
         /// <returns>positions of cells, from start to end, on the shortest path from start to end</returns>
         public IList<Position> GetPath(Position start, Position end)
-            => GetPath(start, end, RangeOfMotion.Full);
+            => GetPath(start, end, MovementPatterns.Full);
 
         /// <summary>
         /// Computes the lowest-cost path from start to end inside the grid for an agent with a custom
-        /// range of motion
+        /// movement pattern
         /// </summary>
         /// <param name="start">The start position</param>
         /// <param name="end">The end position</param>
-        /// <param name="rangeOfMotion">The range of motion of the agent, <see cref="RangeOfMotion"/> for several built-in options</param>
+        /// <param name="movementPattern">The movement pattern of the agent, <see cref="MovementPatterns"/> for several built-in options</param>
         /// <returns>positions of cells, from start to end, on the shortest path from start to end</returns>
-        public IList<Position> GetPath(Position start, Position end, Offset[] rangeOfMotion)
+        public IList<Position> GetPath(Position start, Position end, Offset[] movementPattern)
         {
             var steps = new List<Position>();
 
-            var path = PathFinder.FindPath(this, start, end, rangeOfMotion);            
+            var path = PathFinder.FindPath(this, start, end, movementPattern);            
 
             var current = path;
             while (current != null)

@@ -9,11 +9,11 @@ namespace RoyT.AStar
     /// </summary>
     internal static class PathFinder
     {
-        public static SearchNode FindPath(Grid grid, Position start, Position end, Offset[] rangeOfMotion)
+        public static SearchNode FindPath(Grid grid, Position start, Position end, Offset[] movementPattern)
             // Flip start and end, since the algorithm will give the result from the end backwards
-            => FindReversePath(grid, end, start, rangeOfMotion);
+            => FindReversePath(grid, end, start, movementPattern);
 
-        private static SearchNode FindReversePath(Grid grid, Position start, Position end, Offset[] rangeOfMotion)
+        private static SearchNode FindReversePath(Grid grid, Position start, Position end, Offset[] movementPattern)
         {
             var head = new SearchNode(start);
             var open = new MinHeap();
@@ -30,7 +30,7 @@ namespace RoyT.AStar
                     return current;
                 }
                 
-                foreach (var p in GetNeighbours(current.Position, grid.DimX, grid.DimY, rangeOfMotion))
+                foreach (var p in GetNeighbours(current.Position, grid.DimX, grid.DimY, movementPattern))
                 {
                     var index = grid.DimX * p.Y + p.X;
 
@@ -56,9 +56,9 @@ namespace RoyT.AStar
             Position position,
             int dimX,
             int dimY,
-            IEnumerable<Offset> rangeOfMotion)
+            IEnumerable<Offset> movementPattern)
         {
-            return rangeOfMotion.Select(n => new Position(position.X + n.X, position.Y + n.Y))
+            return movementPattern.Select(n => new Position(position.X + n.X, position.Y + n.Y))
                                 .Where(p => p.X >= 0 && p.X < dimX && p.Y >= 0 && p.Y < dimY);
         }       
 

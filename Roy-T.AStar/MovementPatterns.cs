@@ -3,7 +3,7 @@
     /// <summary>
     /// Predefined ranges of motions for your agent.
     /// </summary>
-    public static class RangeOfMotion
+    public static class MovementPatterns
     {        
         /// <summary>
         /// Both diagonal and lateral movement (west, north-west, north, north-east, south-east, south, south-west)

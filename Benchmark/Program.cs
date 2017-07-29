@@ -29,7 +29,7 @@ namespace Benchmark
         }        
 
         [Benchmark]
-        public void TestGridWithSlope()
+        public void Gradient100X100()
         {
             this.GridWithSlope.GetPath(
                 new Position(0, 0),
