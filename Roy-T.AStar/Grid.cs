@@ -20,7 +20,7 @@ namespace RoyT.AStar
         /// <param name="dimX">The x-dimension of your world</param>
         /// <param name="dimY">The y-dimesion of your world</param>
         /// <param name="defaultCost">The default cost every cell is initialized with</param>
-        public Grid(int dimX, int dimY, float defaultCost)
+        public Grid(int dimX, int dimY, float defaultCost = 1.0f)
         {
             if (defaultCost < 1)
             {

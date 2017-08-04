@@ -40,10 +40,9 @@ namespace RoyT.AStar
                     if (!marked[index] && !float.IsInfinity(cellCost))
                     {
                         marked[index] = true;
-                        
-                        // Avoid zig-zag paths by correctly penalizing the cost of diagonal movement
-                        var costSoFar    = current.CostSoFar + Distance(current.Position, p) * cellCost;                        
-                        var expectedCost = costSoFar + Distance(p, end);
+                                                
+                        var costSoFar    = current.CostSoFar + cellCost;                        
+                        var expectedCost = costSoFar + ChebyshevDistance(p, end);
 
                         open.Push(new SearchNode(p, expectedCost, costSoFar) {Next = current});
                     }
@@ -61,18 +60,22 @@ namespace RoyT.AStar
         {
             return movementPattern.Select(n => new Position(position.X + n.X, position.Y + n.Y))
                                 .Where(p => p.X >= 0 && p.X < dimX && p.Y >= 0 && p.Y < dimY);
-        }       
+        }
 
+        /// <summary>
+        /// Chebyshev distance heuristic, more admisible for traversing a grid than 
+        /// the euclidian distance.
+        /// </summary>        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static float Distance(Position p0, Position p1)
+        private static float ChebyshevDistance(Position p0, Position p1)
         {
-            var x0 = p0.X;
-            var y0 = p0.Y;
+            const float D = 1;
+            const float D2 = 1;
 
-            var x1 = p1.X;
-            var y1 = p1.Y;
+            var dx = Math.Abs(p0.X - p1.X);
+            var dy = Math.Abs(p0.Y - p1.Y);            
 
-            return (float)Math.Sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
-        }      
+            return D * (dx + dy) + (D2 - 2 * D) * Math.Min(dx, dy);
+        }
     }
 }
