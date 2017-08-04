@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -32,7 +33,7 @@ namespace RoyT.AStar
                 
                 foreach (var p in GetNeighbours(current.Position, grid.DimX, grid.DimY, movementPattern))
                 {
-                    var index = grid.DimX * p.Y + p.X;
+                    var index = grid.GetIndexUnchecked(p.X, p.Y);
 
                     // Use the unchecked variant here since GetNeighbours already filters out positions that are out of bounds
                     var cellCost = grid.GetCellCostUnchecked(p);
@@ -41,8 +42,8 @@ namespace RoyT.AStar
                         marked[index] = true;
                         
                         // Avoid zig-zag paths by correctly penalizing the cost of diagonal movement
-                        var costSoFar    = current.CostSoFar + DistanceSquared(current.Position, p) * cellCost;                        
-                        var expectedCost = costSoFar + DistanceSquared(p, end);
+                        var costSoFar    = current.CostSoFar + Distance(current.Position, p) * cellCost;                        
+                        var expectedCost = costSoFar + Distance(p, end);
 
                         open.Push(new SearchNode(p, expectedCost, costSoFar) {Next = current});
                     }
@@ -63,7 +64,7 @@ namespace RoyT.AStar
         }       
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static float DistanceSquared(Position p0, Position p1)
+        private static float Distance(Position p0, Position p1)
         {
             var x0 = p0.X;
             var y0 = p0.Y;
@@ -71,7 +72,7 @@ namespace RoyT.AStar
             var x1 = p1.X;
             var y1 = p1.Y;
 
-            return (x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0);
+            return (float)Math.Sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
         }      
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace RoyT.AStar
 {
@@ -21,10 +22,10 @@ namespace RoyT.AStar
         /// <param name="defaultCost">The default cost every cell is initialized with</param>
         public Grid(int dimX, int dimY, float defaultCost)
         {
-            if (defaultCost <= 0)
+            if (defaultCost < 1)
             {
                 throw new ArgumentOutOfRangeException(
-                    $"Argument {nameof(defaultCost)} with value {defaultCost} is invalid. The cost of traversing a cell cannot be less than, or equal to, zero");
+                    $"Argument {nameof(defaultCost)} with value {defaultCost} is invalid. The cost of traversing a cell cannot be less than one");
             }
 
             this.DefaultCost = defaultCost;
@@ -52,13 +53,13 @@ namespace RoyT.AStar
         /// Sets the cost for traversing a cell
         /// </summary>
         /// <param name="position">A position inside the grid</param>
-        /// <param name="cost">The cost of traversing the cell, always larger than zero</param>
+        /// <param name="cost">The cost of traversing the cell, cannot be less than one</param>
         public void SetCellCost(Position position, float cost)
         {
-            if (cost < 0)
+            if (cost < 1)
             {
                 throw new ArgumentOutOfRangeException(
-                    $"Argument {nameof(cost)} with value {cost} is invalid. The cost of traversing a cell cannot be less than, or equal to, zero");
+                    $"Argument {nameof(cost)} with value {cost} is invalid. The cost of traversing a cell cannot be less than one");
             }
 
             this.Weights[GetIndex(position.X, position.Y)] = cost;
@@ -95,7 +96,7 @@ namespace RoyT.AStar
         /// <returns>The cost</returns>
         internal float GetCellCostUnchecked(Position position)
         {
-            return this.Weights[this.DimX * position.X + position.Y];
+            return this.Weights[this.DimX * position.Y + position.X];
         }
 
         /// <summary>
@@ -149,8 +150,15 @@ namespace RoyT.AStar
                     $"The y-coordinate {y} is outside of the expected range [0...{this.DimY})");
             }
 
-            return this.DimX * y + x;
-        }        
+            return GetIndexUnchecked(x, y);
+        }     
+        
+        /// <summary>
+        /// Converts a 2d index to a 1d index without any bounds checking
+        /// </summary>        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal int GetIndexUnchecked(int x, int y) => this.DimX * y + x;
+
     }    
 }
 
