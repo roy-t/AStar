@@ -6,7 +6,8 @@
     public static class MovementPatterns
     {        
         /// <summary>
-        /// Both diagonal and lateral movement (west, north-west, north, north-east, south-east, south, south-west)
+        /// Both diagonal and lateral movement (west, north-west, north, north-east, south-east, south, south-west).
+        /// The path planning algorithm's heuristic is best suited for this movement pattern.
         /// </summary>
         public static readonly Offset[] Full = {
             new Offset(-1, -1), new Offset(0, -1), new Offset(1, -1),

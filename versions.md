@@ -1,0 +1,6 @@
+ # Version History
+ 
+ |            version |     Release data | Description |
+ |:------------------ |:---------|:----------|
+ 1.1 | 2017-08-04| Fix issue #1, move to ChebyshevDistance heuristic |
+ 1.0 | 2017-08-01| Initial release |

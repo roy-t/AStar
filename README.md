@@ -3,6 +3,8 @@ A 2D path finding library based on the A* algorithm for `.NETStandard 1.0` and `
 
 For more information about the A* path finding algorithm and this library, please visit my blog at http://roy-t.nl.
 
+There is also a documented [version history](versions.md).
+
 ## Tutorial
 
 Below I give a textual explanation of this library and how to use it. If you are more interested in a code sample you can find it right after the next section.
@@ -72,21 +74,19 @@ Other small tricks I've used is using a `bool[]` to keep track of checked cells 
 
 While micro-optimizing the code I've used the handy [BenchMark.Net](https://github.com/dotnet/BenchmarkDotNet) library to see if my changes had any effect. The benchmark suite is included in the source code here. So if you would like to try to make this implemention faster you can use the same benchmark and performance metrics I did.
 
-For version 1.0 I got the following numbers for a 100x100 grid (10000 cells) filled with a gradient.
+For version 1.1 I got the following numbers for a 100x100 grid (10000 cells) filled with a gradient.
 
 
 ``` ini
-
 BenchmarkDotNet=v0.10.8, OS=Windows 10 Redstone 2 (10.0.15063)
 Processor=Intel Core i5-4690 CPU 3.50GHz (Haswell), ProcessorCount=4
-Frequency=3415990 Hz, Resolution=292.7409 ns, Timer=TSC
+Frequency=3415988 Hz, Resolution=292.7411 ns, Timer=TSC
 dotnet cli version=1.0.4
   [Host]     : .NET Core 4.6.25211.01, 64bit RyuJIT
   DefaultJob : .NET Core 4.6.25211.01, 64bit RyuJIT
-
-
 ```
+
  |            Method |     Mean |     Error |    StdDev |
  |------------------ |---------:|----------:|----------:|
- | Gradient100X100 | 1.177 ms | 0.0057 ms | 0.0048 ms |
+ Gradient100X100 | 5.034 ms | 0.0629 ms | 0.0589 ms |           
 
