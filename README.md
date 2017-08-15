@@ -1,6 +1,12 @@
 # Roy-T.AStar
 A 2D path finding library based on the A* algorithm for `.NETStandard 1.0` and `.Net 4.5` and higher. This library has no external dependencies. The library is licensed under the MIT license, see the `LICENSE` file for more details.
 
+You can directly add this library to your project using [NuGet](https://www.nuget.org/packages/RoyT.AStar/):
+
+```
+Install-Package RoyT.AStar
+```
+
 For more information about the A* path finding algorithm and this library, please visit my blog at http://roy-t.nl.
 
 There is also a documented [version history](versions.md).
