@@ -3,18 +3,42 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewer="clr-namespace:Viewer"
         SizeToContent="WidthAndHeight"        
-        mc:Ignorable="d"        
-        Title="MainWindow">
+        mc:Ignorable="d"         
+        Title="MainWindow" d:DataContext="{d:DesignInstance viewer:MainWindowViewModel, IsDesignTimeCreatable=True}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <viewer:CellStateColorConverter x:Key="CellStateColorConverter"/>
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid x:Name="worldGrid"/>
+        <ItemsControl ItemsSource="{Binding Cells}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Rows="10" Columns="10"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type viewer:Cell}">
+                    <Border Width="50" Height="50" BorderThickness="1" BorderBrush="Black" Background="{Binding State, Converter={StaticResource CellStateColorConverter}}">
+                        <Button Command="{Binding Command}" Content="{Binding Cost}">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" Content="{TemplateBinding Content}"/>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
         <StackPanel Grid.Row="1" >
-            <TextBlock x:Name="label"/>
-            <Button Content="Go!" Click="Go_OnClick"/>
+            <Button Content="Go!" />
         </StackPanel>
     </Grid>
 </Window>
