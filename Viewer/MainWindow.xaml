@@ -10,74 +10,41 @@
     <Window.Resources>
         <ResourceDictionary>
             <viewer:CellStateColorConverter x:Key="CellStateColorConverter"/>
-            <viewer:PathStateColorConverter x:Key="PathStateColorConverter"/>
         </ResourceDictionary>
     </Window.Resources>
-    <TabControl x:Name="Tabs">
-        <TabItem x:Name="WorldTabItem" Header="World">
-            <Grid Margin="20">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <ItemsControl ItemsSource="{Binding Cells}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Rows="10" Columns="10"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="{x:Type viewer:Cell}">
-                            <Button Command="{Binding Command}" Content="{Binding Cost}">
-                                <Button.Template>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border Width="50" Height="50" BorderThickness="1" BorderBrush="Black" Background="{Binding CellState, Converter={StaticResource CellStateColorConverter}}">
-                                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" Content="{TemplateBinding Content}"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Button.Template>
-                            </Button>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <StackPanel Grid.Row="1" >
-                    <Button Command="{Binding ComputeCommand}" Content="Compute Path" Margin="0 5 0 0" Click="ComputePathButton_OnClick" />
-                </StackPanel>
-            </Grid>
-        </TabItem>
-        <TabItem x:Name="PathTabItem" Header="Path">
-            <Grid Margin="20">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <ItemsControl ItemsSource="{Binding Cells}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Rows="10" Columns="10"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="{x:Type viewer:Cell}">
-                            <Button Command="{Binding Command}" Content="{Binding CostSoFar}">
-                                <Button.Template>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border Width="50" Height="50" BorderThickness="1" BorderBrush="Black" Background="{Binding PathState, Converter={StaticResource PathStateColorConverter}}">
-                                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" Content="{TemplateBinding Content}"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Button.Template>
-                            </Button>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <UniformGrid Margin="0 5 0 0" Grid.Row="1" Columns="4"  >
-                    <Button Content="↞" />
-                    <Button Content="←" />
-                    <Button Content="→" />
-                    <Button Content="↠" />
-                </UniformGrid>
-            </Grid>
-        </TabItem>
-    </TabControl>
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <ItemsControl ItemsSource="{Binding Cells}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Rows="10" Columns="10"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type viewer:Cell}">
+                    <Button Command="{Binding Command}" Content="{Binding Cost}">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Width="50" Height="50" BorderThickness="1" BorderBrush="Black" Background="{Binding CellState, Converter={StaticResource CellStateColorConverter}}">
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" Content="{TemplateBinding Content}"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <StackPanel Grid.Row="1" >
+            <UniformGrid Margin="0 5 0 0" Columns="4"  >
+                <Button Content="↞" />
+                <Button Content="←" />
+                <Button Content="→" />
+                <Button Content="↠" />
+            </UniformGrid>
+        </StackPanel>
+    </Grid>
 </Window>
+

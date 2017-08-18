@@ -29,17 +29,8 @@ namespace Viewer
             }
 
             this.Cells.First().CellState = CellState.Start;
-            this.Cells.Last().CellState = CellState.End;
-
-            this.ComputeCommand = ReactiveCommand.Create(
-                () =>
-                {
-                    this.PathController.ComputePath(this.Cells);
-                }
-            );
+            this.Cells.Last().CellState = CellState.End;          
         }
-
-        public ReactiveCommand ComputeCommand { get; }
 
         public List<Cell> Cells { get; }
 
@@ -54,13 +45,15 @@ namespace Viewer
                 ClearState(CellState.Start);
             }
 
-            if (cell.CellState == CellState.End && vm.CellState == CellState.End)
+            if (cell.CellState != CellState.End && vm.CellState == CellState.End)
             {
                 ClearState(CellState.End);
             }
 
             cell.CellState = vm.CellState;
             cell.Cost = vm.Cost;
+
+            this.PathController.ComputePath(this.Cells);
         }
 
         private void ClearState(CellState state)

@@ -14,13 +14,19 @@ namespace Viewer
                 switch (cellState)
                 {
                     case CellState.Normal:                        
-                        return Brushes.LightGray;                        
+                        return Brushes.White;                        
                     case CellState.Start:
-                        return Brushes.LightSkyBlue;                        
+                        return Brushes.LightGreen;                        
                     case CellState.End:
-                        return Brushes.LightGreen;
+                        return Brushes.DarkGreen;
                     case CellState.Blocked:
-                        return Brushes.Black;                                            
+                        return Brushes.Black;
+                    case CellState.Open:
+                        return Brushes.SandyBrown;
+                    case CellState.Closed:
+                        return Brushes.Gray;
+                    case CellState.OnPath:
+                        return Brushes.DeepSkyBlue;
                 }
             }
 

@@ -10,11 +10,6 @@ namespace Viewer
 
             // Poor man's data binding
             this.DataContext = new MainWindowViewModel();
-        }
-
-        private void ComputePathButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            this.Tabs.SelectedItem = this.PathTabItem;
-        }
+        }       
     }
 }

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using RoyT.AStar;
 
 namespace Viewer
@@ -34,18 +34,16 @@ namespace Viewer
                         break;
                     case CellState.Blocked:
                         grid.BlockCell(position);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                        break;                  
                 }
             }
 
             var path = grid.GetPath(start, end);
 
-            foreach (var p in path)
+            foreach (var p in path.Skip(1).Take(path.Count - 2))
             {
                 var cell = lookup[p];
-                cell.PathState = PathState.OnPath;                
+                cell.CellState = CellState.OnPath;                
             }
         }
 
@@ -53,7 +51,12 @@ namespace Viewer
         {
             foreach (var cell in cells)
             {
-                cell.PathState = PathState.Undetermined;
+                if (cell.CellState == CellState.OnPath ||
+                    cell.CellState == CellState.Closed ||
+                    cell.CellState == CellState.Open)
+                {
+                    cell.CellState = CellState.Normal;
+                }                  
             }
         }
     }

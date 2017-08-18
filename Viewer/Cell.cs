@@ -7,7 +7,6 @@ namespace Viewer
         private float cost,
                       costSoFar;
         private CellState cellState;
-        private PathState pathState;
 
         public Cell(int x, int y)
         {
@@ -36,30 +35,19 @@ namespace Viewer
         {
             get => this.cellState;
             set => this.RaiseAndSetIfChanged(ref this.cellState, value);
-        }
-
-        public PathState PathState
-        {
-            get => this.pathState;
-            set => this.RaiseAndSetIfChanged(ref this.pathState, value);
-        }
+        }       
 
         public ReactiveCommand Command { get; set; }
     }
 
     internal enum CellState
-    {
+    {        
         Normal,
         Start,
         End,
-        Blocked
-    }
-
-    internal enum PathState
-    {
-        Undetermined,
+        Blocked,
         Open,
         Closed,
         OnPath
-    }
+    }   
 }
