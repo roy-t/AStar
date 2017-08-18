@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using RoyT.AStar;
 
@@ -6,6 +7,21 @@ namespace Viewer
 {
     internal sealed class PathController
     {
+        private readonly List<string> Steps;
+        private int step;
+        
+
+        public PathController()
+        {
+            this.Steps = new List<string>();
+            this.step = 0;            
+        }
+
+        public void Start() => this.step = 0;
+        public void End() => this.step = this.Steps.Count - 1;
+        public void Forward() => this.step = Math.Min(this.step + 1, this.Steps.Count - 1);
+        public void Backward() => this.step = Math.Max(this.step - 1, 0);                
+
         public void ComputePath(IReadOnlyList<Cell> cells)
         {
             ClearPathState(cells);
@@ -56,7 +72,9 @@ namespace Viewer
                     cell.CellState == CellState.Open)
                 {
                     cell.CellState = CellState.Normal;
-                }                  
+                }
+
+                cell.CostSoFar = 0;
             }
         }
     }

@@ -6,45 +6,54 @@
         xmlns:viewer="clr-namespace:Viewer"
         SizeToContent="WidthAndHeight"        
         mc:Ignorable="d"         
-        Title="MainWindow" d:DataContext="{d:DesignInstance viewer:MainWindowViewModel, IsDesignTimeCreatable=True}">
+        Title="Roy-T.AStar - Viewer" d:DataContext="{d:DesignInstance viewer:MainWindowViewModel, IsDesignTimeCreatable=True}">
     <Window.Resources>
         <ResourceDictionary>
             <viewer:CellStateColorConverter x:Key="CellStateColorConverter"/>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <ItemsControl ItemsSource="{Binding Cells}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid Rows="10" Columns="10"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type viewer:Cell}">
-                    <Button Command="{Binding Command}" Content="{Binding Cost}">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border Width="50" Height="50" BorderThickness="1" BorderBrush="Black" Background="{Binding CellState, Converter={StaticResource CellStateColorConverter}}">
-                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" Content="{TemplateBinding Content}"/>
-                                </Border>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-        <StackPanel Grid.Row="1" >
-            <UniformGrid Margin="0 5 0 0" Columns="4"  >
-                <Button Content="↞" />
-                <Button Content="←" />
-                <Button Content="→" />
-                <Button Content="↠" />
-            </UniformGrid>
-        </StackPanel>
-    </Grid>
+    <StackPanel>
+        <Menu>
+            <MenuItem Header="_File">
+                <MenuItem Header="_Save" Command="{Binding SaveCommand}"/>
+                <MenuItem Header="_Load" Command="{Binding LoadCommand}"/>
+                <MenuItem Header="E_xit" Command="{Binding ExitCommand}"/>
+            </MenuItem>
+        </Menu>
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ItemsControl ItemsSource="{Binding Cells}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Rows="10" Columns="10"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type viewer:Cell}">
+                        <Button Command="{Binding Command}" Content="{Binding Cost}">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Width="50" Height="50" BorderThickness="1" BorderBrush="Black" Background="{Binding CellState, Converter={StaticResource CellStateColorConverter}}">
+                                        <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" Content="{TemplateBinding Content}"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <StackPanel Grid.Row="1" >
+                <UniformGrid Margin="0 5 0 0" Columns="4"  >
+                    <Button Command="{Binding StartCommand}" Content="↞" />
+                    <Button Command="{Binding BackwardCommand}"  Content="←" />
+                    <Button Command="{Binding ForwardCommand}" Content="→" />
+                    <Button Command="{Binding EndCommand}" Content="↠" />
+                </UniformGrid>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
 </Window>
 

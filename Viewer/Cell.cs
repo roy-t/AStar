@@ -1,8 +1,10 @@
-﻿using ReactiveUI;
+﻿using Newtonsoft.Json;
+using ReactiveUI;
 
 namespace Viewer
 {
-    internal sealed class Cell : ReactiveObject
+    [JsonObject(MemberSerialization.OptIn)]
+    internal class Cell : ReactiveObject
     {
         private float cost,
                       costSoFar;
@@ -15,22 +17,27 @@ namespace Viewer
             this.Cost = 1.0f;            
         }
 
+        [JsonProperty]
         public int X { get; }
 
+        [JsonProperty]
         public int Y { get; }
 
+        [JsonProperty]
         public float Cost
         {
             get => this.cost;
             set => this.RaiseAndSetIfChanged(ref this.cost, value);
         }
 
+        [JsonProperty]
         public float CostSoFar
         {
             get => this.costSoFar;
             set => this.RaiseAndSetIfChanged(ref this.costSoFar, value);
         }
 
+        [JsonProperty]
         public CellState CellState
         {
             get => this.cellState;
