@@ -16,9 +16,9 @@ namespace Viewer
                     case CellState.Normal:                        
                         return Brushes.LightGray;                        
                     case CellState.Start:
-                        return Brushes.LightGreen;
+                        return Brushes.LightSkyBlue;                        
                     case CellState.End:
-                        return Brushes.LightYellow;
+                        return Brushes.LightGreen;
                     case CellState.Blocked:
                         return Brushes.Black;                                            
                 }

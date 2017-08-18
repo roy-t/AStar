@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:viewer="clr-namespace:Viewer"
-        SizeToContent="WidthAndHeight"   
+        Width="240"
+        Height="190"
         WindowStyle="ToolWindow"
         WindowStartupLocation="CenterOwner"
         Title="{Binding Title}"
@@ -19,7 +20,7 @@
             <Setter Property="Margin" Value="2"/>
         </Style>
     </Window.Resources>
-    <Grid>
+    <Grid Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -37,7 +38,7 @@
         <ToggleButton IsChecked="{Binding IsBlocked}" Content="Blocked" Grid.Row="0" Grid.Column="3" />
         <TextBlock Text="Cost:" Margin="5" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
         <xctk:IntegerUpDown Value="{Binding Cost}" Margin="2" Grid.ColumnSpan="3" Minimum="1" Maximum="1000" Grid.Row="1" Grid.Column="1"  />
-        <Button IsDefault="True" Click="CloseButton_OnClick" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Margin="5 10 5 2" Content="Ok"/>
+        <Button IsDefault="True" Click="CloseButton_OnClick" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Margin="2 10 2 2" Content="Ok"/>
     </Grid>
 </Window>
 

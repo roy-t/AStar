@@ -120,6 +120,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PathController.cs" />
+    <Compile Include="PathStateColorConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

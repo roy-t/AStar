@@ -7,8 +7,11 @@ namespace Viewer
 {
     internal sealed class MainWindowViewModel
     {
+        private readonly PathController PathController;
+
         public MainWindowViewModel()
-        {            
+        {
+            this.PathController = new PathController();
             this.Cells = new List<Cell>(100);
             for (var y = 0; y < 10; y++)
             {
@@ -25,30 +28,38 @@ namespace Viewer
                 }
             }
 
-            this.Cells.First().State = CellState.Start;
-            this.Cells.Last().State = CellState.End;            
+            this.Cells.First().CellState = CellState.Start;
+            this.Cells.Last().CellState = CellState.End;
+
+            this.ComputeCommand = ReactiveCommand.Create(
+                () =>
+                {
+                    this.PathController.ComputePath(this.Cells);
+                }
+            );
         }
 
-        public List<Cell> Cells { get; set; }
+        public ReactiveCommand ComputeCommand { get; }
 
+        public List<Cell> Cells { get; }
 
         private void EditCell(Cell cell)
         {
-            var vm = new EditWindowViewModel(cell.X, cell.Y, cell.State, cell.Cost);
+            var vm = new EditWindowViewModel(cell.X, cell.Y, cell.CellState, cell.Cost);
             var window = new EditWindow {DataContext = vm, Owner = Application.Current.MainWindow};
             window.ShowDialog();
 
-            if (cell.State == CellState.Normal && vm.CellState == CellState.Start)
+            if (cell.CellState != CellState.Start && vm.CellState == CellState.Start)
             {
                 ClearState(CellState.Start);
             }
 
-            if (cell.State == CellState.Normal && vm.CellState == CellState.End)
+            if (cell.CellState == CellState.End && vm.CellState == CellState.End)
             {
                 ClearState(CellState.End);
             }
 
-            cell.State = vm.CellState;
+            cell.CellState = vm.CellState;
             cell.Cost = vm.Cost;
         }
 
@@ -56,9 +67,9 @@ namespace Viewer
         {
             foreach (var c in this.Cells)
             {
-                if (c.State == state)
+                if (c.CellState == state)
                 {
-                    c.State = CellState.Normal;                    
+                    c.CellState = CellState.Normal;                    
                 }
             }
         }

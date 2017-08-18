@@ -4,14 +4,16 @@ namespace Viewer
 {
     internal sealed class Cell : ReactiveObject
     {
-        private float cost;
-        private CellState state;
+        private float cost,
+                      costSoFar;
+        private CellState cellState;
+        private PathState pathState;
 
         public Cell(int x, int y)
         {
             this.X = x;
             this.Y = y;
-            this.Cost = 1.0f;
+            this.Cost = 1.0f;            
         }
 
         public int X { get; }
@@ -24,10 +26,22 @@ namespace Viewer
             set => this.RaiseAndSetIfChanged(ref this.cost, value);
         }
 
-        public CellState State
+        public float CostSoFar
         {
-            get => this.state;
-            set => this.RaiseAndSetIfChanged(ref this.state, value);
+            get => this.costSoFar;
+            set => this.RaiseAndSetIfChanged(ref this.costSoFar, value);
+        }
+
+        public CellState CellState
+        {
+            get => this.cellState;
+            set => this.RaiseAndSetIfChanged(ref this.cellState, value);
+        }
+
+        public PathState PathState
+        {
+            get => this.pathState;
+            set => this.RaiseAndSetIfChanged(ref this.pathState, value);
         }
 
         public ReactiveCommand Command { get; set; }
@@ -39,5 +53,13 @@ namespace Viewer
         Start,
         End,
         Blocked
+    }
+
+    internal enum PathState
+    {
+        Undetermined,
+        Open,
+        Closed,
+        OnPath
     }
 }
