@@ -5,68 +5,19 @@ using RoyT.AStar;
 
 namespace Viewer
 {
+    /// <summary>
+    /// Translates the visual representation of the world to something the 
+    /// path finding algorithm can work with
+    /// </summary>
     internal sealed class PathController
-    {
-        public int CurrentStep { get; set; }
-
-        public void Start(IReadOnlyList<Cell> cells)
-        {
-            this.CurrentStep = 0;
-            ReplaySteps(cells);
-        }
-
-        public void End(IReadOnlyList<Cell> cells)
-        {
-            this.CurrentStep = PathFinder.StepList.Count;
-            ReplaySteps(cells);
-        }
-
-        public void Forward(IReadOnlyList<Cell> cells)
-        {
-            this.CurrentStep = Math.Min(this.CurrentStep + 1, PathFinder.StepList.Count - 1);
-            ReplaySteps(cells);
-        }
-
-        public void Backward(IReadOnlyList<Cell> cells)
-        {
-            this.CurrentStep = Math.Max(this.CurrentStep - 1, 0);
-            ReplaySteps(cells);
-        }
-
-        public void ReplaySteps(IReadOnlyList<Cell> cells)
-        {
-            ClearPathState(cells);
-
-            for (var i = 0; i < this.CurrentStep && i < PathFinder.StepList.Count; i++)
-            {
-                var step = PathFinder.StepList[i];
-                CellState cellState;
-                switch (step.Type)
-                {
-                    case StepType.Current:
-                        cellState = CellState.Current;
-                        break;
-                    case StepType.Open:
-                        cellState = CellState.Open;
-                        break;
-                    case StepType.Close:
-                        cellState = CellState.Closed;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-                var cell = cells.First(c => c.X == step.Position.X && c.Y == step.Position.Y);
-                if (cell.CellState != CellState.Start && cell.CellState != CellState.End)
-                {
-                    cell.CellState = cellState;
-                }
-            }
-        }
-
+    {       
         public void ComputePath(IReadOnlyList<Cell> cells)
         {
-            ClearPathState(cells);
+            // Remove previous path visualization
+            foreach (var cell in cells.Where(c => Cell.ReplayCellStates.Contains(c.CellState)))
+            {
+                cell.CellState = CellState.Normal;
+            }
 
             var lookup = new Dictionary<Position, Cell>();
 
@@ -74,6 +25,8 @@ namespace Viewer
             var start = new Position(0, 0);
             var end = new Position(9, 9);
 
+            // Take the properties of the cells and translate them
+            // to properties on the right positions in the grid
             foreach (var cell in cells)
             {
                 var position = new Position(cell.X, cell.Y);
@@ -92,33 +45,26 @@ namespace Viewer
                         break;
                     case CellState.Blocked:
                         grid.BlockCell(position);
-                        break;                  
+                        break;
+                    case CellState.Current:
+                    case CellState.Open:
+                    case CellState.Closed:
+                    case CellState.OnPath:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
 
             var path = grid.GetPath(start, end);
 
+            // Visualize the path in the cells, skip the start and end node, we already
+            // have those in the visualization
             foreach (var p in path.Skip(1).Take(path.Count - 2))
             {
                 var cell = lookup[p];
                 cell.CellState = CellState.OnPath;                
             }
-        }
-
-        private static void ClearPathState(IEnumerable<Cell> cells)
-        {
-            foreach (var cell in cells)
-            {
-                if (cell.CellState == CellState.OnPath ||
-                    cell.CellState == CellState.Closed ||
-                    cell.CellState == CellState.Open   ||
-                    cell.CellState == CellState.Current)
-                {
-                    cell.CellState = CellState.Normal;
-                }
-
-                cell.CostSoFar = 0;
-            }
-        }
+        }       
     }
 }

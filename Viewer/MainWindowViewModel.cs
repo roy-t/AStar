@@ -6,14 +6,21 @@ using RoyT.AStar;
 
 namespace Viewer
 {
+    /// <summary>
+    /// ViewModel for the MainView, visualized the path finding algorithm
+    /// and allows the user to edit the world
+    /// </summary>
     internal sealed class MainWindowViewModel : ReactiveObject
     {
         private readonly PathController PathController;
+        private readonly ReplayController ReplayController;
         private List<Cell> cells;
 
         public MainWindowViewModel()
         {
             this.PathController = new PathController();
+            this.ReplayController = new ReplayController();
+
             this.cells = new List<Cell>(100);
             for (var y = 0; y < 10; y++)
             {
@@ -36,28 +43,28 @@ namespace Viewer
             this.StartCommand = ReactiveCommand.Create(
                 () =>
                 {
-                    this.PathController.Start(this.cells);
+                    this.ReplayController.Start(this.cells);
                     UpdatePathStateBindings();
                 });
 
             this.EndCommand = ReactiveCommand.Create(
                 () =>
                 {
-                    this.PathController.End(this.cells);
+                    this.ReplayController.End(this.cells);
                     UpdatePathStateBindings();
                 });
 
             this.ForwardCommand = ReactiveCommand.Create(
                 () =>
                 {
-                    this.PathController.Forward(this.cells);
+                    this.ReplayController.Forward(this.cells);
                     UpdatePathStateBindings();
                 });
 
             this.BackwardCommand = ReactiveCommand.Create(
                 () =>
                 {
-                    this.PathController.Backward(this.cells);
+                    this.ReplayController.Backward(this.cells);
                     UpdatePathStateBindings();
                 });
 
@@ -81,6 +88,14 @@ namespace Viewer
                 });
 
             this.PathController.ComputePath(this.Cells);
+            this.ReplayController.End(this.Cells);
+
+#if DEBUG
+            this.IsDebugBuild = true;
+
+#else
+            this.IsDebugBuild = false;
+#endif            
         }
 
         public IReadOnlyList<Cell> Cells
@@ -101,16 +116,20 @@ namespace Viewer
 
         public int CurrentStep
         {
-            get => this.PathController.CurrentStep;
+            get => this.ReplayController.CurrentStep;
             set
             {
-                this.PathController.CurrentStep = value;
-                this.PathController.ReplaySteps(this.Cells);
+                this.ReplayController.CurrentStep = value;
+                this.ReplayController.ReplaySteps(this.Cells);
             }
         }
 
+        public bool IsDebugBuild { get; }
+        public bool IsReleaseBuild => !this.IsDebugBuild;
+
+        // Shows the edit window, and makes sure a new path is calculated after anything changed
         private void EditCell(Cell cell)
-        {
+        {            
             var vm = new EditWindowViewModel(cell.X, cell.Y, cell.CellState, cell.Cost);
             var window = new EditWindow {DataContext = vm, Owner = Application.Current.MainWindow};
             window.ShowDialog();
@@ -129,6 +148,8 @@ namespace Viewer
             cell.Cost = vm.Cost;
 
             this.PathController.ComputePath(this.Cells);
+            this.ReplayController.End(this.Cells);
+            UpdatePathStateBindings();
         }
 
         private void UpdatePathStateBindings()

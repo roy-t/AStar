@@ -5,6 +5,9 @@ using System.Windows.Media;
 
 namespace Viewer
 {
+    /// <summary>
+    /// Converts the CellState to a SolidColorBrush for visualization in the editor
+    /// </summary>
     internal sealed class CellStateColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

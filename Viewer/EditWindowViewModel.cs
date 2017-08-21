@@ -2,6 +2,9 @@
 
 namespace Viewer
 {
+    /// <summary>
+    /// ViewModel for the editor window
+    /// </summary>
     internal sealed class EditWindowViewModel : ReactiveObject
     {        
         private float cost;

@@ -9,6 +9,7 @@
         Title="Roy-T.AStar - Viewer" d:DataContext="{d:DesignInstance viewer:MainWindowViewModel, IsDesignTimeCreatable=True}">
     <Window.Resources>
         <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <viewer:CellStateColorConverter x:Key="CellStateColorConverter"/>
         </ResourceDictionary>
     </Window.Resources>
@@ -46,13 +47,14 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             <StackPanel Grid.Row="1" >
-                <UniformGrid Margin="0 5 0 0" Columns="4"  >
+                <TextBlock Margin="0 2" Text="Replay is only available in Debug builds" Visibility="{Binding IsReleaseBuild, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <UniformGrid Margin="0 5 0 0" Columns="4" Visibility="{Binding IsDebugBuild, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Button Command="{Binding StartCommand}" Content="↞" />
                     <Button Command="{Binding BackwardCommand}"  Content="←" />
                     <Button Command="{Binding ForwardCommand}" Content="→" />
                     <Button Command="{Binding EndCommand}" Content="↠" />
                 </UniformGrid>
-                <Grid >
+                <Grid Visibility="{Binding IsDebugBuild, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Slider Minimum="0" Maximum="{Binding StepCount}" Value="{Binding CurrentStep}" TickPlacement="BottomRight" TickFrequency="1"/>
                 </Grid>
             </StackPanel>

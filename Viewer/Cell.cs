@@ -1,13 +1,16 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 using ReactiveUI;
 
 namespace Viewer
 {
+    /// <summary>
+    /// ViewModel and serialization object for a cell inside a grid
+    /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
-    internal class Cell : ReactiveObject
+    internal sealed class Cell : ReactiveObject
     {
-        private float cost,
-                      costSoFar;
+        private float cost;                      
         private CellState cellState;
 
         public Cell(int x, int y)
@@ -28,14 +31,7 @@ namespace Viewer
         {
             get => this.cost;
             set => this.RaiseAndSetIfChanged(ref this.cost, value);
-        }
-
-        [JsonProperty]
-        public float CostSoFar
-        {
-            get => this.costSoFar;
-            set => this.RaiseAndSetIfChanged(ref this.costSoFar, value);
-        }
+        }        
 
         [JsonProperty]
         public CellState CellState
@@ -45,14 +41,41 @@ namespace Viewer
         }       
 
         public ReactiveCommand Command { get; set; }
+
+        /// <summary>
+        /// The cell state was set by the user view the editor and should not be changed
+        /// </summary>
+        public static HashSet<CellState> UserCellStates => new HashSet<CellState>
+        {
+            CellState.Blocked,
+            CellState.Start,
+            CellState.End
+        };
+
+        /// <summary>
+        /// The cell state was set during replay
+        /// </summary>
+        public static HashSet<CellState> ReplayCellStates => new HashSet<CellState>
+        {
+            CellState.Current,
+            CellState.Open,
+            CellState.Closed,
+            CellState.OnPath,
+        };
     }
 
+    /// <summary>
+    /// Indicates how the cell should be handled by the pathfinding algorithm
+    /// and what color the cell should be editor.
+    /// </summary>
     internal enum CellState
     {        
         Normal,
+
         Start,
         End,
         Blocked,
+
         Current,
         Open,
         Closed,

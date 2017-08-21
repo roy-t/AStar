@@ -5,6 +5,9 @@ using Newtonsoft.Json;
 
 namespace Viewer
 {
+    /// <summary>
+    /// Helper class for saving and loading grid files
+    /// </summary>
     internal static class IO
     {
         private const string Filter = @"Grid files (*.grid)|*.grid|All Files (*.*)|*.*";

@@ -11,11 +11,7 @@ namespace RoyT.AStar
     internal static  partial class PathFinder
     {
         public static SearchNode FindPath(Grid grid, Position start, Position end, Offset[] movementPattern)
-            // Flip start and end, since the algorithm will give the result from the end backwards
-            => FindReversePath(grid, end, start, movementPattern);
-
-        private static SearchNode FindReversePath(Grid grid, Position start, Position end, Offset[] movementPattern)
-        {
+        { 
             ClearStepList();
 
             var head = new SearchNode(start);
@@ -27,13 +23,12 @@ namespace RoyT.AStar
             while (open.HasNext())
             {
                 var current = open.Pop();
+                MessageCurrent(current);
 
                 if (current.Position.Equals(end))
                 {
                     return current;
-                }
-
-                MessageCurrent(current.Position);
+                }                
                 
                 foreach (var p in GetNeighbours(current.Position, grid.DimX, grid.DimY, movementPattern))
                 {

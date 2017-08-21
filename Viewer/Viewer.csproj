@@ -106,6 +106,7 @@
     <Compile Include="EditWindowViewModel.cs" />
     <Compile Include="IO.cs" />
     <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="ReplayController.cs" />
     <Page Include="EditWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
