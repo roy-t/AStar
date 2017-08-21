@@ -53,6 +53,7 @@ namespace Viewer
         Start,
         End,
         Blocked,
+        Current,
         Open,
         Closed,
         OnPath

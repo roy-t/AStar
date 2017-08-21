@@ -7,20 +7,62 @@ namespace Viewer
 {
     internal sealed class PathController
     {
-        private readonly List<string> Steps;
-        private int step;
-        
+        public int CurrentStep { get; set; }
 
-        public PathController()
+        public void Start(IReadOnlyList<Cell> cells)
         {
-            this.Steps = new List<string>();
-            this.step = 0;            
+            this.CurrentStep = 0;
+            ReplaySteps(cells);
         }
 
-        public void Start() => this.step = 0;
-        public void End() => this.step = this.Steps.Count - 1;
-        public void Forward() => this.step = Math.Min(this.step + 1, this.Steps.Count - 1);
-        public void Backward() => this.step = Math.Max(this.step - 1, 0);                
+        public void End(IReadOnlyList<Cell> cells)
+        {
+            this.CurrentStep = PathFinder.StepList.Count;
+            ReplaySteps(cells);
+        }
+
+        public void Forward(IReadOnlyList<Cell> cells)
+        {
+            this.CurrentStep = Math.Min(this.CurrentStep + 1, PathFinder.StepList.Count - 1);
+            ReplaySteps(cells);
+        }
+
+        public void Backward(IReadOnlyList<Cell> cells)
+        {
+            this.CurrentStep = Math.Max(this.CurrentStep - 1, 0);
+            ReplaySteps(cells);
+        }
+
+        public void ReplaySteps(IReadOnlyList<Cell> cells)
+        {
+            ClearPathState(cells);
+
+            for (var i = 0; i < this.CurrentStep && i < PathFinder.StepList.Count; i++)
+            {
+                var step = PathFinder.StepList[i];
+                CellState cellState;
+                switch (step.Type)
+                {
+                    case StepType.Current:
+                        cellState = CellState.Current;
+                        break;
+                    case StepType.Open:
+                        cellState = CellState.Open;
+                        break;
+                    case StepType.Close:
+                        cellState = CellState.Closed;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                var cell = cells.First(c => c.X == step.Position.X && c.Y == step.Position.Y);
+                if (cell.CellState != CellState.Start && cell.CellState != CellState.End)
+                {
+                    cell.CellState = cellState;
+                }
+            }
+        }
 
         public void ComputePath(IReadOnlyList<Cell> cells)
         {
@@ -69,7 +111,8 @@ namespace Viewer
             {
                 if (cell.CellState == CellState.OnPath ||
                     cell.CellState == CellState.Closed ||
-                    cell.CellState == CellState.Open)
+                    cell.CellState == CellState.Open   ||
+                    cell.CellState == CellState.Current)
                 {
                     cell.CellState = CellState.Normal;
                 }

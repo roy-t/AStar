@@ -8,7 +8,7 @@ namespace RoyT.AStar
     /// <summary>
     /// Computes a path in a grid according to the A* algorithm
     /// </summary>
-    internal static class PathFinder
+    internal static  partial class PathFinder
     {
         public static SearchNode FindPath(Grid grid, Position start, Position end, Offset[] movementPattern)
             // Flip start and end, since the algorithm will give the result from the end backwards
@@ -16,6 +16,8 @@ namespace RoyT.AStar
 
         private static SearchNode FindReversePath(Grid grid, Position start, Position end, Offset[] movementPattern)
         {
+            ClearStepList();
+
             var head = new SearchNode(start);
             var open = new MinHeap();
             open.Push(head);
@@ -30,6 +32,8 @@ namespace RoyT.AStar
                 {
                     return current;
                 }
+
+                MessageCurrent(current.Position);
                 
                 foreach (var p in GetNeighbours(current.Position, grid.DimX, grid.DimY, movementPattern))
                 {
@@ -40,13 +44,16 @@ namespace RoyT.AStar
                     if (!marked[index] && !float.IsInfinity(cellCost))
                     {
                         marked[index] = true;
+                        MessageOpen(p);
                                                 
                         var costSoFar    = current.CostSoFar + cellCost;                        
                         var expectedCost = costSoFar + ChebyshevDistance(p, end);
 
                         open.Push(new SearchNode(p, expectedCost, costSoFar) {Next = current});
                     }
-                }               
+                }
+
+                MessageClose(current.Position);
             }
 
             return null;

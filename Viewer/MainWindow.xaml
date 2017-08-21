@@ -52,6 +52,9 @@
                     <Button Command="{Binding ForwardCommand}" Content="→" />
                     <Button Command="{Binding EndCommand}" Content="↠" />
                 </UniformGrid>
+                <Grid >
+                    <Slider Minimum="0" Maximum="{Binding StepCount}" Value="{Binding CurrentStep}" TickPlacement="BottomRight" TickFrequency="1"/>
+                </Grid>
             </StackPanel>
         </Grid>
     </StackPanel>
