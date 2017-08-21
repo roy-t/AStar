@@ -72,11 +72,32 @@ var movementPattern = new[] {new Offset(-1, 0), new Offset(0, -1)};
 var path = grid.GetPath(new Position(0, 0), new Position(99, 99), movementPattern);
 ```
 
+## Viewer
+This repository also contains a viewer which you can use to build worlds and visualize paths.
+In debug builds you can even replay the decision making process to get a feeling of what is going on.
+
+![The viewer](viewer.png?raw=true "The viewer")
+ 
+Click a cell in the editor to change it properties. A new path will be generated automatically.
+The buttons and slider at the bottom of the window let you control the replay features.
+
+Each cell is color coded
+
+- White: a normal cell
+- Light green: the start cell
+- Dark green: the current cell, or end cell
+- Black a blocked (intraversable) cell
+- Gray: a cell that has been processed, *is closed*
+- Orange: a cell that still needs to be processed, *is open*
+- Purple: the cell that is currently being processed
+- Blue: a cell on, what currently is believed to be, the shortest path
+
+
 
 ## Implementation details
 While making this library I was mostly concerned with performance (how long does it take to find a path) and ease of use.
 I use a custom `MinHeap` data structure to keep track of the best candidates for the shortest path. I've experimented with other data structures, like the standard `SortedSet` but they were consistently slower. 
-Other small tricks I've used is using a `bool[]` to keep track of checked cells and to only compute the squared distance in my heuristic. (Which helped a surprising amount).
+Other small tricks I've used is using a `bool[]` to keep track of checked cells and using a good heuristic for grids (Chebyshev distance).
 
 While micro-optimizing the code I've used the handy [BenchMark.Net](https://github.com/dotnet/BenchmarkDotNet) library to see if my changes had any effect. The benchmark suite is included in the source code here. So if you would like to try to make this implemention faster you can use the same benchmark and performance metrics I did.
 

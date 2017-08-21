@@ -25,7 +25,7 @@ namespace Viewer
                     case CellState.Blocked:
                         return Brushes.Black;
                     case CellState.Current:
-                        return Brushes.DarkGreen;
+                        return Brushes.DarkOrchid;
                     case CellState.Open:
                         return Brushes.SandyBrown;
                     case CellState.Closed:
