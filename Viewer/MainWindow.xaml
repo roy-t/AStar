@@ -3,18 +3,62 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewer="clr-namespace:Viewer"
         SizeToContent="WidthAndHeight"        
-        mc:Ignorable="d"        
-        Title="MainWindow">
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <Grid x:Name="worldGrid"/>
-        <StackPanel Grid.Row="1" >
-            <TextBlock x:Name="label"/>
-            <Button Content="Go!" Click="Go_OnClick"/>
-        </StackPanel>
-    </Grid>
+        mc:Ignorable="d"         
+        Title="Roy-T.AStar - Viewer" d:DataContext="{d:DesignInstance viewer:MainWindowViewModel, IsDesignTimeCreatable=True}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <viewer:CellStateColorConverter x:Key="CellStateColorConverter"/>
+        </ResourceDictionary>
+    </Window.Resources>
+    <StackPanel>
+        <Menu>
+            <MenuItem Header="_File">
+                <MenuItem Header="_Save" Command="{Binding SaveCommand}"/>
+                <MenuItem Header="_Load" Command="{Binding LoadCommand}"/>
+                <MenuItem Header="E_xit" Command="{Binding ExitCommand}"/>
+            </MenuItem>
+        </Menu>
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ItemsControl ItemsSource="{Binding Cells}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Rows="10" Columns="10"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type viewer:Cell}">
+                        <Button Command="{Binding Command}" Content="{Binding Cost}">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Width="50" Height="50" BorderThickness="1" BorderBrush="Black" Background="{Binding CellState, Converter={StaticResource CellStateColorConverter}}">
+                                        <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" Content="{TemplateBinding Content}"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <StackPanel Grid.Row="1" >
+                <TextBlock Margin="0 2" Text="Replay is only available in Debug builds" Visibility="{Binding IsReleaseBuild, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <UniformGrid Margin="0 5 0 0" Columns="4" Visibility="{Binding IsDebugBuild, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Button Command="{Binding StartCommand}" Content="↞" />
+                    <Button Command="{Binding BackwardCommand}"  Content="←" />
+                    <Button Command="{Binding ForwardCommand}" Content="→" />
+                    <Button Command="{Binding EndCommand}" Content="↠" />
+                </UniformGrid>
+                <Grid Visibility="{Binding IsDebugBuild, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Slider Minimum="0" Maximum="{Binding StepCount}" Value="{Binding CurrentStep}" TickPlacement="BottomRight" TickFrequency="1"/>
+                </Grid>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
 </Window>
+
