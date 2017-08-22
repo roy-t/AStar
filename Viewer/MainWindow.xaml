@@ -55,7 +55,13 @@
                     <Button Command="{Binding EndCommand}" Content="↠" />
                 </UniformGrid>
                 <Grid Visibility="{Binding IsDebugBuild, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
                     <Slider Minimum="0" Maximum="{Binding StepCount}" Value="{Binding CurrentStep}" TickPlacement="BottomRight" TickFrequency="1"/>
+                    <TextBlock Grid.Row="1" Text="0" HorizontalAlignment="Left" Margin="2 0"/>
+                    <TextBlock Grid.Row="1" Text="{Binding StepCount}" HorizontalAlignment="Right" Margin="2 0"/>
                 </Grid>
             </StackPanel>
         </Grid>

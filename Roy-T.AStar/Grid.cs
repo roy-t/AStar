@@ -83,7 +83,7 @@ namespace RoyT.AStar
         /// </summary>
         /// <param name="position">A position inside the grid</param>
         /// <returns>The cost</returns>
-        public double GetCellCost(Position position)
+        public float GetCellCost(Position position)
         {
             return this.Weights[GetIndex(position.X, position.Y)];
         }

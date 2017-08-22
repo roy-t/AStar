@@ -17,6 +17,7 @@
         /// </summary>
         public void Push(SearchNode node)
         {
+
             // If the heap is empty, just add the item to the top
             if (this.head == null)
             {
@@ -26,7 +27,16 @@
             {
                 node.NextListElement = this.head;
                 this.head = node;
-            }            
+            }
+            // In case of ambiguity put the node with the heighest cost so far up front
+            // this will make sure that if there are two equally distance path we first 
+            // explore one before exploring the other
+            else if (node.ExpectedCost == this.head.ExpectedCost &&
+                     node.CostSoFar > this.head.CostSoFar)
+            {
+                node.NextListElement = this.head;
+                this.head = node;
+            }
             else
             {
                 var current = this.head;
