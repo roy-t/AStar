@@ -26,16 +26,11 @@ namespace Viewer
             {
                 for (var x = 0; x < 10; x++)
                 {
-                    var cell = new Cell(x, y);
-                    cell.Command = ReactiveCommand.Create(
-                        () =>
-                        {
-                            EditCell(cell);
-                        });
-
+                    var cell = new Cell(x, y);                   
                     this.cells.Add(cell);
                 }
             }
+            FillCells(this.cells);
 
             this.cells.First().CellState = CellState.Start;
             this.cells.Last().CellState = CellState.End;   
@@ -75,16 +70,7 @@ namespace Viewer
                 () =>
                 {
                     var ioCells = IO.Load();
-                    foreach (var c in ioCells)
-                    {
-                        c.Command = ReactiveCommand.Create(
-                            () =>
-                            {
-                                EditCell(c);
-                            });
-                    }
-
-                    this.Cells = ioCells;
+                    FillCells(ioCells);
                 });
 
             this.PathController.ComputePath(this.Cells);
@@ -96,6 +82,24 @@ namespace Viewer
 #else
             this.IsDebugBuild = false;
 #endif            
+        }
+
+        private void FillCells(IReadOnlyList<Cell> ioCells)
+        {
+            foreach (var c in ioCells)
+            {
+                c.Command = ReactiveCommand.Create(
+                    () =>
+                    {
+                        EditCell(c);
+                    });
+            }
+
+            this.Cells = ioCells;
+
+            this.PathController.ComputePath(this.Cells);
+            this.ReplayController.End(this.Cells);
+            UpdatePathStateBindings();
         }
 
         public IReadOnlyList<Cell> Cells
