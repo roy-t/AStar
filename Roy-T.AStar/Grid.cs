@@ -120,6 +120,7 @@ namespace RoyT.AStar
         public IReadOnlyList<Position> GetPath(Position start, Position end, Offset[] movementPattern)
         {
             var current = PathFinder.FindPath(this, start, end, movementPattern);
+            current = PathSmoother.SmoothPath(this, current);
 
             // The Pathfinder returns the SearchNode that found the end. If we want
             // to list positions from start to end we need reverse the traversal.

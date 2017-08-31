@@ -25,7 +25,7 @@ namespace RoyT.AStar
                 var current = open.Pop();
                 MessageCurrent(current);
 
-                if (current.Position.Equals(end))
+                if (current.Position == end)
                 {
                     return current;
                 }                

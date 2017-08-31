@@ -37,6 +37,16 @@ namespace RoyT.AStar
 
             return obj is Position && Equals((Position) obj);
         }
+        
+        public static bool operator ==(Position a, Position b)
+        {
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(Position a, Position b)
+        {
+            return !a.Equals(b);
+        }
 
         public override int GetHashCode()
         {
