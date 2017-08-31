@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using ReactiveUI;
@@ -19,22 +20,8 @@ namespace Viewer
         public MainWindowViewModel()
         {
             this.PathController = new PathController();
-            this.ReplayController = new ReplayController();
+            this.ReplayController = new ReplayController();           
 
-            this.cells = new List<Cell>(100);
-            for (var y = 0; y < 10; y++)
-            {
-                for (var x = 0; x < 10; x++)
-                {
-                    var cell = new Cell(x, y);                   
-                    this.cells.Add(cell);
-                }
-            }
-            FillCells(this.cells);
-
-            this.cells.First().CellState = CellState.Start;
-            this.cells.Last().CellState = CellState.End;   
-            
             this.StartCommand = ReactiveCommand.Create(
                 () =>
                 {
@@ -73,8 +60,29 @@ namespace Viewer
                     FillCells(ioCells);
                 });
 
-            this.PathController.ComputePath(this.Cells);
-            this.ReplayController.End(this.Cells);
+            List<Cell> startCells;
+            var args = Environment.GetCommandLineArgs();
+            if (args.Length == 2)
+            {
+                startCells = IO.Load(args[1]).ToList();
+            }
+            else
+            {
+                startCells = new List<Cell>(100);
+                for (var y = 0; y < 10; y++)
+                {
+                    for (var x = 0; x < 10; x++)
+                    {
+                        var cell = new Cell(x, y);
+                        startCells.Add(cell);
+                    }
+                }
+
+                startCells.First().CellState = CellState.Start;
+                startCells.Last().CellState = CellState.End;
+            }
+
+            FillCells(startCells);
 
 #if DEBUG
             this.IsDebugBuild = true;

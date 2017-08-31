@@ -32,16 +32,21 @@ namespace Viewer
             var dialog = new OpenFileDialog {Filter = Filter};
             if (dialog.ShowDialog().GetValueOrDefault())
             {
-                using (var stream = dialog.OpenFile())
-                using(var reader = new StreamReader(stream))
-                {
-                    var data = reader.ReadToEnd();
-
-                    return JsonConvert.DeserializeObject<List<Cell>>(data);
-                }
+                return Load(dialog.FileName);
             }
 
             return new List<Cell>(0);
+        }
+
+        public static IReadOnlyList<Cell> Load(string path)
+        {
+            using (var stream = File.OpenRead(path))
+            using (var reader = new StreamReader(stream))
+            {
+                var data = reader.ReadToEnd();
+
+                return JsonConvert.DeserializeObject<List<Cell>>(data);
+            }
         }
     }
 }
