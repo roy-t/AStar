@@ -69,7 +69,7 @@ namespace Viewer
     /// and what color the cell should be editor.
     /// </summary>
     internal enum CellState
-    {        
+    {
         Normal,
 
         Start,
@@ -79,6 +79,8 @@ namespace Viewer
         Current,
         Open,
         Closed,
-        OnPath
-    }   
+        OnPath,
+
+        Replaced
+    }
 }

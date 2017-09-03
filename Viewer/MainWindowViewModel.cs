@@ -16,38 +16,39 @@ namespace Viewer
         private readonly PathController PathController;
         private readonly ReplayController ReplayController;
         private List<Cell> cells;
+        private bool smoothPath;
 
         public MainWindowViewModel()
         {
             this.PathController = new PathController();
-            this.ReplayController = new ReplayController();           
+            this.ReplayController = new ReplayController();                     
 
             this.StartCommand = ReactiveCommand.Create(
                 () =>
-                {
-                    this.ReplayController.Start(this.cells);
-                    UpdatePathStateBindings();
+                {                                        
+                    this.ReplayController.Start(this.cells, this.smoothPath);
+                    UpdatePathBindings();
                 });
 
             this.EndCommand = ReactiveCommand.Create(
                 () =>
-                {
-                    this.ReplayController.End(this.cells);
-                    UpdatePathStateBindings();
+                {                                        
+                    this.ReplayController.End(this.cells, this.smoothPath);
+                    UpdatePathBindings();
                 });
 
             this.ForwardCommand = ReactiveCommand.Create(
                 () =>
-                {
-                    this.ReplayController.Forward(this.cells);
-                    UpdatePathStateBindings();
+                {                                        
+                    this.ReplayController.Forward(this.cells, this.smoothPath);
+                    UpdatePathBindings();
                 });
 
             this.BackwardCommand = ReactiveCommand.Create(
                 () =>
-                {
-                    this.ReplayController.Backward(this.cells);
-                    UpdatePathStateBindings();
+                {                                        
+                    this.ReplayController.Backward(this.cells, this.smoothPath);
+                    UpdatePathBindings();
                 });
 
             this.SaveCommand = ReactiveCommand.Create(() => IO.Save(this.Cells));            
@@ -90,7 +91,46 @@ namespace Viewer
 #else
             this.IsDebugBuild = false;
 #endif            
+        }        
+
+        public IReadOnlyList<Cell> Cells
+        {
+            get => this.cells;
+            set => this.RaiseAndSetIfChanged(ref this.cells, value.ToList());
         }
+        
+        public ReactiveCommand StartCommand { get; }
+        public ReactiveCommand EndCommand { get; }
+        public ReactiveCommand ForwardCommand { get; }
+        public ReactiveCommand BackwardCommand { get; }
+        public ReactiveCommand SaveCommand { get; }
+        public ReactiveCommand LoadCommand { get; }
+        public ReactiveCommand ExitCommand { get; }
+
+        public bool SmoothPath
+        {
+            get => this.smoothPath;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref this.smoothPath, value);                
+                UpdatePath();
+            }
+        }
+
+        public int StepCount => ReplayController.GetMaxStep(this.smoothPath);
+
+        public int CurrentStep
+        {
+            get => this.ReplayController.CurrentStep;
+            set
+            {
+                this.ReplayController.CurrentStep = value;
+                this.ReplayController.ReplayPathFindingSteps(this.Cells, this.smoothPath);
+            }
+        }
+
+        public bool IsDebugBuild { get; }
+        public bool IsReleaseBuild => !this.IsDebugBuild;
 
         private void FillCells(IReadOnlyList<Cell> ioCells)
         {
@@ -104,40 +144,9 @@ namespace Viewer
             }
 
             this.Cells = ioCells;
-
-            this.PathController.ComputePath(this.Cells);
-            this.ReplayController.End(this.Cells);
-            UpdatePathStateBindings();
+          
+            UpdatePath();
         }
-
-        public IReadOnlyList<Cell> Cells
-        {
-            get => this.cells;
-            set => this.RaiseAndSetIfChanged(ref this.cells, value.ToList());
-        }
-
-        public ReactiveCommand StartCommand { get; }
-        public ReactiveCommand EndCommand { get; }
-        public ReactiveCommand ForwardCommand { get; }
-        public ReactiveCommand BackwardCommand { get; }
-        public ReactiveCommand SaveCommand { get; }
-        public ReactiveCommand LoadCommand { get; }
-        public ReactiveCommand ExitCommand { get; }
-
-        public int StepCount => PathFinder.StepList.Count;
-
-        public int CurrentStep
-        {
-            get => this.ReplayController.CurrentStep;
-            set
-            {
-                this.ReplayController.CurrentStep = value;
-                this.ReplayController.ReplaySteps(this.Cells);
-            }
-        }
-
-        public bool IsDebugBuild { get; }
-        public bool IsReleaseBuild => !this.IsDebugBuild;
 
         // Shows the edit window, and makes sure a new path is calculated after anything changed
         private void EditCell(Cell cell)
@@ -158,13 +167,18 @@ namespace Viewer
 
             cell.CellState = vm.CellState;
             cell.Cost = vm.Cost;
-
-            this.PathController.ComputePath(this.Cells);
-            this.ReplayController.End(this.Cells);
-            UpdatePathStateBindings();
+           
+            UpdatePath();
         }
 
-        private void UpdatePathStateBindings()
+        private void UpdatePath()
+        {
+            this.PathController.ComputePath(this.Cells, this.smoothPath);
+            this.ReplayController.End(this.Cells, this.smoothPath);
+            UpdatePathBindings();
+        }
+
+        private void UpdatePathBindings()
         {
             this.RaisePropertyChanged(nameof(this.StepCount));
             this.RaisePropertyChanged(nameof(this.CurrentStep));

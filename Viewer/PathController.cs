@@ -11,7 +11,7 @@ namespace Viewer
     /// </summary>
     internal sealed class PathController
     {       
-        public void ComputePath(IReadOnlyList<Cell> cells)
+        public void ComputePath(IReadOnlyList<Cell> cells, bool smoothPath)
         {
             // Remove previous path visualization
             foreach (var cell in cells.Where(c => Cell.ReplayCellStates.Contains(c.CellState)))
@@ -50,6 +50,7 @@ namespace Viewer
                     case CellState.Open:
                     case CellState.Closed:
                     case CellState.OnPath:
+                    case CellState.Replaced:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -58,9 +59,14 @@ namespace Viewer
 
             var path = grid.GetPath(start, end);
 
+            if (smoothPath)
+            {
+                PathSmoother.SmoothPath(grid, path, MovementPatterns.Full, 10);
+            }
+
             // Visualize the path in the cells, skip the start and end node, we already
             // have those in the visualization
-            foreach (var p in path.Skip(1).Take(path.Count - 2))
+            foreach (var p in path.Skip(1).Take(path.Length - 2))
             {
                 var cell = lookup[p];
                 cell.CellState = CellState.OnPath;                

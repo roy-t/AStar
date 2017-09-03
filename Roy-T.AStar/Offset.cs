@@ -41,6 +41,46 @@ namespace RoyT.AStar
             return obj is Offset && Equals((Offset)obj);
         }
 
+        public static bool operator ==(Offset a, Offset b)
+        {
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(Offset a, Offset b)
+        {
+            return !a.Equals(b);
+        }
+
+        public static Offset operator +(Offset a, Offset b)
+        {
+            return new Offset(a.X + b.X, a.Y + b.Y);
+        }
+
+        public static Offset operator -(Offset a, Offset b)
+        {
+            return new Offset(a.X - b.X, a.Y - b.Y);
+        }
+
+        public static Position operator +(Offset a, Position b)
+        {
+            return new Position(a.X + b.X, a.Y + b.Y);
+        }
+
+        public static Position operator -(Offset a, Position b)
+        {
+            return new Position(a.X - b.X, a.Y - b.Y);
+        }
+
+        public static Position operator +(Position a, Offset b)
+        {
+            return new Position(a.X + b.X, a.Y + b.Y);
+        }
+
+        public static Position operator -(Position a, Offset b)
+        {
+            return new Position(a.X - b.X, a.Y - b.Y);
+        }
+
         public override int GetHashCode()
         {
             unchecked

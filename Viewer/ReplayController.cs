@@ -13,31 +13,36 @@ namespace Viewer
     {        
         public int CurrentStep { get; set; }
 
-        public void Start(IReadOnlyList<Cell> cells)
+        public void Start(IReadOnlyList<Cell> cells, bool smoothPath)
         {
             this.CurrentStep = 0;
-            ReplaySteps(cells);
+            ReplayPathFindingSteps(cells, smoothPath);
         }
 
-        public void End(IReadOnlyList<Cell> cells)
+        public void End(IReadOnlyList<Cell> cells, bool smoothPath)
         {
-            this.CurrentStep = PathFinder.StepList.Count;
-            ReplaySteps(cells);
+            this.CurrentStep = GetMaxStep(smoothPath);
+            ReplayPathFindingSteps(cells, smoothPath);
         }
 
-        public void Forward(IReadOnlyList<Cell> cells)
+        public void Forward(IReadOnlyList<Cell> cells, bool smoothPath)
         {
-            this.CurrentStep = Math.Min(this.CurrentStep + 1, PathFinder.StepList.Count - 1);
-            ReplaySteps(cells);
+            this.CurrentStep = Math.Min(this.CurrentStep + 1, GetMaxStep(smoothPath));
+            ReplayPathFindingSteps(cells, smoothPath);
         }
 
-        public void Backward(IReadOnlyList<Cell> cells)
+        public void Backward(IReadOnlyList<Cell> cells, bool smoothPath)
         {
             this.CurrentStep = Math.Max(this.CurrentStep - 1, 0);
-            ReplaySteps(cells);
+            ReplayPathFindingSteps(cells, smoothPath);
         }
 
-        public void ReplaySteps(IReadOnlyList<Cell> cells)
+        public static int GetMaxStep(bool smoothStep)
+            => smoothStep
+                ? PathFinder.StepList.Count + PathSmoother.SwapList.Count - 1
+                : PathFinder.StepList.Count - 1;
+
+        public void ReplayPathFindingSteps(IReadOnlyList<Cell> cells, bool smoothPath)
         {            
             if (PathFinder.StepList == null || PathFinder.StepList.Count == 0)
                 return; // Nothing to replay, did we forget to compute a path beforehand?
@@ -74,28 +79,69 @@ namespace Viewer
                 }
 
                 // Find the corresponding cell and apply the visualization
-                var cell = cells.First(c => c.X == step.Position.X && c.Y == step.Position.Y);
-                if (!Cell.UserCellStates.Contains(cell.CellState))
-                {
-                    cell.CellState = cellState;
-                }
+                var cell = GetCell(cells, step.Position.X, step.Position.Y);
+                MarkNonUserCell(cell, cellState);
 
                 // Update the latest path, if available
                 if (step.Path.Count > 0)
                 {
                     path = step.Path;
-                }
+                }                
             }
 
             // Visualize the latest path, don't override the currently active cell
             foreach (var p in path)
             {
-                var cell = cells.First(c => c.X == p.X && c.Y == p.Y);
+                var cell = GetCell(cells, p.X, p.Y);
                 if (!Cell.UserCellStates.Contains(cell.CellState) &&
-                    cell.CellState != CellState.Current)
+                    cell.CellState != CellState.Current &&
+                    cell.CellState != CellState.Replaced)
                 {
                     cell.CellState = CellState.OnPath;
                 }
+            }
+
+            if (smoothPath)
+            {
+                ReplaySmoothSteps(cells);
+            }
+        }        
+
+        private void ReplaySmoothSteps(IReadOnlyList<Cell> cells)
+        {      
+            // See how far we should compute the path smoothing steps
+            var max = Math.Min(PathSmoother.SwapList.Count - 1, this.CurrentStep - PathFinder.StepList.Count);
+            for (var i = 0; i <= max; i++)
+            {
+                var step = PathSmoother.SwapList[i];
+                var original = GetCell(cells, step.Original.X, step.Original.Y);
+                var replacement = GetCell(cells, step.Replacement.X, step.Replacement.Y);
+                
+                // Mark where the path was changed due to smoothing
+                if (step.SwapType == SwapType.Swap)
+                {
+                    MarkNonUserCell(original, CellState.Replaced);
+                    MarkNonUserCell(replacement, CellState.OnPath);
+                }
+            }           
+
+            // Mark the last element in the path considered for smoothing, without overriding previous work
+            var current = PathSmoother.SwapList.Take(max).LastOrDefault(x => x.SwapType == SwapType.Current);
+            if (current != null)
+            {
+                var cell = GetCell(cells, current.Original.X, current.Original.Y);
+                MarkNonUserCell(cell, CellState.Current);
+            }            
+        }
+
+        private static Cell GetCell(IEnumerable<Cell> cells, int x, int y)
+            => cells.First(c => c.X == x && c.Y == y);
+
+        private static void MarkNonUserCell(Cell cell, CellState cellState)
+        {
+            if (!Cell.UserCellStates.Contains(cell.CellState))
+            {
+                cell.CellState = cellState;
             }
         }
     }
