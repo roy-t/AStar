@@ -50,6 +50,7 @@ namespace Viewer
                     case CellState.Open:
                     case CellState.Closed:
                     case CellState.OnPath:
+                    case CellState.Replaced:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

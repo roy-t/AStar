@@ -110,6 +110,33 @@ namespace RoyT.AStar
             => GetPath(start, end, MovementPatterns.Full);
 
         /// <summary>
+        /// Computes the lowest-cost path and applies the string pulling smoothing algorithm for an agent that can
+        /// move both diagonal and lateral
+        /// </summary>
+        /// <param name="start">The start position</param>
+        /// <param name="end">The end position</param>        
+        /// <param name="maxSmoothDistance">Maximum distance the string pulling algorithm considers, higher values consider larger distance when smoothing but take longer to compute</param>
+        /// <returns>positions of cells, from start to end, on the shortest path from start to end</returns>
+        public Position[] GetSmoothPath(Position start, Position end, int maxSmoothDistance = 10)
+            => GetSmoothPath(start, end, MovementPatterns.Full, maxSmoothDistance);
+
+
+        /// <summary>
+        /// Computes the lowest-cost path and applies the string pulling smoothing algorithm
+        /// </summary>
+        /// <param name="start">The start position</param>
+        /// <param name="end">The end position</param>
+        /// <param name="movementPattern">The movement pattern of the agent, see <see cref="MovementPatterns"/> for several built-in options </param>
+        /// <param name="maxSmoothDistance">Maximum distance the string pulling algorithm considers, higher values consider larger distance when smoothing but take longer to compute</param>
+        /// <returns>positions of cells, from start to end, on the shortest path from start to end</returns>
+        public Position[] GetSmoothPath(Position start, Position end, Offset[] movementPattern, int maxSmoothDistance = 10)
+        {
+            var path = GetPath(start, end, movementPattern);
+            PathSmoother.SmoothPath(this, path, movementPattern, maxSmoothDistance);
+            return path;
+        }            
+
+        /// <summary>
         /// Computes the lowest-cost path from start to end inside the grid for an agent with a custom
         /// movement pattern
         /// </summary>
