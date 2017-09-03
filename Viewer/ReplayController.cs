@@ -13,31 +13,36 @@ namespace Viewer
     {        
         public int CurrentStep { get; set; }
 
-        public void Start(IReadOnlyList<Cell> cells)
+        public void Start(IReadOnlyList<Cell> cells, bool smoothPath)
         {
             this.CurrentStep = 0;
-            ReplaySteps(cells);
+            ReplayPathFindingSteps(cells, smoothPath);
         }
 
-        public void End(IReadOnlyList<Cell> cells)
+        public void End(IReadOnlyList<Cell> cells, bool smoothPath)
         {
-            this.CurrentStep = PathFinder.StepList.Count;
-            ReplaySteps(cells);
+            this.CurrentStep = GetMaxStep(smoothPath);
+            ReplayPathFindingSteps(cells, smoothPath);
         }
 
-        public void Forward(IReadOnlyList<Cell> cells)
+        public void Forward(IReadOnlyList<Cell> cells, bool smoothPath)
         {
-            this.CurrentStep = Math.Min(this.CurrentStep + 1, PathFinder.StepList.Count - 1);
-            ReplaySteps(cells);
+            this.CurrentStep = Math.Min(this.CurrentStep + 1, GetMaxStep(smoothPath));
+            ReplayPathFindingSteps(cells, smoothPath);
         }
 
-        public void Backward(IReadOnlyList<Cell> cells)
+        public void Backward(IReadOnlyList<Cell> cells, bool smoothPath)
         {
             this.CurrentStep = Math.Max(this.CurrentStep - 1, 0);
-            ReplaySteps(cells);
+            ReplayPathFindingSteps(cells, smoothPath);
         }
 
-        public void ReplaySteps(IReadOnlyList<Cell> cells)
+        public static int GetMaxStep(bool smoothStep)
+            => smoothStep
+                ? PathFinder.StepList.Count + PathSmoother.SwapList.Count - 1
+                : PathFinder.StepList.Count - 1;
+
+        public void ReplayPathFindingSteps(IReadOnlyList<Cell> cells, bool smoothPath)
         {            
             if (PathFinder.StepList == null || PathFinder.StepList.Count == 0)
                 return; // Nothing to replay, did we forget to compute a path beforehand?
@@ -85,6 +90,11 @@ namespace Viewer
                 {
                     path = step.Path;
                 }
+
+                if (smoothPath)
+                {
+                    ReplaySmoothSteps(cells);
+                }
             }
 
             // Visualize the latest path, don't override the currently active cell
@@ -92,10 +102,33 @@ namespace Viewer
             {
                 var cell = cells.First(c => c.X == p.X && c.Y == p.Y);
                 if (!Cell.UserCellStates.Contains(cell.CellState) &&
-                    cell.CellState != CellState.Current)
+                    cell.CellState != CellState.Current &&
+                    cell.CellState != CellState.Replaced)
                 {
                     cell.CellState = CellState.OnPath;
                 }
+            }
+        }        
+
+        private void ReplaySmoothSteps(IReadOnlyList<Cell> cells)
+        {
+            var max = Math.Min(PathSmoother.SwapList.Count - 1, this.CurrentStep - PathFinder.StepList.Count);
+            for (var i = 0; i <= max; i++)
+            {
+                var step = PathSmoother.SwapList[i];
+                var original = cells.First(c => c.X == step.Original.X && c.Y == step.Original.Y);
+                var replacement = cells.First(c => c.X == step.Replacement.X && c.Y == step.Replacement.Y);
+
+                MarkNonUserCell(original, CellState.Replaced);
+                MarkNonUserCell(replacement, CellState.OnPath);                
+            }
+        }
+
+        private static void MarkNonUserCell(Cell cell, CellState cellState)
+        {
+            if (!Cell.UserCellStates.Contains(cell.CellState))
+            {
+                cell.CellState = cellState;
             }
         }
     }

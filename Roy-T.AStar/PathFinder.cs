@@ -8,11 +8,11 @@ namespace RoyT.AStar
     /// <summary>
     /// Computes a path in a grid according to the A* algorithm
     /// </summary>
-    internal static  partial class PathFinder
+    internal static partial class PathFinder
     {
         public static SearchNode FindPath(Grid grid, Position start, Position end, Offset[] movementPattern)
-        { 
-            ClearStepList();
+        {            
+            ClearStepList();            
 
             var head = new SearchNode(start);
             var open = new MinHeap();

@@ -106,7 +106,7 @@ namespace RoyT.AStar
         /// <param name="start">The start position</param>
         /// <param name="end">The end position</param>        
         /// <returns>positions of cells, from start to end, on the shortest path from start to end</returns>
-        public IReadOnlyList<Position> GetPath(Position start, Position end)
+        public Position[] GetPath(Position start, Position end)
             => GetPath(start, end, MovementPatterns.Full);
 
         /// <summary>
@@ -117,10 +117,9 @@ namespace RoyT.AStar
         /// <param name="end">The end position</param>
         /// <param name="movementPattern">The movement pattern of the agent, <see cref="MovementPatterns"/> for several built-in options</param>
         /// <returns>positions of cells, from start to end, on the shortest path from start to end</returns>
-        public IReadOnlyList<Position> GetPath(Position start, Position end, Offset[] movementPattern)
+        public Position[] GetPath(Position start, Position end, Offset[] movementPattern)
         {
-            var current = PathFinder.FindPath(this, start, end, movementPattern);
-            current = PathSmoother.SmoothPath(this, current);
+            var current = PathFinder.FindPath(this, start, end, movementPattern);            
 
             // The Pathfinder returns the SearchNode that found the end. If we want
             // to list positions from start to end we need reverse the traversal.
@@ -132,7 +131,7 @@ namespace RoyT.AStar
                 current = current.Next;
             }
 
-            return steps.ToArray();            
+            return steps.ToArray();                        
         }
 
         /// <summary>

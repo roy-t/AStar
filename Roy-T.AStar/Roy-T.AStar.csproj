@@ -21,4 +21,8 @@
     <DocumentationFile>bin\Release\netstandard1.0\RoyT.AStar.xml</DocumentationFile>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="PathSmoother.Debug.cs" />
+  </ItemGroup>
+
 </Project>

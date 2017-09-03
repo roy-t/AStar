@@ -32,6 +32,8 @@ namespace Viewer
                         return Brushes.Gray;
                     case CellState.OnPath:
                         return Brushes.DeepSkyBlue;
+                    case CellState.Replaced:
+                        return Brushes.Aquamarine;
                 }
             }
 
