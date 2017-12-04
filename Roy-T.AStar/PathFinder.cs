@@ -70,14 +70,15 @@ namespace RoyT.AStar
         /// </summary>        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static float ChebyshevDistance(Position p0, Position p1)
-        {
-            const float D = 1;
-            const float D2 = 1;
-
+        {            
             var dx = Math.Abs(p0.X - p1.X);
-            var dy = Math.Abs(p0.Y - p1.Y);            
+            var dy = Math.Abs(p0.Y - p1.Y);
 
-            return D * (dx + dy) + (D2 - 2 * D) * Math.Min(dx, dy);
+            // The actual formula is:
+            // D * (dx + dy) + (D2 - 2 * D) * Math.Min(dx, dy);
+            // But with D and D2 both one it can be simplified to:
+            return Math.Max(dx, dy);
+            // Thanks to Luiz Neto for the tip!
         }
     }
 }

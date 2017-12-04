@@ -126,7 +126,7 @@ namespace Viewer
             }           
 
             // Mark the last element in the path considered for smoothing, without overriding previous work
-            var current = PathSmoother.SwapList.Take(max).LastOrDefault(x => x.SwapType == SwapType.Current);
+            var current = PathSmoother.SwapList.Take(max + 1).LastOrDefault(x => x.SwapType == SwapType.Current);
             if (current != null)
             {
                 var cell = GetCell(cells, current.Original.X, current.Original.Y);
