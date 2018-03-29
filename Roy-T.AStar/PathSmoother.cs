@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RoyT.AStar
@@ -19,48 +21,132 @@ namespace RoyT.AStar
         {
             ClearSwapList();
 
-            // The tail of the string slowly moves forward
-            for (var tail = 0; tail < path.Length - 2; tail++)
+            for (var stringLength = 1; stringLength < maxSmoothDistance; stringLength++)
             {
-                // While the head of the string moves from its max length (or the end of the path
-                // towards the tail
-                for (var head = Math.Min(path.Length - 1, tail + maxSmoothDistance); head > tail + 1; head--)
+                for (var position = 0; (position + stringLength + 1) < path.Length; position++)
                 {
-                    // Meanwhile a path segment between the head and tail is adjusted to
-                    // fit on a straight line between the head and the tail, if possible.
-                    var current = tail + 1;
+                    var head = path[position];
+                    var tail = path[position + stringLength + 1];
 
-                    MessageIterate(path[current], path[current]);
+                    var line = Line(head, tail);
+                    for (var i = 0; i < line.Count - 2; i++)
+                    {
+                        MessageIterate(path[position + i + 1], path[position + i + 1]);
 
-                    // Find if there is a cell on the straightest path between head and tail
-                    // using the movement pattern of the agent
-                    var direction = GetDirection(path[tail], path[head], movementPattern);
-                    if (!direction.HasValue)
-                        continue;
+                        var before = path[position + i];
+                        var original = path[position + i + 1];
+                        var after = path[position + i + 2];
 
-                    var originalPosition = path[current];
-                    var candidatePosition = path[current - 1] + direction.Value;
+                        var candidate = line[i + 1];
 
-                    // If the best candidate is what we've already got, we can't improve
-                    if (originalPosition == candidatePosition)
-                        continue;
+                        if(original == candidate)
+                            continue;
 
-                    // If the candidate would disconnect our path we can't improve
-                    if (!Connected(candidatePosition, path[current + 1], movementPattern))
-                        continue;
+                        var originalCost = grid.GetCellCostUnchecked(original);
+                        var candidateCost = grid.GetCellCostUnchecked(candidate);                        
+                        if (candidateCost > originalCost)
+                            continue;
 
-                    var originalCost = grid.GetCellCostUnchecked(originalPosition);
-                    var candidateCost = grid.GetCellCostUnchecked(candidatePosition);
+                        if (!Connected(before, candidate, movementPattern) ||
+                            !Connected(candidate, after, movementPattern))
+                            continue;
 
-                    // If the candidate is more costly than our original we can't improve
-                    if (candidateCost > originalCost)
-                        continue;
+                        path[position + i + 1] = candidate;
 
-                    path[current] = candidatePosition;
-
-                    MessageSwap(originalPosition, candidatePosition);
+                        MessageSwap(original, candidate);
+                    }
                 }
             }
+
+
+
+            //// The tail of the string slowly moves forward
+            //for (var tail = 0; tail < path.Length - 2; tail++)
+            //{
+            //    // While the head of the string moves from its max length (or the end of the path
+            //    // towards the tail
+            //    for (var head = Math.Min(path.Length - 1, tail + maxSmoothDistance); head > tail + 1; head--)
+            //    {
+            //        // Meanwhile a path segment between the head and tail is adjusted to
+            //        // fit on a straight line between the head and the tail, if possible.
+            //        var current = tail + 1;
+
+            //        MessageIterate(path[current], path[current]);
+
+            //        // Find if there is a cell on the straightest path between head and tail
+            //        // using the movement pattern of the agent
+            //        var direction = GetDirection(path[tail], path[head], movementPattern);
+            //        if (!direction.HasValue)
+            //            continue;
+
+            //        var originalPosition = path[current];
+            //        var candidatePosition = path[current - 1] + direction.Value;
+
+            //        // If the best candidate is what we've already got, we can't improve
+            //        if (originalPosition == candidatePosition)
+            //            continue;
+
+            //        // If the candidate would disconnect our path we can't improve
+            //        if (!Connected(candidatePosition, path[current + 1], movementPattern))
+            //            continue;
+
+            //        var originalCost = grid.GetCellCostUnchecked(originalPosition);
+            //        var candidateCost = grid.GetCellCostUnchecked(candidatePosition);
+
+            //        // If the candidate is more costly than our original we can't improve
+            //        if (candidateCost > originalCost)
+            //            continue;
+
+            //        path[current] = candidatePosition;
+
+            //        MessageSwap(originalPosition, candidatePosition);
+            //    }
+            //}
+        }
+
+
+        public static List<Position> Line(Position start, Position end)
+        {
+            int x = start.X;
+            int y = start.Y;
+            int x2 = end.X;
+            int y2 = end.Y;            
+            var positions = new List<Position>();
+
+            int w = x2 - x;
+            int h = y2 - y;
+            int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
+            if (w < 0) dx1 = -1; else if (w > 0) dx1 = 1;
+            if (h < 0) dy1 = -1; else if (h > 0) dy1 = 1;
+            if (w < 0) dx2 = -1; else if (w > 0) dx2 = 1;
+            int longest = Math.Abs(w);
+            int shortest = Math.Abs(h);
+            if (!(longest > shortest))
+            {
+                longest = Math.Abs(h);
+                shortest = Math.Abs(w);
+                if (h < 0) dy2 = -1; else if (h > 0) dy2 = 1;
+                dx2 = 0;
+            }
+            int numerator = longest >> 1;
+            for (int i = 0; i <= longest; i++)
+            {
+                positions.Add(new Position(x, y));                
+                numerator += shortest;
+                if (!(numerator < longest))
+                {
+                    numerator -= longest;
+                    x += dx1;
+                    y += dy1;
+                }
+                else
+                {
+                    x += dx2;
+                    y += dy2;
+                }
+            }
+
+            return positions;
         }
 
         /// <summary>
