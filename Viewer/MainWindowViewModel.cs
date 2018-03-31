@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using ReactiveUI;
-using RoyT.AStar;
 
 namespace Viewer
 {
@@ -15,8 +14,7 @@ namespace Viewer
     {
         private readonly PathController PathController;
         private readonly ReplayController ReplayController;
-        private List<Cell> cells;
-        private bool smoothPath;
+        private List<Cell> cells;        
 
         public MainWindowViewModel()
         {
@@ -26,28 +24,28 @@ namespace Viewer
             this.StartCommand = ReactiveCommand.Create(
                 () =>
                 {                                        
-                    this.ReplayController.Start(this.cells, this.smoothPath);
+                    this.ReplayController.Start(this.cells);
                     UpdatePathBindings();
                 });
 
             this.EndCommand = ReactiveCommand.Create(
                 () =>
                 {                                        
-                    this.ReplayController.End(this.cells, this.smoothPath);
+                    this.ReplayController.End(this.cells);
                     UpdatePathBindings();
                 });
 
             this.ForwardCommand = ReactiveCommand.Create(
                 () =>
                 {                                        
-                    this.ReplayController.Forward(this.cells, this.smoothPath);
+                    this.ReplayController.Forward(this.cells);
                     UpdatePathBindings();
                 });
 
             this.BackwardCommand = ReactiveCommand.Create(
                 () =>
                 {                                        
-                    this.ReplayController.Backward(this.cells, this.smoothPath);
+                    this.ReplayController.Backward(this.cells);
                     UpdatePathBindings();
                 });
 
@@ -106,18 +104,8 @@ namespace Viewer
         public ReactiveCommand SaveCommand { get; }
         public ReactiveCommand LoadCommand { get; }
         public ReactiveCommand ExitCommand { get; }
-
-        public bool SmoothPath
-        {
-            get => this.smoothPath;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref this.smoothPath, value);                
-                UpdatePath();
-            }
-        }
-
-        public int StepCount => ReplayController.GetMaxStep(this.smoothPath);
+       
+        public int StepCount => ReplayController.GetMaxStep();
 
         public int CurrentStep
         {
@@ -125,7 +113,8 @@ namespace Viewer
             set
             {
                 this.ReplayController.CurrentStep = value;
-                this.ReplayController.ReplayPathFindingSteps(this.Cells, this.smoothPath);
+                this.ReplayController.ReplayPathFindingSteps(this.Cells);
+                UpdatePathBindings();
             }
         }
 
@@ -173,8 +162,8 @@ namespace Viewer
 
         private void UpdatePath()
         {
-            this.PathController.ComputePath(this.Cells, this.smoothPath);
-            this.ReplayController.End(this.Cells, this.smoothPath);
+            this.PathController.ComputePath(this.Cells);
+            this.ReplayController.End(this.Cells);
             UpdatePathBindings();
         }
 

@@ -79,8 +79,6 @@ namespace Viewer
         Current,
         Open,
         Closed,
-        OnPath,
-
-        Replaced
+        OnPath        
     }
 }

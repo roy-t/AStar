@@ -10,10 +10,30 @@ namespace RoyT.AStar
     /// </summary>
     public struct Offset : IEquatable<Offset>
     {
+        private const float DiagonalCost = 1.4142135623730950488016887242097f; // sqrt(2)
+        private const float LateralCost = 1.0f;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="x">x-movement offset</param>
+        /// <param name="y">y-movement offset</param>
         public Offset(int x, int y)
         {
+            if (x < -1 || x > 1)
+                throw new ArgumentOutOfRangeException(nameof(x), $"Parameter {nameof(x)} cannot have a magnitude larger than one");
+
+            if (y < -1 || y > 1)
+                throw new ArgumentOutOfRangeException(nameof(y), $"Parameter {nameof(y)} cannot have a magnitude larger than one");
+
+            if (x == 0 && y == 0)
+                throw new ArgumentException(nameof(y), $"Paramters {nameof(x)} and {nameof(y)} cannot both be zero");
+
             this.X = x;
             this.Y = y;
+
+            // Penalize diagonal movement
+            this.Cost = (x != 0 && y != 0) ? DiagonalCost : LateralCost;                                   
         }
 
         /// <summary>
@@ -26,8 +46,13 @@ namespace RoyT.AStar
         /// </summary>
         public int Y { get; }
 
-        public override string ToString() => $"Offset: ({this.X}, {this.Y})";
+        /// <summary>
+        /// Relative cost of adding this offset to a position, either 1 for lateral movement, or sqrt(2) for diagonal movement
+        /// </summary>
+        public float Cost { get; }
 
+        public override string ToString() => $"Offset: ({this.X}, {this.Y})";
+        
         public bool Equals(Offset other)
         {
             return this.X == other.X && this.Y == other.Y;
@@ -49,17 +74,7 @@ namespace RoyT.AStar
         public static bool operator !=(Offset a, Offset b)
         {
             return !a.Equals(b);
-        }
-
-        public static Offset operator +(Offset a, Offset b)
-        {
-            return new Offset(a.X + b.X, a.Y + b.Y);
-        }
-
-        public static Offset operator -(Offset a, Offset b)
-        {
-            return new Offset(a.X - b.X, a.Y - b.Y);
-        }
+        }      
 
         public static Position operator +(Offset a, Position b)
         {

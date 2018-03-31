@@ -96,7 +96,7 @@ namespace RoyT.AStar
         /// <returns>The cost</returns>
         internal float GetCellCostUnchecked(Position position)
         {
-            return this.Weights[this.DimX * position.Y + position.X];
+            return this.Weights[GetIndexUnchecked(position.X, position.Y)];
         }
 
         /// <summary>
@@ -107,34 +107,7 @@ namespace RoyT.AStar
         /// <param name="end">The end position</param>        
         /// <returns>positions of cells, from start to end, on the shortest path from start to end</returns>
         public Position[] GetPath(Position start, Position end)
-            => GetPath(start, end, MovementPatterns.Full);
-
-        /// <summary>
-        /// Computes the lowest-cost path and applies the string pulling smoothing algorithm for an agent that can
-        /// move both diagonal and lateral
-        /// </summary>
-        /// <param name="start">The start position</param>
-        /// <param name="end">The end position</param>        
-        /// <param name="maxSmoothDistance">Maximum distance the string pulling algorithm considers, higher values consider larger distance when smoothing but take longer to compute</param>
-        /// <returns>positions of cells, from start to end, on the shortest path from start to end</returns>
-        public Position[] GetSmoothPath(Position start, Position end, int maxSmoothDistance = 10)
-            => GetSmoothPath(start, end, MovementPatterns.Full, maxSmoothDistance);
-
-
-        /// <summary>
-        /// Computes the lowest-cost path and applies the string pulling smoothing algorithm
-        /// </summary>
-        /// <param name="start">The start position</param>
-        /// <param name="end">The end position</param>
-        /// <param name="movementPattern">The movement pattern of the agent, see <see cref="MovementPatterns"/> for several built-in options </param>
-        /// <param name="maxSmoothDistance">Maximum distance the string pulling algorithm considers, higher values consider larger distance when smoothing but take longer to compute</param>
-        /// <returns>positions of cells, from start to end, on the shortest path from start to end</returns>
-        public Position[] GetSmoothPath(Position start, Position end, Offset[] movementPattern, int maxSmoothDistance = 10)
-        {
-            var path = GetPath(start, end, movementPattern);
-            PathSmoother.SmoothPath(this, path, movementPattern, maxSmoothDistance);
-            return path;
-        }            
+            => GetPath(start, end, MovementPatterns.Full);       
 
         /// <summary>
         /// Computes the lowest-cost path from start to end inside the grid for an agent with a custom
@@ -148,15 +121,14 @@ namespace RoyT.AStar
         {
             var current = PathFinder.FindPath(this, start, end, movementPattern);            
 
-            // The Pathfinder returns the SearchNode that found the end. If we want
+            // The Pathfinder returns the positions that found the end. If we want
             // to list positions from start to end we need reverse the traversal.
             var steps = new Stack<Position>();
 
-            while (current != null)
+            foreach (var step in current)
             {
-                steps.Push(current.Position);
-                current = current.Next;
-            }
+                steps.Push(step);
+            }            
 
             return steps.ToArray();                        
         }
@@ -186,7 +158,6 @@ namespace RoyT.AStar
         /// </summary>        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal int GetIndexUnchecked(int x, int y) => this.DimX * y + x;
-
     }    
 }
 

@@ -13,7 +13,7 @@ There is also a documented [version history](versions.md).
 
 ## Why choose this library?
 - Its very fast
-- It generates lowest cost, visually appealing, paths by combining A* with string pulling
+- It generates lowest cost, visually appealing, paths using the A* algorithm
 - Its flexible, you can define how your agent moves and this library will accomodate these restrictions
 - Its easy to use, you can generate a path with two lines of code
 - It has zero (0) external dependencies
@@ -56,18 +56,6 @@ var path = grid.GetPath(new Position(0, 0), new Position(99, 99), movementPatter
 
 ```
 
-Paths might contain steps that look unnecessary but do not add to the costs (for example a zig zag pattern where a straight line would suffice). 
-You can smooth these out, without affecting the cost of the path.
-
-```csharp
-// you can smooth/straighten a path using the PathSmoother class.
-// This does not change the path's cost
-PathSmoother.SmoothPath(grid, path, movementPattern, 10);
-
-// Or get a smoothed path directly using
-var path2 = grid.GetSmoothPath(new Position(0, 0), new Position(99, 99), movementPattern);
-```
-
 ### Usage in text
 Your agent might be able to move fluently through a world with hills and water but that representation is too complex for the A* algorithm. 
 So the first thing you need to do is to is to create an abstract representation of your world that is simple enough for the path finding algorithm to understand.
@@ -82,7 +70,7 @@ will give you more fine grained control but it will also make the path finding a
 Once you have a grid you need to configure which cells represent obstacles. Some obstacles, like a high wall, are intraversable. Use the `BlockCell` method on your grid to prevent the path finding algorithm from planning paths through that cell.
 Other obstacles, like dense shrubbery, take more time to traverse. In that case give the cell a higher cost using the `SetCellCost` method.
 
-Once you've configured your grid its time to start planning paths. Using the `GetPath` or `GetSmoothPath` method you can immidately search for a path between two cells for an agent that can move in all directions. 
+Once you've configured your grid its time to start planning paths. Using the `GetPath` method you can immidately search for a path between two cells for an agent that can move in all directions. 
 You can also plan paths for agents that are more limited in their movent using the overload of `GetPath` that takes a `movementPattern` parameter. In that case you can either select one of the predefined ranges of motion from the `MovementPatterns` class or you can configure yourself what kind of steps an agent can make.
 
 You can define your own patterns for your agents. Below I have defined the movement pattern for an agent that can only move diagonally. (This movement pattern is included in the library as `MovementPatterns.DiagonalOnly`).
@@ -92,36 +80,6 @@ var diagonalOnlyMovementPattern = new[] {
     new Offset(-1, -1), new Offset(1, -1), , new Offset(1, 1), , new Offset(-1, 1)
 };
 ```
-
-
-## Path Smoothing
-Since moving diagonal has the same cost as moving horizontal/vertical the path finding algorithm might computed paths that contain an unnecessary zig-zag pattern:
-
-![Path](unsmooth_path.png?raw=true "Unsmoothed path")
-
-This library includes a string pulling algorithm for straightening the paths so they are more visually appealing:
-
-![Smoothed path](smooth_path.png?raw=true "Smoothed path")
-
-This never affects the costs of the path! The path smoothing algorithm simply transforms the current path in an equal cost, nicer looking, path.
-
-You can get a smooth path directly using 
-
-```csharp
-var maxDistance = 10;
-var path = grid.GetSmootPath(new Position(0, 0), new Position(9,9), maxDistance);
-```
-
-Or you can smooth a path after you've created it using
-```csharp
-var maxDistance = 10;
-PathSmoother.SmoothPath(grid, path, movementPatterns.Full, maxDistance);
-```
-
-In both cases you can use the `maxDistance` parameter to tweak how local, or global, the string pulling effect is. A small value will only affect the path locally. 
-A large value will look ahead further and will try to smooth the path on both a local and global level. This is of course more expensive.
-
-
 
 
 ## Viewer
@@ -143,32 +101,11 @@ Each cell is color coded
 - Orange: a cell that still needs to be processed, *is open*
 - Purple: the cell that is currently being processed
 - Blue: a cell on, what currently is believed to be, the shortest path
-- Aquamarine: a cell that was on the best path but was replaced by a better candidated by the path smoothing algorithm
-
 
 
 ## Implementation details
 While making this library I was mostly concerned with performance (how long does it take to find a path) and ease of use.
 I use a custom `MinHeap` data structure to keep track of the best candidates for the shortest path. I've experimented with other data structures, like the standard `SortedSet` but they were consistently slower. 
-Other small tricks I've used is using a `bool[]` to keep track of checked cells and using a good heuristic for grids (Chebyshev distance).
-
-Making paths more visually appealing is done by applying a string pulling algorithm to the finished path, instead of tweaking the heuristic (which would affect the speed and correctness of the A* algorithm).
+Inside the A\* algorithm itself I use flat arrays to store the path and cost information. I use the Manhattan distance heuristic because its cheap to compute and is an admissible heuristic for all predefined movement patterns.
 
 While micro-optimizing the code I've used the handy [BenchMark.Net](https://github.com/dotnet/BenchmarkDotNet) library to see if my changes had any effect. The benchmark suite is included in the source code here. So if you would like to try to make this implemention faster you can use the same benchmark and performance metrics I did.
-
-For version 1.2 I got the following numbers for a 100x100 grid (10000 cells) filled with a gradient. I'm planning to add more representative samples. Please send in any suggestions :).
-
-
-``` ini
-BenchmarkDotNet=v0.10.8, OS=Windows 10 Redstone 2 (10.0.15063)
-Processor=Intel Core i5-4690 CPU 3.50GHz (Haswell), ProcessorCount=4
-Frequency=3415988 Hz, Resolution=292.7411 ns, Timer=TSC
-dotnet cli version=1.0.4
-  [Host]     : .NET Core 4.6.25211.01, 64bit RyuJIT
-  DefaultJob : .NET Core 4.6.25211.01, 64bit RyuJIT
-```
-
- |            Method |     Mean |     Error |    StdDev |
- |------------------ |---------:|----------:|----------:|
- Gradient100X100 | 5.034 ms | 0.0629 ms | 0.0589 ms |           
-

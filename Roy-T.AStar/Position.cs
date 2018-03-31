@@ -7,6 +7,11 @@ namespace RoyT.AStar
     /// </summary>
     public struct Position : IEquatable<Position>
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="x">the x-position</param>
+        /// <param name="y">the y-position</param>
         public Position(int x, int y)
         {
             this.X = x;

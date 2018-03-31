@@ -31,13 +31,11 @@ namespace Viewer
                     case CellState.Closed:
                         return Brushes.Gray;
                     case CellState.OnPath:
-                        return Brushes.DeepSkyBlue;
-                    case CellState.Replaced:
-                        return Brushes.Aquamarine;
+                        return Brushes.DeepSkyBlue;                    
                 }
             }
 
-            return Brushes.CornflowerBlue;
+            return Brushes.Red;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

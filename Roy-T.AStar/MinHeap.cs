@@ -5,7 +5,7 @@
     /// </summary>
     internal sealed class MinHeap
     {
-        private SearchNode head;      
+        private MinHeapNode head;      
 
         /// <summary>
         /// If the heap has a next element
@@ -15,49 +15,39 @@
         /// <summary>
         /// Pushes a node onto the heap        
         /// </summary>
-        public void Push(SearchNode node)
+        public void Push(MinHeapNode node)
         {
-
             // If the heap is empty, just add the item to the top
             if (this.head == null)
             {
                 this.head = node;
-            }
+            }                        
             else if (node.ExpectedCost < this.head.ExpectedCost)
             {
-                node.NextListElement = this.head;
+                node.Next = this.head;
                 this.head = node;
-            }
-            // In case of ambiguity put the node with the heighest cost so far up front
-            // this will make sure that if there are two equally distance path we first 
-            // explore one before exploring the other
-            else if (node.ExpectedCost == this.head.ExpectedCost &&
-                     node.CostSoFar > this.head.CostSoFar)
-            {
-                node.NextListElement = this.head;
-                this.head = node;
-            }
+            }         
             else
             {
                 var current = this.head;
-                while (current.NextListElement != null && current.NextListElement.ExpectedCost <= node.ExpectedCost)
+                while (current.Next != null && current.Next.ExpectedCost <= node.ExpectedCost)
                 {
-                    current = current.NextListElement;
+                    current = current.Next;
                 }
 
-                node.NextListElement = current.NextListElement;
-                current.NextListElement = node;
+                node.Next = current.Next;
+                current.Next = node;
             }
         }
 
         /// <summary>
         /// Pops a node from the heap, this node is always the node
-        /// with the cheapest path cost
+        /// with the cheapest expected path cost
         /// </summary>
-        public SearchNode Pop()
+        public MinHeapNode Pop()
         {
             var top = this.head;
-            this.head = this.head.NextListElement;
+            this.head = this.head.Next;
 
             return top;
         }

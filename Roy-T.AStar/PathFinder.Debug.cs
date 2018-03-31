@@ -12,16 +12,8 @@ namespace RoyT.AStar
         internal static List<Step> StepList { get; } = new List<Step>(0);
 
         [Conditional("DEBUG")]
-        private static void MessageCurrent(SearchNode node)
-        {
-            var path = new List<Position>();
-            var current = node;
-            do
-            {
-                path.Add(current.Position);
-                current = current.Next;
-            } while (current != null);
-
+        private static void MessageCurrent(MinHeapNode node, IReadOnlyList<Position> path)
+        {                        
             StepList.Add(new Step(StepType.Current, node.Position, path));
         }            
 
@@ -36,6 +28,29 @@ namespace RoyT.AStar
         [Conditional("DEBUG")]
         private static void ClearStepList()
             => StepList.Clear();
+        
+        private static List<Position> PartiallyReconstructPath(Grid grid, Position start, Position end, Position[] cameFrom)
+        {
+            var path = new List<Position> { end };
+
+#if DEBUG          
+            var current = end;
+            do
+            {
+                var previous = cameFrom[grid.GetIndexUnchecked(current.X, current.Y)];
+
+                // If the path is invalid, probably becase we've not closed
+                // a node yet, return an empty list
+                if (current == previous)
+                    return new List<Position>();
+
+                current = previous;
+                path.Add(current);
+            } while (current != start);
+
+#endif
+            return path;
+        }
     }
 
     internal class Step

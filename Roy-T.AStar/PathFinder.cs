@@ -10,42 +10,61 @@ namespace RoyT.AStar
     /// </summary>
     internal static partial class PathFinder
     {
-        public static SearchNode FindPath(Grid grid, Position start, Position end, Offset[] movementPattern)
+        public static List<Position> FindPath(Grid grid, Position start, Position end, Offset[] movementPattern)
         {            
-            ClearStepList();            
-
-            var head = new SearchNode(start);
-            var open = new MinHeap();
+            ClearStepList();
+           
+            var head = new MinHeapNode(start, ManhattanDistance(start, end));
+            var open = new MinHeap();            
             open.Push(head);
 
-            var marked = new bool[grid.DimX * grid.DimY];
+            var costSoFar = new float[grid.DimX * grid.DimY];
+            var cameFrom = new Position[grid.DimX * grid.DimY];            
 
             while (open.HasNext())
             {
+                // Get the best candidate
                 var current = open.Pop();
-                MessageCurrent(current);
+                MessageCurrent(current, PartiallyReconstructPath(grid, start, current.Position, cameFrom));
 
                 if (current.Position == end)
                 {
-                    return current;
-                }                
-                
-                foreach (var p in GetNeighbours(current.Position, grid.DimX, grid.DimY, movementPattern))
-                {
-                    var index = grid.GetIndexUnchecked(p.X, p.Y);
+                    return ReconstructPath(grid, start, end, cameFrom);
+                }
 
-                    // Use the unchecked variant here since GetNeighbours already filters out positions that are out of bounds
-                    var cellCost = grid.GetCellCostUnchecked(p);
-                    if (!marked[index] && !float.IsInfinity(cellCost))
-                    {
-                        marked[index] = true;
-                        MessageOpen(p);
-                                                
-                        var costSoFar    = current.CostSoFar + cellCost;                        
-                        var expectedCost = costSoFar + ChebyshevDistance(p, end);
+                // Get the cost associated with getting to the current position
+                var initialCost = costSoFar[grid.GetIndexUnchecked(current.Position.X, current.Position.Y)];
 
-                        open.Push(new SearchNode(p, expectedCost, costSoFar) {Next = current});
-                    }
+                // Get all directions we can move to according to the movement pattern and the dimensions of the grid
+                foreach (var option in GetMovementOptions(current.Position, grid.DimX, grid.DimY, movementPattern))
+                {                    
+                    var position = current.Position + option;                    
+                    var cellCost = grid.GetCellCostUnchecked(position);
+
+                    // Ignore this option if the cell is blocked
+                    if(float.IsInfinity(cellCost))
+                        continue;
+
+                    var index = grid.GetIndexUnchecked(position.X, position.Y);
+
+                    // Compute how much it would cost to get to the new position via this path
+                    var newCost = initialCost + cellCost * option.Cost;
+
+                    // Compare it with the best cost we have so far, 0 means we don't have any path that gets here yet
+                    var oldCost = costSoFar[index];
+                    if (!(oldCost <= 0) && !(newCost < oldCost))
+                        continue;
+
+                    // Update the best path and the cost if this path is cheaper
+                    costSoFar[index] = newCost;
+                    cameFrom[index] = current.Position;
+
+                    // Use the heuristic to compute how much it will probably cost 
+                    // to get from here to the end, and store the node in the open list
+                    var expectedCost = newCost + ManhattanDistance(position, end);                                        
+                    open.Push(new MinHeapNode(position, expectedCost));
+
+                    MessageOpen(position);
                 }
 
                 MessageClose(current.Position);
@@ -54,31 +73,41 @@ namespace RoyT.AStar
             return null;
         }
 
-        private static IEnumerable<Position> GetNeighbours(
+        private static List<Position> ReconstructPath(Grid grid, Position start, Position end, Position[] cameFrom)
+        {
+            var path = new List<Position> { end };
+            var current = end;
+            do
+            {
+                var previous = cameFrom[grid.GetIndexUnchecked(current.X, current.Y)];               
+                current = previous;
+                path.Add(current);
+            } while (current != start);
+
+            return path;
+        }        
+
+        private static IEnumerable<Offset> GetMovementOptions(
             Position position,
             int dimX,
             int dimY,
             IEnumerable<Offset> movementPattern)
         {
-            return movementPattern.Select(n => new Position(position.X + n.X, position.Y + n.Y))
-                                .Where(p => p.X >= 0 && p.X < dimX && p.Y >= 0 && p.Y < dimY);
-        }
+            return movementPattern.Where(
+                m =>
+                {
+                    var target = position + m;
+                    return target.X >= 0 && target.X < dimX && target.Y >= 0 && target.Y < dimY;
+                });            
+        }        
 
-        /// <summary>
-        /// Chebyshev distance heuristic, more admisible for traversing a grid than 
-        /// the euclidian distance.
-        /// </summary>        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static float ChebyshevDistance(Position p0, Position p1)
-        {            
+        private static float ManhattanDistance(Position p0, Position p1)
+        {
             var dx = Math.Abs(p0.X - p1.X);
             var dy = Math.Abs(p0.Y - p1.Y);
+            return dx + dy;
 
-            // The actual formula is:
-            // D * (dx + dy) + (D2 - 2 * D) * Math.Min(dx, dy);
-            // But with D and D2 both one it can be simplified to:
-            return Math.Max(dx, dy);
-            // Thanks to Luiz Neto for the tip!
         }
     }
 }
