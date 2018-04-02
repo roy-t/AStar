@@ -55,7 +55,7 @@ namespace Viewer
                         throw new ArgumentOutOfRangeException();
                 }
             }
-
+            
             var path = grid.GetPath(start, end);
             
             // Visualize the path in the cells, skip the start and end node, we already

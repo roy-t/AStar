@@ -13,13 +13,18 @@ namespace RoyT.AStar
         public static List<Position> FindPath(Grid grid, Position start, Position end, Offset[] movementPattern)
         {            
             ClearStepList();
+
+            if (start == end)
+            {
+                return new List<Position> {start};
+            }
            
             var head = new MinHeapNode(start, ManhattanDistance(start, end));
             var open = new MinHeap();            
             open.Push(head);
 
             var costSoFar = new float[grid.DimX * grid.DimY];
-            var cameFrom = new Position[grid.DimX * grid.DimY];            
+            var cameFrom = new Position[grid.DimX * grid.DimY];                       
 
             while (open.HasNext())
             {
