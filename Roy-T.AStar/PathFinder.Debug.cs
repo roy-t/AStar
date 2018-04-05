@@ -12,9 +12,9 @@ namespace RoyT.AStar
         internal static List<Step> StepList { get; } = new List<Step>(0);
 
         [Conditional("DEBUG")]
-        private static void MessageCurrent(MinHeapNode node, IReadOnlyList<Position> path)
+        private static void MessageCurrent(Position position, IReadOnlyList<Position> path)
         {                        
-            StepList.Add(new Step(StepType.Current, node.Position, path));
+            StepList.Add(new Step(StepType.Current, position, path));
         }            
 
         [Conditional("DEBUG")]

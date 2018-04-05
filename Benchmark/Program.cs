@@ -33,7 +33,18 @@ namespace Benchmark
         {
             this.GridWithSlope.GetPath(
                 new Position(0, 0),
-                new Position(this.GridWithSlope.DimX - 1, this.GridWithSlope.DimY - 1));
+                new Position(this.GridWithSlope.DimX - 1, this.GridWithSlope.DimY - 1),
+                MovementPatterns.Full);
+        }
+
+        [Benchmark]
+        public void Gradient100X100Limited()
+        {
+            this.GridWithSlope.GetPath(
+                new Position(0, 0),
+                new Position(this.GridWithSlope.DimX - 1, this.GridWithSlope.DimY - 1),
+                MovementPatterns.Full,
+                int.MaxValue);
         }
     }
 

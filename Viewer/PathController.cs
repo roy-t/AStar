@@ -11,7 +11,7 @@ namespace Viewer
     /// </summary>
     internal sealed class PathController
     {       
-        public void ComputePath(IReadOnlyList<Cell> cells)
+        public void ComputePath(IReadOnlyList<Cell> cells, int iterationLimit)
         {
             // Remove previous path visualization
             foreach (var cell in cells.Where(c => Cell.ReplayCellStates.Contains(c.CellState)))
@@ -56,7 +56,7 @@ namespace Viewer
                 }
             }
             
-            var path = grid.GetPath(start, end);
+            var path = grid.GetPath(start, end, MovementPatterns.Full, iterationLimit);
             
             // Visualize the path in the cells, skip the start and end node, we already
             // have those in the visualization

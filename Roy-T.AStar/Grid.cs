@@ -105,9 +105,9 @@ namespace RoyT.AStar
         /// </summary>
         /// <param name="start">The start position</param>
         /// <param name="end">The end position</param>        
-        /// <returns>positions of cells, from start to end, on the shortest path from start to end</returns>
+        /// <returns>Positions along the shortest path from start to end, or an empty array if no path could be found</returns>
         public Position[] GetPath(Position start, Position end)
-            => GetPath(start, end, MovementPatterns.Full);       
+            => GetPath(start, end, MovementPatterns.Full);
 
         /// <summary>
         /// Computes the lowest-cost path from start to end inside the grid for an agent with a custom
@@ -116,10 +116,45 @@ namespace RoyT.AStar
         /// <param name="start">The start position</param>
         /// <param name="end">The end position</param>
         /// <param name="movementPattern">The movement pattern of the agent, <see cref="MovementPatterns"/> for several built-in options</param>
-        /// <returns>positions of cells, from start to end, on the shortest path from start to end</returns>
+        /// <returns>Positions along the shortest path from start to end, or an empty array if no path could be found</returns>
         public Position[] GetPath(Position start, Position end, Offset[] movementPattern)
         {
-            var current = PathFinder.FindPath(this, start, end, movementPattern);            
+            var current = PathFinder.FindPath(this, start, end, movementPattern);
+
+            if (current == null)
+            {
+                return new Position[0];
+            }
+
+            // The Pathfinder returns the positions that found the end. If we want
+            // to list positions from start to end we need reverse the traversal.
+            var steps = new Stack<Position>();
+            
+            foreach (var step in current)
+            {
+                steps.Push(step);
+            }            
+
+            return steps.ToArray();                        
+        }
+
+        /// <summary>
+        /// Computes the lowest-cost path from start to end inside the grid for an agent with a custom
+        /// movement pattern. Instructs the path finder to give up if the path is not found after a number of iterations.
+        /// </summary>
+        /// <param name="start">The start position</param>
+        /// <param name="end">The end position</param>
+        /// <param name="movementPattern">The movement pattern of the agent, <see cref="MovementPatterns"/> for several built-in options</param>
+        /// <param name="iterationLimit">Maximum number of nodes to check before the path finder gives up</param>
+        /// <returns>Positions along the shortest path from start to end, or an empty array if no path could be found</returns>
+        public Position[] GetPath(Position start, Position end, Offset[] movementPattern, int iterationLimit)
+        {
+            var current = PathFinder.FindPath(this, start, end, movementPattern, iterationLimit);
+
+            if (current == null)
+            {
+                return new Position[0];
+            }
 
             // The Pathfinder returns the positions that found the end. If we want
             // to list positions from start to end we need reverse the traversal.
@@ -128,9 +163,9 @@ namespace RoyT.AStar
             foreach (var step in current)
             {
                 steps.Push(step);
-            }            
+            }
 
-            return steps.ToArray();                        
+            return steps.ToArray();
         }
 
         /// <summary>

@@ -48,7 +48,8 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             <UniformGrid Grid.Row="1" Columns="4" Rows="1" Margin="0 5 0 0" >
-                <TextBlock>Steps</TextBlock>
+                <TextBlock>Iteration limit</TextBlock>
+                <TextBox Text="{Binding IterationLimit, FallbackValue=9999, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" MinWidth="50" TextAlignment="Right"/>
             </UniformGrid>
             <StackPanel Grid.Row="2" >
                 <TextBlock Margin="0 2" Text="Replay is only available in Debug builds" Visibility="{Binding IsReleaseBuild, Converter={StaticResource BooleanToVisibilityConverter}}"/>

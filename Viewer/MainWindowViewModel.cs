@@ -12,14 +12,18 @@ namespace Viewer
     /// </summary>
     internal sealed class MainWindowViewModel : ReactiveObject
     {
+        private const int DefaultIterationLimit = 100;
+
         private readonly PathController PathController;
         private readonly ReplayController ReplayController;
-        private List<Cell> cells;        
+        private List<Cell> cells;
+        private int iterationLimit;
 
         public MainWindowViewModel()
         {
             this.PathController = new PathController();
-            this.ReplayController = new ReplayController();                     
+            this.ReplayController = new ReplayController();
+            this.iterationLimit = DefaultIterationLimit;
 
             this.StartCommand = ReactiveCommand.Create(
                 () =>
@@ -118,6 +122,22 @@ namespace Viewer
             }
         }
 
+        
+
+        public string IterationLimit
+        {
+            get => this.iterationLimit.ToString();
+            set
+            {
+                this.iterationLimit = int.TryParse(value, out int result) 
+                    ? result 
+                    : DefaultIterationLimit;
+
+                UpdatePath();
+            }
+        }
+
+
         public bool IsDebugBuild { get; }
         public bool IsReleaseBuild => !this.IsDebugBuild;
 
@@ -162,7 +182,7 @@ namespace Viewer
 
         private void UpdatePath()
         {
-            this.PathController.ComputePath(this.Cells);
+            this.PathController.ComputePath(this.Cells, this.iterationLimit);
             this.ReplayController.End(this.Cells);
             UpdatePathBindings();
         }
@@ -171,6 +191,7 @@ namespace Viewer
         {
             this.RaisePropertyChanged(nameof(this.StepCount));
             this.RaisePropertyChanged(nameof(this.CurrentStep));
+            this.RaisePropertyChanged(nameof(this.IterationLimit));
         }
 
         private void ClearState(CellState state)

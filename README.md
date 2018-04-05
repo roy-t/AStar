@@ -1,6 +1,6 @@
 # Roy-T.AStar
 
-*Current version: 2.0.1*,  [version history](versions.md)
+*Current version: 2.1.0*,  [version history](versions.md)
 
 A fast 2D path finding library based on the A* algorithm for `.NETStandard 1.0` and `.Net 4.5` and higher. This library has no external dependencies. The library is licensed under the MIT license, see the `LICENSE` file for more details.
 
@@ -57,6 +57,14 @@ var path = grid.GetPath(new Position(0, 0), new Position(99, 99), movementPatter
 
 ```
 
+As an optimization, you can limit the number of iterations the algorithm searches for a path before it gives up.
+
+```
+var path = grid.GetPath(new Position(0, 0), new Position(99, 99), MovementPatterns.Full, 300);
+
+```
+
+
 ### Usage in text
 Your agent might be able to move fluently through a world with hills and water but that representation is too complex for the A* algorithm. 
 So the first thing you need to do is to is to create an abstract representation of your world that is simple enough for the path finding algorithm to understand.
@@ -73,6 +81,8 @@ Other obstacles, like dense shrubbery, take more time to traverse. In that case 
 
 Once you've configured your grid its time to start planning paths. Using the `GetPath` method you can immidately search for a path between two cells for an agent that can move in all directions. 
 You can also plan paths for agents that are more limited in their movent using the overload of `GetPath` that takes a `movementPattern` parameter. In that case you can either select one of the predefined ranges of motion from the `MovementPatterns` class or you can configure yourself what kind of steps an agent can make.
+
+As an optimization, you can limit the number of iterations the algorithm searches for a path before it gives up by using the `GetPath` overload with the iterationLimit parameter.
 
 You can define your own patterns for your agents. Below I have defined the movement pattern for an agent that can only move diagonally. (This movement pattern is included in the library as `MovementPatterns.DiagonalOnly`).
 
