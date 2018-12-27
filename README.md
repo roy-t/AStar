@@ -92,6 +92,9 @@ var diagonalOnlyMovementPattern = new[] {
 };
 ```
 
+## Things to keep in mind when generating your grid
+
+A* uses a heuristic to guess which way to search first. While searching it should be true that a path cannot be cheaper than initially guessed. (It's ok if a path is more expensive, that happens all the time, for example when finding impassable terrain). Because of this it's important that cells always have a cost of at least `1`. The heuristic I use is the Manhattan distance. So the guess (and performance) is best when most cells have a cost of `1`. This also means that movement patterns that are very different from the predefined movement patterns don't match the heuristic very well, which can lead to worse performance.
 
 ## Viewer
 This repository also contains a viewer which you can use to build worlds and visualize paths.
