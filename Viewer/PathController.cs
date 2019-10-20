@@ -56,7 +56,7 @@ namespace Viewer
                 }
             }
             
-            var path = grid.GetPath(start, end, MovementPatterns.Full, iterationLimit);
+            var path = grid.GetPath(start, end, MovementPatterns.Full, AgentShapes.Dot, iterationLimit);
             
             // Visualize the path in the cells, skip the start and end node, we already
             // have those in the visualization
