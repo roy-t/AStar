@@ -10,7 +10,7 @@ namespace RoyT.AStar
     /// </summary>
     internal static partial class PathFinder
     {
-        public static List<Position> FindPath(Grid grid, Position start, Position end, Offset[] movementPattern)
+        public static List<Position> FindPath(Grid grid, Position start, Position end, Offset[] movementPattern, Displacement[] agentShape)
         {            
             ClearStepList();
 
@@ -37,7 +37,7 @@ namespace RoyT.AStar
                     return ReconstructPath(grid, start, end, cameFrom);
                 }
 
-                Step(grid, open, cameFrom, costSoFar, movementPattern, current, end);
+                Step(grid, open, cameFrom, costSoFar, movementPattern, agentShape, current, end);
 
                 MessageClose(current);
             }
@@ -45,7 +45,7 @@ namespace RoyT.AStar
             return null;
         }
 
-        public static List<Position> FindPath(Grid grid, Position start, Position end, Offset[] movementPattern, int iterationLimit)
+        public static List<Position> FindPath(Grid grid, Position start, Position end, Offset[] movementPattern, Displacement[] agentShape, int iterationLimit)
         {
             ClearStepList();
 
@@ -72,7 +72,7 @@ namespace RoyT.AStar
                     return ReconstructPath(grid, start, end, cameFrom);
                 }
 
-                Step(grid, open, cameFrom, costSoFar, movementPattern, current, end);
+                Step(grid, open, cameFrom, costSoFar, movementPattern, agentShape, current, end);
 
                 MessageClose(current);
 
@@ -88,6 +88,7 @@ namespace RoyT.AStar
             Position[] cameFrom,
             float[] costSoFar,
             Offset[] movementPattern,
+            Displacement[] agentShape,
             Position current,
             Position end)
         {
@@ -98,7 +99,7 @@ namespace RoyT.AStar
             foreach (var option in GetMovementOptions(current, grid.DimX, grid.DimY, movementPattern))
             {
                 var position = current + option;
-                var cellCost = grid.GetCellCostUnchecked(position);
+                var cellCost = grid.GetCellCost(position, agentShape);
 
                 // Ignore this option if the cell is blocked
                 if (float.IsInfinity(cellCost))

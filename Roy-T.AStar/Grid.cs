@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace RoyT.AStar
@@ -100,6 +101,25 @@ namespace RoyT.AStar
         }
 
         /// <summary>
+        /// Looks-up the cost for traversing a given cell(s) considering the shape of the agent.
+        /// Agent can take up more than one cell so calculate the mostly costly cell to traverse.
+        /// </summary>
+        /// <param name="position">A position inside the grid</param>
+        /// <param name="agentShape">Shape of the agent</param>
+        /// <returns>The cost</returns>
+        internal float GetCellCost(Position position, Displacement[] agentShape)
+        {
+            return agentShape
+                .Select(d => d + position)
+                .Where(d => (d.X >= 0) && (d.Y >= 0) && (d.X < DimX) && (d.Y < DimY))
+                .Select(d => Weights[GetIndexUnchecked(d.X, d.Y)])
+                .Max();
+
+            // TODO Maybe have a weighted agent shape?
+            // E.g. it can come handy if agent is elastic - has soft outer layer and solid core.
+        }
+
+        /// <summary>
         /// Computes the lowest-cost path from start to end inside the grid for an agent that can
         /// move both diagonal and lateral
         /// </summary>
@@ -107,7 +127,7 @@ namespace RoyT.AStar
         /// <param name="end">The end position</param>        
         /// <returns>Positions along the shortest path from start to end, or an empty array if no path could be found</returns>
         public Position[] GetPath(Position start, Position end)
-            => GetPath(start, end, MovementPatterns.Full);
+            => GetPath(start, end, MovementPatterns.Full, AgentShapes.Dot);
 
         /// <summary>
         /// Computes the lowest-cost path from start to end inside the grid for an agent with a custom
@@ -116,10 +136,11 @@ namespace RoyT.AStar
         /// <param name="start">The start position</param>
         /// <param name="end">The end position</param>
         /// <param name="movementPattern">The movement pattern of the agent, <see cref="MovementPatterns"/> for several built-in options</param>
+        /// <param name="agentShape">Shape of the agent</param>
         /// <returns>Positions along the shortest path from start to end, or an empty array if no path could be found</returns>
-        public Position[] GetPath(Position start, Position end, Offset[] movementPattern)
+        public Position[] GetPath(Position start, Position end, Offset[] movementPattern, Displacement[] agentShape)
         {
-            var current = PathFinder.FindPath(this, start, end, movementPattern);
+            var current = PathFinder.FindPath(this, start, end, movementPattern, agentShape);
 
             if (current == null)
             {
@@ -145,11 +166,12 @@ namespace RoyT.AStar
         /// <param name="start">The start position</param>
         /// <param name="end">The end position</param>
         /// <param name="movementPattern">The movement pattern of the agent, <see cref="MovementPatterns"/> for several built-in options</param>
+        /// <param name="agentShape">Shape of the agent</param>
         /// <param name="iterationLimit">Maximum number of nodes to check before the path finder gives up</param>
         /// <returns>Positions along the shortest path from start to end, or an empty array if no path could be found</returns>
-        public Position[] GetPath(Position start, Position end, Offset[] movementPattern, int iterationLimit)
+        public Position[] GetPath(Position start, Position end, Offset[] movementPattern, Displacement[] agentShape, int iterationLimit)
         {
-            var current = PathFinder.FindPath(this, start, end, movementPattern, iterationLimit);
+            var current = PathFinder.FindPath(this, start, end, movementPattern, agentShape, iterationLimit);
 
             if (current == null)
             {
