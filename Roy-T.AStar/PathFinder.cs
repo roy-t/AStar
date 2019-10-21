@@ -34,10 +34,10 @@ namespace RoyT.AStar
             // So get the possible boundaries considering the shape of the agent.
             var boundary = new Boundary()
             {
-                X = -shape.TopLeft.X,
-                Y = -shape.TopLeft.Y,
-                Width = grid.DimX - shape.BottomRight.X + shape.TopLeft.X,
-                Heigth = grid.DimY - shape.BottomRight.Y + shape.TopLeft.Y
+                X1 = -shape.TopLeft.X,
+                Y1 = -shape.TopLeft.Y,
+                X2 = grid.DimX - shape.BottomRight.X - 1,
+                Y2 = grid.DimY - shape.BottomRight.Y - 1
             };
 
             // Make sure start and end are within boundary

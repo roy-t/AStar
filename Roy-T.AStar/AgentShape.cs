@@ -8,6 +8,7 @@ namespace RoyT.AStar
     /// <summary>
     /// Agent shape.
     /// Shape is made of cells. Center point of agent is (0, 0). Cells should be around that.
+    /// Note: agent is not rotated when traversing cells so the recommendation is to keep shape symmetrical.
     /// </summary>
     public struct AgentShape
     {

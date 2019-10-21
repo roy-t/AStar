@@ -9,10 +9,10 @@ namespace RoyT.AStar
     /// </summary>
     public struct Boundary
     {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int Width { get; set; }
-        public int Heigth { get; set; }
+        public int X1 { get; set; }
+        public int Y1 { get; set; }
+        public int X2 { get; set; }
+        public int Y2 { get; set; }
 
         /// <summary>
         /// Is position inside boundary ?
@@ -21,13 +21,13 @@ namespace RoyT.AStar
         /// <returns>true if position is inside boundary</returns>
         public bool IsInside(Position p)
         {
-            return (p.X >= X) && (p.X < X + Width) && (p.Y >= Y) && (p.Y < Y + Heigth);
+            return (p.X >= X1) && (p.X <= X2) && (p.Y >= Y1) && (p.Y <= X2);
         }
 
         /// <summary>
         /// To string
         /// </summary>
         /// <returns>As text</returns>
-        public override string ToString() => $"Boundary: ({X}, {Y} - {Width}, {Heigth})";
+        public override string ToString() => $"Boundary: ({X1}, {Y1} - {X2}, {Y2})";
     }
 }
