@@ -37,7 +37,7 @@ namespace RoyT.AStar
             var current = end;
             do
             {
-                var previous = cameFrom[grid.GetIndexUnchecked(current.X, current.Y)];
+                var previous = cameFrom[grid.GetIndexUnchecked(current)];
 
                 // If the path is invalid, probably becase we've not closed
                 // a node yet, return an empty list

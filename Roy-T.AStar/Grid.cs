@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace RoyT.AStar
@@ -12,7 +13,7 @@ namespace RoyT.AStar
     public sealed class Grid
     {       
         private readonly float DefaultCost;
-        private readonly float[] Weights;        
+        private readonly float[] Weights;
 
         /// <summary>
         /// Creates a grid
@@ -96,7 +97,19 @@ namespace RoyT.AStar
         /// <returns>The cost</returns>
         internal float GetCellCostUnchecked(Position position)
         {
-            return this.Weights[GetIndexUnchecked(position.X, position.Y)];
+            return this.Weights[GetIndexUnchecked(position)];
+        }
+
+        /// <summary>
+        /// Looks-up the cost for traversing a given cell(s) considering the shape of the agent.
+        /// Agent can take up more than one cell so calculate the most costly cell to traverse.
+        /// </summary>
+        /// <param name="position">A position inside the grid</param>
+        /// <param name="shape">Shape of the agent</param>
+        /// <returns>The cost</returns>
+        internal float GetCellCostUnchecked(Position position, AgentShape shape)
+        {
+            return shape.Cells.Max(d => Weights[GetIndexUnchecked(position + d)]);
         }
 
         /// <summary>
@@ -104,10 +117,10 @@ namespace RoyT.AStar
         /// move both diagonal and lateral
         /// </summary>
         /// <param name="start">The start position</param>
-        /// <param name="end">The end position</param>        
+        /// <param name="end">The end position</param>
         /// <returns>Positions along the shortest path from start to end, or an empty array if no path could be found</returns>
         public Position[] GetPath(Position start, Position end)
-            => GetPath(start, end, MovementPatterns.Full);
+            => GetPath(start, end, MovementPatterns.Full, AgentShapes.Dot);
 
         /// <summary>
         /// Computes the lowest-cost path from start to end inside the grid for an agent with a custom
@@ -116,10 +129,11 @@ namespace RoyT.AStar
         /// <param name="start">The start position</param>
         /// <param name="end">The end position</param>
         /// <param name="movementPattern">The movement pattern of the agent, <see cref="MovementPatterns"/> for several built-in options</param>
+        /// <param name="shape">Shape of the agent</param>
         /// <returns>Positions along the shortest path from start to end, or an empty array if no path could be found</returns>
-        public Position[] GetPath(Position start, Position end, Offset[] movementPattern)
+        public Position[] GetPath(Position start, Position end, Offset[] movementPattern, AgentShape shape)
         {
-            var current = PathFinder.FindPath(this, start, end, movementPattern);
+            var current = PathFinder.FindPath(this, start, end, movementPattern, shape);
 
             if (current == null)
             {
@@ -133,9 +147,9 @@ namespace RoyT.AStar
             foreach (var step in current)
             {
                 steps.Push(step);
-            }            
+            }
 
-            return steps.ToArray();                        
+            return steps.ToArray();
         }
 
         /// <summary>
@@ -145,11 +159,12 @@ namespace RoyT.AStar
         /// <param name="start">The start position</param>
         /// <param name="end">The end position</param>
         /// <param name="movementPattern">The movement pattern of the agent, <see cref="MovementPatterns"/> for several built-in options</param>
+        /// <param name="shape">Shape of the agent</param>
         /// <param name="iterationLimit">Maximum number of nodes to check before the path finder gives up</param>
         /// <returns>Positions along the shortest path from start to end, or an empty array if no path could be found</returns>
-        public Position[] GetPath(Position start, Position end, Offset[] movementPattern, int iterationLimit)
+        public Position[] GetPath(Position start, Position end, Offset[] movementPattern, AgentShape shape, int iterationLimit)
         {
-            var current = PathFinder.FindPath(this, start, end, movementPattern, iterationLimit);
+            var current = PathFinder.FindPath(this, start, end, movementPattern, shape, iterationLimit);
 
             if (current == null)
             {
@@ -170,7 +185,7 @@ namespace RoyT.AStar
 
         /// <summary>
         /// Converts a 2d index to a 1d index and performs bounds checking
-        /// </summary>        
+        /// </summary>
         private int GetIndex(int x, int y)
         {
             if (x < 0 || x >= this.DimX)
@@ -186,13 +201,19 @@ namespace RoyT.AStar
             }
 
             return GetIndexUnchecked(x, y);
-        }     
+        }
         
         /// <summary>
         /// Converts a 2d index to a 1d index without any bounds checking
-        /// </summary>        
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal int GetIndexUnchecked(int x, int y) => this.DimX * y + x;
-    }    
+
+        /// <summary>
+        /// Converts a 2d index to a 1d index without any bounds checking
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal int GetIndexUnchecked(Position p) => this.DimX * p.Y + p.X;
+    }
 }
 
