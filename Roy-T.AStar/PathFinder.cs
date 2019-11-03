@@ -34,13 +34,7 @@ namespace RoyT.AStar
 
             // To avoid lot of grid boundaries checking calculations during path finding, do the math here.
             // So get the possible boundaries considering the shape of the agent.
-            var boundary = new Boundary()
-            {
-                X1 = -shape.TopLeft.X,
-                Y1 = -shape.TopLeft.Y,
-                X2 = grid.DimX - shape.BottomRight.X - 1,
-                Y2 = grid.DimY - shape.BottomRight.Y - 1
-            };
+            var boundary = Boundary.FromSizeAndShape(grid.DimX, grid.DimY, shape);
 
             // Make sure that agent is within grid. This means agent shape has to be considered.
             if (!boundary.IsInside(start))
