@@ -18,16 +18,18 @@ namespace RoyT.AStar
         /// <param name="end">End point</param>
         /// <param name="movementPattern">Movement pattern</param>
         /// <param name="shape">Shape of an agent</param>
+        /// <param name="path">Returns shortest path from start to the end if found. Can also return partial path if end is not reachable. In case of error returns empty array.</param>
         /// <param name="iterationLimit">Maximum count of iterations</param>
-        /// <returns>List of movement steps</returns>
-        public static List<Position> FindPath(Grid grid, Position start, Position end, Offset[] movementPattern, AgentShape shape, int iterationLimit = int.MaxValue)
+        /// <returns>Result of the path finding.</returns>
+        public static PathFindResult TryFindPath(Grid grid, Position start, Position end, Offset[] movementPattern, AgentShape shape, out List<Position> path, int iterationLimit = int.MaxValue)
         {
             ClearStepList();
 
-            // If is where should be, then path is simple
+            // If is where should be, then there's no path to take
             if (start == end)
             {
-                return new List<Position> { start };
+                path = new List<Position>();
+                return PathFindResult.AlreadyAtTheEnd;
             }
 
             // To avoid lot of grid boundaries checking calculations during path finding, do the math here.
@@ -40,11 +42,19 @@ namespace RoyT.AStar
                 Y2 = grid.DimY - shape.BottomRight.Y - 1
             };
 
-            // Make sure start and end are within boundary
-            if (!boundary.IsInside(start) || !boundary.IsInside(end))
+            // Make sure that agent start position is within boundary
+            if (!boundary.IsInside(start))
             {
-                // Can't find such path
-                return null;
+                path = new List<Position>();
+                return PathFindResult.StartOutsideBoundaries;
+            }
+
+            // Make sure that end position is within boundary so that the agent can reach it
+            // TODO Maybe the end point shouldn't consider agent shape ?
+            if (!boundary.IsInside(end))
+            {
+                path = new List<Position>();
+                return PathFindResult.EndOutsideBoundaries;
             }
 
             var head = new MinHeapNode(start, ManhattanDistance(start, end));
@@ -53,7 +63,12 @@ namespace RoyT.AStar
 
             var costSoFar = new float[grid.DimX * grid.DimY];
             var cameFrom = new Position[grid.DimX * grid.DimY];
-            
+
+            // Keep record of closest point in case the end point is not reachable
+            Position closestPosition = start;
+            float closestDistance = float.PositiveInfinity;
+
+            // Try to find path until options run out or iterations limit is exceeded
             while (open.HasNext() && iterationLimit > 0)
             {
                 // Get the best candidate
@@ -62,17 +77,21 @@ namespace RoyT.AStar
 
                 if (current == end)
                 {
-                    return ReconstructPath(grid, start, end, cameFrom);
+                    path = ReconstructPath(grid, start, end, cameFrom);
+                    return PathFindResult.PathFound;
                 }
 
-                Step(grid, boundary, open, cameFrom, costSoFar, movementPattern, shape, current, end);
+                Step(grid, boundary, open, cameFrom, costSoFar, movementPattern, shape, current, end, ref closestPosition, ref closestDistance);
 
                 MessageClose(current);
 
                 --iterationLimit;
             }
 
-            return null;
+            // Construct path to the closest position
+            MessageCurrent(closestPosition, PartiallyReconstructPath(grid, start, closestPosition, cameFrom));
+            path = ReconstructPath(grid, start, closestPosition, cameFrom);
+            return PathFindResult.PartialPathFound;
         }
 
         private static void Step(
@@ -84,7 +103,9 @@ namespace RoyT.AStar
             Offset[] movementPattern,
             AgentShape shape,
             Position current,
-            Position end)
+            Position end,
+            ref Position closestPosition,
+            ref float closestDistance)
         {
             // Get the cost associated with getting to the current position
             var initialCost = costSoFar[grid.GetIndexUnchecked(current)];
@@ -115,8 +136,17 @@ namespace RoyT.AStar
 
                 // Use the heuristic to compute how much it will probably cost 
                 // to get from here to the end, and store the node in the open list
-                var expectedCost = newCost + ManhattanDistance(position, end);
+                var remainCost = ManhattanDistance(position, end);
+                var expectedCost = newCost + remainCost;
                 open.Push(new MinHeapNode(position, expectedCost));
+
+                // If current position is closest to the end then remember it,
+                // we may need it if no path is found.
+                if (remainCost < closestDistance)
+                {
+                    closestPosition = position;
+                    closestDistance = remainCost;
+                }
 
                 MessageOpen(position);
             }

@@ -56,8 +56,10 @@ namespace Viewer
                 }
             }
             
-            var path = grid.GetPath(start, end, MovementPatterns.Full, AgentShapes.Dot, iterationLimit);
-            
+            var result = grid.TryGetPath(start, end, MovementPatterns.Full, AgentShapes.Dot, iterationLimit, out Position[] path);
+
+            // TODO Visualize path finding result
+
             // Visualize the path in the cells, skip the start and end node, we already
             // have those in the visualization
             foreach (var p in path.Skip(1).Take(path.Length - 2))
@@ -65,6 +67,6 @@ namespace Viewer
                 var cell = lookup[p];
                 cell.CellState = CellState.OnPath;                
             }
-        }       
+        }
     }
 }

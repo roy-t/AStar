@@ -118,9 +118,10 @@ namespace RoyT.AStar
         /// </summary>
         /// <param name="start">The start position</param>
         /// <param name="end">The end position</param>
-        /// <returns>Positions along the shortest path from start to end, or an empty array if no path could be found</returns>
-        public Position[] GetPath(Position start, Position end)
-            => GetPath(start, end, MovementPatterns.Full, AgentShapes.Dot);
+        /// <param name="path">Returns shortest path from start to the end if found. Can also return partial path if end is not reachable. In case of error returns empty array.</param>
+        /// <returns>Result of the path finding.</returns>
+        public PathFindResult TryGetPath(Position start, Position end, out Position[] path)
+            => TryGetPath(start, end, MovementPatterns.Full, AgentShapes.Dot, out path);
 
         /// <summary>
         /// Computes the lowest-cost path from start to end inside the grid for an agent with a custom
@@ -130,26 +131,17 @@ namespace RoyT.AStar
         /// <param name="end">The end position</param>
         /// <param name="movementPattern">The movement pattern of the agent, <see cref="MovementPatterns"/> for several built-in options</param>
         /// <param name="shape">Shape of the agent</param>
-        /// <returns>Positions along the shortest path from start to end, or an empty array if no path could be found</returns>
-        public Position[] GetPath(Position start, Position end, Offset[] movementPattern, AgentShape shape)
+        /// <param name="path">Returns shortest path from start to the end if found. Can also return partial path if end is not reachable. In case of error returns empty array.</param>
+        /// <returns>Result of the path finding.</returns>
+        public PathFindResult TryGetPath(Position start, Position end, Offset[] movementPattern, AgentShape shape, out Position[] path)
         {
-            var current = PathFinder.FindPath(this, start, end, movementPattern, shape);
-
-            if (current == null)
-            {
-                return new Position[0];
-            }
+            var result = PathFinder.TryFindPath(this, start, end, movementPattern, shape, out List<Position> positionList);
 
             // The Pathfinder returns the positions that found the end. If we want
             // to list positions from start to end we need reverse the traversal.
-            var steps = new Stack<Position>();
-            
-            foreach (var step in current)
-            {
-                steps.Push(step);
-            }
+            path = Enumerable.Reverse(positionList).ToArray();
 
-            return steps.ToArray();
+            return result;
         }
 
         /// <summary>
@@ -161,26 +153,17 @@ namespace RoyT.AStar
         /// <param name="movementPattern">The movement pattern of the agent, <see cref="MovementPatterns"/> for several built-in options</param>
         /// <param name="shape">Shape of the agent</param>
         /// <param name="iterationLimit">Maximum number of nodes to check before the path finder gives up</param>
-        /// <returns>Positions along the shortest path from start to end, or an empty array if no path could be found</returns>
-        public Position[] GetPath(Position start, Position end, Offset[] movementPattern, AgentShape shape, int iterationLimit)
+        /// <param name="path">Returns shortest path from start to the end if found. Can also return partial path if end is not reachable. In case of error returns empty array.</param>
+        /// <returns>Result of the path finding.</returns>
+        public PathFindResult TryGetPath(Position start, Position end, Offset[] movementPattern, AgentShape shape, int iterationLimit, out Position[] path)
         {
-            var current = PathFinder.FindPath(this, start, end, movementPattern, shape, iterationLimit);
-
-            if (current == null)
-            {
-                return new Position[0];
-            }
+            var result = PathFinder.TryFindPath(this, start, end, movementPattern, shape, out List<Position> positionList, iterationLimit);
 
             // The Pathfinder returns the positions that found the end. If we want
             // to list positions from start to end we need reverse the traversal.
-            var steps = new Stack<Position>();
+            path = Enumerable.Reverse(positionList).ToArray();
 
-            foreach (var step in current)
-            {
-                steps.Push(step);
-            }
-
-            return steps.ToArray();
+            return result;
         }
 
         /// <summary>
