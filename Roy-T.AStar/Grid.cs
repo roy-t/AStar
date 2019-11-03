@@ -51,6 +51,16 @@ namespace RoyT.AStar
         public int DimY { get; }
 
         /// <summary>
+        /// Is position inside grid ?
+        /// </summary>
+        /// <param name="p">Position</param>
+        /// <returns>true if position is inside grid</returns>
+        public bool IsInside(Position p)
+        {
+            return (p.X >= 0) && (p.X < DimX) && (p.Y >= 0) && (p.Y < DimY);
+        }
+
+        /// <summary>
         /// Sets the cost for traversing a cell
         /// </summary>
         /// <param name="position">A position inside the grid</param>

@@ -42,16 +42,15 @@ namespace RoyT.AStar
                 Y2 = grid.DimY - shape.BottomRight.Y - 1
             };
 
-            // Make sure that agent start position is within boundary
+            // Make sure that agent is within grid. This means agent shape has to be considered.
             if (!boundary.IsInside(start))
             {
                 path = new List<Position>();
                 return PathFindResult.StartOutsideBoundaries;
             }
 
-            // Make sure that end position is within boundary so that the agent can reach it
-            // TODO Maybe the end point shouldn't consider agent shape ?
-            if (!boundary.IsInside(end))
+            // Make sure that end position is within grid
+            if (!grid.IsInside(end))
             {
                 path = new List<Position>();
                 return PathFindResult.EndOutsideBoundaries;
