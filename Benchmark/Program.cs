@@ -26,33 +26,37 @@ namespace Benchmark
                     cost += 0.5f;
                 }
             }
-        }        
+        }
 
         [Benchmark]
         public void Gradient100X100()
         {
-            this.GridWithSlope.GetPath(
+            this.GridWithSlope.TryGetPath(
                 new Position(0, 0),
                 new Position(this.GridWithSlope.DimX - 1, this.GridWithSlope.DimY - 1),
-                MovementPatterns.Full);
+                MovementPatterns.Full,
+                AgentShapes.Dot,
+                out _);
         }
 
         [Benchmark]
         public void Gradient100X100Limited()
         {
-            this.GridWithSlope.GetPath(
+            this.GridWithSlope.TryGetPath(
                 new Position(0, 0),
                 new Position(this.GridWithSlope.DimX - 1, this.GridWithSlope.DimY - 1),
                 MovementPatterns.Full,
-                int.MaxValue);
+                AgentShapes.Dot,
+                int.MaxValue,
+                out _);
         }
     }
 
     public class Program
     {
         public static void Main(string[] args)
-        {           
-            BenchmarkRunner.Run<AStarBenchmark>();            
+        {
+            BenchmarkRunner.Run<AStarBenchmark>();
             Console.ReadLine();
         }
     }
