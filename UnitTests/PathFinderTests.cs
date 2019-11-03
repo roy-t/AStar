@@ -9,7 +9,7 @@ namespace UnitTests
         public void NonExistingPathShouldReturnEmtpyArray()
         {
             var grid = GridCatalog.GridWithEnclosedCenterTile();
-            var path = grid.GetPath(new Position(0, 0), new Position(4, 4));
+            var result = grid.TryGetPath(new Position(0, 0), new Position(4, 4), out Position[] path);
 
             Assert.NotNull(path);
             Assert.Empty(path);
@@ -19,7 +19,7 @@ namespace UnitTests
         public void ShouldFindPathInUnobstructedGrid()
         {
             var grid = GridCatalog.UnobstructedGrid();
-            var path = grid.GetPath(new Position(0, 0), new Position(8, 8));
+            var result = grid.TryGetPath(new Position(0, 0), new Position(8, 8), out Position[] path);
 
             Assert.NotNull(path);
             Assert.Equal(9, path.Length);
@@ -29,7 +29,7 @@ namespace UnitTests
         public void ShouldFindPathWithNonZeroStartingPosition()
         {
             var grid = GridCatalog.UnobstructedGrid();
-            var path = grid.GetPath(new Position(3, 3), new Position(5, 3));
+            var result = grid.TryGetPath(new Position(3, 3), new Position(5, 3), out Position[] path);
 
             Assert.NotNull(path);
             Assert.Equal(3, path.Length);
@@ -39,7 +39,7 @@ namespace UnitTests
         public void ShouldRespectBlockedCells()
         {
             var grid = GridCatalog.GridWithBlockedCenterTile();
-            var path = grid.GetPath(new Position(0, 0), new Position(8, 8));
+            var result = grid.TryGetPath(new Position(0, 0), new Position(8, 8), out Position[] path);
 
             Assert.NotNull(path);
             Assert.DoesNotContain(new Position(4, 4), path);
@@ -50,7 +50,7 @@ namespace UnitTests
         public void ShouldRespectCellCost()
         {
             var grid = GridCatalog.GridWithHighCostCenterTile();
-            var path = grid.GetPath(new Position(0, 0), new Position(8, 8));
+            var result = grid.TryGetPath(new Position(0, 0), new Position(8, 8), out Position[] path);
 
             Assert.NotNull(path);
             Assert.DoesNotContain(new Position(4, 4), path);
@@ -61,17 +61,17 @@ namespace UnitTests
         public void ShouldRespectIterationLimit()
         {
             var grid = GridCatalog.UnobstructedGrid();
-            var path = grid.GetPath(new Position(0, 0), new Position(8, 8), MovementPatterns.Full, 8);
+            var result = grid.TryGetPath(new Position(0, 0), new Position(8, 8), MovementPatterns.Full, AgentShapes.Dot, 8, out Position[] path);
 
             Assert.NotNull(path);
-            Assert.Empty(path);            
+            Assert.Empty(path);
         }
 
         [Fact]
         public void ShouldRespectMovementPattern()
         {
             var grid = GridCatalog.GridWithObstructedDiagonals();
-            var path = grid.GetPath(new Position(0, 0), new Position(8, 8), MovementPatterns.LateralOnly);
+            var result = grid.TryGetPath(new Position(0, 0), new Position(8, 8), MovementPatterns.LateralOnly, AgentShapes.Dot, out Position[] path);
 
             Assert.NotNull(path);
             Assert.Empty(path);
