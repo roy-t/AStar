@@ -105,7 +105,7 @@ namespace RoyT.AStar
         /// </summary>
         /// <param name="position">A position inside the grid</param>
         /// <returns>The cost</returns>
-        internal float GetCellCostUnchecked(Position position)
+        public float GetCellCostUnchecked(Position position)
         {
             return this.Weights[GetIndexUnchecked(position)];
         }
@@ -117,7 +117,7 @@ namespace RoyT.AStar
         /// <param name="position">A position inside the grid</param>
         /// <param name="shape">Shape of the agent</param>
         /// <returns>The cost</returns>
-        internal float GetCellCostUnchecked(Position position, AgentShape shape)
+        public float GetCellCostUnchecked(Position position, AgentShape shape)
         {
             return shape.Cells.Max(d => Weights[GetIndexUnchecked(position + d)]);
         }
