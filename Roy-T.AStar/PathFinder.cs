@@ -82,9 +82,16 @@ namespace RoyT.AStar
             }
 
             // Construct path to the closest position
-            MessageCurrent(closestPosition, PartiallyReconstructPath(grid, start, closestPosition, cameFrom));
-            path = ReconstructPath(grid, start, closestPosition, cameFrom);
-            return PathFindResult.PartialPathFound;
+            if (start != closestPosition)
+            {
+                MessageCurrent(closestPosition, PartiallyReconstructPath(grid, start, closestPosition, cameFrom));
+                path = ReconstructPath(grid, start, closestPosition, cameFrom);
+                return PathFindResult.PartialPathFound;
+            }
+
+            // Stuck
+            path = new List<Position>();
+            return PathFindResult.Stuck;
         }
 
         private static void Step(

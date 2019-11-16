@@ -20,6 +20,11 @@ namespace RoyT.AStar
         PartialPathFound,
 
         /// <summary>
+        /// Happens when agent has no room for movement and can't even get partial path to end
+        /// </summary>
+        Stuck,
+
+        /// <summary>
         /// Already at the end point
         /// </summary>
         AlreadyAtTheEnd,
