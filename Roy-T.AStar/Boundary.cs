@@ -21,7 +21,7 @@ namespace RoyT.AStar
         /// <returns>true if position is inside boundary</returns>
         public bool IsInside(Position p)
         {
-            return (p.X >= X1) && (p.X <= X2) && (p.Y >= Y1) && (p.Y <= X2);
+            return (p.X >= X1) && (p.X <= X2) && (p.Y >= Y1) && (p.Y <= Y2);
         }
 
         /// <summary>
