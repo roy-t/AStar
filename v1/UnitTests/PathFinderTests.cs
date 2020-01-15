@@ -2,7 +2,7 @@
 using Xunit;
 
 namespace UnitTests
-{    
+{
     public class PathFinderTests
     {
         [Fact]
@@ -61,17 +61,17 @@ namespace UnitTests
         public void ShouldRespectIterationLimit()
         {
             var grid = GridCatalog.UnobstructedGrid();
-            var path = grid.GetPath(new Position(0, 0), new Position(8, 8), MovementPatterns.Full, 8);
+            var path = grid.GetPath(new Position(0, 0), new Position(8, 8), MovementPatterns.Full, AgentShapes.Dot, 8);
 
             Assert.NotNull(path);
-            Assert.Empty(path);            
+            Assert.Empty(path);
         }
 
         [Fact]
         public void ShouldRespectMovementPattern()
         {
             var grid = GridCatalog.GridWithObstructedDiagonals();
-            var path = grid.GetPath(new Position(0, 0), new Position(8, 8), MovementPatterns.LateralOnly);
+            var path = grid.GetPath(new Position(0, 0), new Position(8, 8), MovementPatterns.LateralOnly, AgentShapes.Dot);
 
             Assert.NotNull(path);
             Assert.Empty(path);

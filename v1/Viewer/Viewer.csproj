@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{36D92D36-8B53-4E32-8D63-2E89B6E85430}</ProjectGuid>
+    <ProjectGuid>{A30DC8F8-7278-4A2D-BDCF-3215CCE85E30}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>Viewer</RootNamespace>
     <AssemblyName>Viewer</AssemblyName>
@@ -154,7 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Roy-T.AStar\Roy-T.AStar.csproj">
-      <Project>{b9c572ad-526e-48c0-9b64-582cd83515eb}</Project>
+      <Project>{8f3a4dd0-2b68-4fe2-b14f-096b08c56483}</Project>
       <Name>Roy-T.AStar</Name>
     </ProjectReference>
   </ItemGroup>

@@ -5,7 +5,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{AF080E20-16DB-4105-BE12-07DFD541990E}</ProjectGuid>
+    <ProjectGuid>{8A26B338-121D-4AA3-AACF-8E3F4686F406}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UnitTests</RootNamespace>
@@ -69,13 +69,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Roy-T.AStar\Roy-T.AStar.csproj">
-      <Project>{b9c572ad-526e-48c0-9b64-582cd83515eb}</Project>
-      <Name>Roy-T.AStar</Name>
-    </ProjectReference>
+    <Analyzer Include="..\packages\xunit.analyzers.0.7.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\xunit.analyzers.0.7.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
+    <ProjectReference Include="..\Roy-T.AStar\Roy-T.AStar.csproj">
+      <Project>{8f3a4dd0-2b68-4fe2-b14f-096b08c56483}</Project>
+      <Name>Roy-T.AStar</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

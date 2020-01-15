@@ -15,7 +15,7 @@ namespace Benchmark
             // heuristic is often wrong. This way we test 
             // the efficiency of our implementation
             // not the efficiency of the A* algorithm
-            this.GridWithSlope  = new Grid(100, 100, 1.0f);
+            this.GridWithSlope = new Grid(100, 100, 1.0f);
 
             var cost = 1.0f;
             for (var y = 0; y < this.GridWithSlope.DimY; y++)
@@ -26,7 +26,7 @@ namespace Benchmark
                     cost += 0.5f;
                 }
             }
-        }        
+        }
 
         [Benchmark]
         public void Gradient100X100()
@@ -34,7 +34,8 @@ namespace Benchmark
             this.GridWithSlope.GetPath(
                 new Position(0, 0),
                 new Position(this.GridWithSlope.DimX - 1, this.GridWithSlope.DimY - 1),
-                MovementPatterns.Full);
+                MovementPatterns.Full,
+                AgentShapes.Dot);
         }
 
         [Benchmark]
@@ -44,6 +45,7 @@ namespace Benchmark
                 new Position(0, 0),
                 new Position(this.GridWithSlope.DimX - 1, this.GridWithSlope.DimY - 1),
                 MovementPatterns.Full,
+                AgentShapes.Dot,
                 int.MaxValue);
         }
     }
@@ -51,8 +53,8 @@ namespace Benchmark
     public class Program
     {
         public static void Main(string[] args)
-        {           
-            BenchmarkRunner.Run<AStarBenchmark>();            
+        {
+            BenchmarkRunner.Run<AStarBenchmark>();
             Console.ReadLine();
         }
     }
