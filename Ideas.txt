@@ -1,0 +1,4 @@
+- Use nodes and edges in the algorithm to make it more flexible
+- Block nodes by removing connections (making pathfinding truly cheaper)
+- Implement 'corner cutting' by removing more edges
+- Use improvments from TrafficSim for MinHeap
