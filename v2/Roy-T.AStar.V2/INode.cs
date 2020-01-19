@@ -10,6 +10,6 @@ namespace Roy_T.AStar.V2
         IList<IEdge> Incoming { get; }
         IList<IEdge> Outgoing { get; }
 
-        void Connect(INode node, float cost);
+        void Connect(INode node, Velocity traversalVelocity);
     }
 }

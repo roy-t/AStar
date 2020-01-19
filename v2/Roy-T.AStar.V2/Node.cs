@@ -18,9 +18,9 @@ namespace Roy_T.AStar.V2
         public float X { get; }
         public float Y { get; }
 
-        public void Connect(INode node, float cost)
+        public void Connect(INode node, Velocity traversalVelocity)
         {
-            var edge = new Edge(this, node, cost);
+            var edge = new Edge(this, node, traversalVelocity);
             this.Outgoing.Add(edge);
             node.Incoming.Add(edge);
         }

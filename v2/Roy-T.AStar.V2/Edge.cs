@@ -2,15 +2,17 @@
 {
     public sealed class Edge : IEdge
     {
-        public Edge(INode start, INode end, float traversalCost)
+        public Edge(INode a, INode b, Velocity traversalVelocity)
         {
-            this.Start = start;
-            this.End = end;
-            this.TraversalCost = traversalCost;
+            this.A = a;
+            this.B = b;
+            this.TraversalVelocity = traversalVelocity;
         }
 
-        public float TraversalCost { get; }
-        public INode Start { get; }
-        public INode End { get; }
+        public Velocity TraversalVelocity { get; }
+        public INode A { get; }
+        public INode B { get; }
+
+        public INode GetOppositeNode(INode oppositeTo) => this.A == oppositeTo ? this.B : this.A;
     }
 }

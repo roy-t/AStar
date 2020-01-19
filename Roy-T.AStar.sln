@@ -21,6 +21,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viewer", "v1\Viewer\Viewer.csproj", "{A30DC8F8-7278-4A2D-BDCF-3215CCE85E30}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "v2", "v2", "{C60CC5AB-915F-43AF-A6C5-1D579A48E49F}"
+	ProjectSection(SolutionItems) = preProject
+		Ideas.txt = Ideas.txt
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roy-T.AStar.V2", "v2\Roy-T.AStar.V2\Roy-T.AStar.V2.csproj", "{A69D95C2-B46A-49DA-9596-9ABAB10D3F1B}"
 EndProject

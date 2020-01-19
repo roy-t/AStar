@@ -2,9 +2,11 @@
 {
     public interface IEdge
     {
-        float TraversalCost { get; }
+        Velocity TraversalVelocity { get; }
 
-        INode Start { get; }
-        INode End { get; }
+        INode A { get; }
+        INode B { get; }
+
+        INode GetOppositeNode(INode node);
     }
 }

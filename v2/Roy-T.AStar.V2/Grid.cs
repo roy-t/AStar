@@ -6,7 +6,7 @@ namespace Roy_T.AStar.V2
     {
         private readonly INode[,] Nodes;
 
-        public Grid(int width, int height, float defaultCost = 1.0f, Connections connections = Connections.LateralAndDiagonal)
+        public Grid(int width, int height, Velocity defaultSpeed, Connections connections = Connections.LateralAndDiagonal)
         {
             if (width < 1)
             {
@@ -20,10 +20,10 @@ namespace Roy_T.AStar.V2
                     nameof(height), $"Argument {nameof(height)} is {height} but should be >= 1");
             }
 
-            if (defaultCost < 1.0f)
+            if (defaultSpeed.MetersPerSecond <= 0.0f)
             {
                 throw new ArgumentOutOfRangeException(
-                    nameof(defaultCost), $"Argument {nameof(defaultCost)} is {defaultCost} but should be >= 1.0f");
+                    nameof(defaultSpeed), $"Argument {nameof(defaultSpeed)} is {defaultSpeed} but should be > 0.0 m/s");
             }
 
             this.Width = width;
@@ -36,19 +36,42 @@ namespace Roy_T.AStar.V2
             switch (connections)
             {
                 case Connections.Lateral:
-                    this.CreateLateralConnections(defaultCost);
+                    this.CreateLateralConnections(defaultSpeed);
                     break;
                 case Connections.Diagonal:
-                    this.CreateDiagonalConnections(defaultCost);
+                    this.CreateDiagonalConnections(defaultSpeed);
                     break;
                 default:
-                    this.CreateLateralConnections(defaultCost);
-                    this.CreateDiagonalConnections(defaultCost);
+                    this.CreateLateralConnections(defaultSpeed);
+                    this.CreateDiagonalConnections(defaultSpeed);
                     break;
             }
         }
 
         public INode GetNode(int x, int y) => this.Nodes[x, y];
+
+        public void BlockNode(int x, int y)
+        {
+            var node = this.Nodes[x, y];
+
+            for (var i = 0; i < node.Incoming.Count; i++)
+            {
+                var edge = node.Incoming[i];
+                var neighbour = edge.GetOppositeNode(node);
+                neighbour.Outgoing.Remove(edge);
+            }
+
+            node.Incoming.Clear();
+
+            for (var i = 0; i < node.Outgoing.Count; i++)
+            {
+                var edge = node.Outgoing[i];
+                var neighbour = edge.GetOppositeNode(node);
+                neighbour.Incoming.Remove(edge);
+            }
+
+            node.Outgoing.Clear();
+        }
 
         private void CreateNodes()
         {
@@ -61,7 +84,7 @@ namespace Roy_T.AStar.V2
             }
         }
 
-        private void CreateLateralConnections(float cost)
+        private void CreateLateralConnections(Velocity defaultSpeed)
         {
             for (var x = 0; x < this.Width; x++)
             {
@@ -71,35 +94,35 @@ namespace Roy_T.AStar.V2
                     if (x > 0)
                     {
                         var westNode = this.Nodes[x - 1, y];
-                        node.Connect(westNode, cost);
-                        westNode.Connect(node, cost);
+                        node.Connect(westNode, defaultSpeed);
+                        westNode.Connect(node, defaultSpeed);
                     }
 
                     if (y > 0)
                     {
                         var northNode = this.Nodes[x, y - 1];
-                        node.Connect(northNode, cost);
-                        northNode.Connect(node, cost);
+                        node.Connect(northNode, defaultSpeed);
+                        northNode.Connect(node, defaultSpeed);
                     }
 
                     if (x < this.Width - 1)
                     {
                         var eastNode = this.Nodes[x + 1, y];
-                        node.Connect(eastNode, cost);
-                        eastNode.Connect(node, cost);
+                        node.Connect(eastNode, defaultSpeed);
+                        eastNode.Connect(node, defaultSpeed);
                     }
 
                     if (y < this.Height - 1)
                     {
                         var southNode = this.Nodes[x, y + 1];
-                        node.Connect(southNode, cost);
-                        southNode.Connect(node, cost);
+                        node.Connect(southNode, defaultSpeed);
+                        southNode.Connect(node, defaultSpeed);
                     }
                 }
             }
         }
 
-        private void CreateDiagonalConnections(float cost)
+        private void CreateDiagonalConnections(Velocity defaultSpeed)
         {
             for (var x = 0; x < this.Width; x++)
             {
@@ -109,29 +132,29 @@ namespace Roy_T.AStar.V2
                     if (x > 0 && y > 0)
                     {
                         var northWestNode = this.Nodes[x - 1, y - 1];
-                        node.Connect(northWestNode, cost);
-                        northWestNode.Connect(node, cost);
+                        node.Connect(northWestNode, defaultSpeed);
+                        northWestNode.Connect(node, defaultSpeed);
                     }
 
                     if (x < this.Width - 1 && y > 0)
                     {
                         var northEastNode = this.Nodes[x + 1, y - 1];
-                        node.Connect(northEastNode, cost);
-                        northEastNode.Connect(node, cost);
+                        node.Connect(northEastNode, defaultSpeed);
+                        northEastNode.Connect(node, defaultSpeed);
                     }
 
                     if (x < this.Width - 1 && y < this.Height - 1)
                     {
                         var southEastNode = this.Nodes[x + 1, y + 1];
-                        node.Connect(southEastNode, cost);
-                        southEastNode.Connect(node, cost);
+                        node.Connect(southEastNode, defaultSpeed);
+                        southEastNode.Connect(node, defaultSpeed);
                     }
 
                     if (x > 0 && y < this.Height - 1)
                     {
                         var southWestNode = this.Nodes[x, y + 1];
-                        node.Connect(southWestNode, cost);
-                        southWestNode.Connect(node, cost);
+                        node.Connect(southWestNode, defaultSpeed);
+                        southWestNode.Connect(node, defaultSpeed);
                     }
                 }
             }
