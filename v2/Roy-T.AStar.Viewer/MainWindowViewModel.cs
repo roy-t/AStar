@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
@@ -37,6 +38,19 @@ namespace Roy_T.AStar.Viewer
                 Application.Current.Shutdown();
             });
 
+            this.OpenGitHubCommand = ReactiveCommand.Create(() =>
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "cmd",
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    Arguments = $"/c start http://github.com/roy-t/AStar"
+                };
+                Process.Start(psi);
+            });
+
             this.RandomizeCommand = ReactiveCommand.Create(() => this.SetSpeedLimits(() =>
             {
                 var value = this.Random.Next((int)Settings.MinSpeed.MetersPerSecond, (int)Settings.MaxSpeed.MetersPerSecond + 1);
@@ -58,7 +72,7 @@ namespace Roy_T.AStar.Viewer
         public ObservableCollection<ReactiveObject> Nodes { get; }
 
         public IReactiveCommand ExitCommand { get; }
-
+        public IReactiveCommand OpenGitHubCommand { get; }
         public IReactiveCommand RandomizeCommand { get; }
         public IReactiveCommand MaxCommand { get; }
         public IReactiveCommand MinCommand { get; }

@@ -7,6 +7,7 @@
         xmlns:model="clr-namespace:Roy_T.AStar.Viewer.Model"
         mc:Ignorable="d"
         Height="700" Width="700"
+        Background="WhiteSmoke" 
         Title="Roy-T.AStar.v2 - Viewer" d:DataContext="{d:DesignInstance local:MainWindowViewModel, IsDesignTimeCreatable=True}">
     <Window.Resources>
         <local:GraphDataTemplateSelector x:Key="selector" />
@@ -69,7 +70,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <Menu Grid.Row="0">
+        <Menu Grid.Row="0" Background="WhiteSmoke">
             <MenuItem Header="_File">
                 <MenuItem Header="E_xit" Command="{Binding ExitCommand}"/>
             </MenuItem>
@@ -77,6 +78,15 @@
                 <MenuItem Header="_Randomize speed limits" Command="{Binding RandomizeCommand}" />
                 <MenuItem Header="Set 100km/h speed limit" Command="{Binding MaxCommand}" />
                 <MenuItem Header="Set 10km/h speed limit" Command="{Binding MinCommand}" />
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_Github Project" Command="{Binding OpenGitHubCommand}" />
+                <Separator/>
+                <StackPanel>
+                    <TextBlock Margin="2" Text="Controls:" />
+                    <TextBlock Margin="2" Text="    Left mouse button -> change node type" />
+                    <TextBlock Margin="2" Text="    Right mouse button -> remove node" />
+                </StackPanel>
             </MenuItem>
         </Menu>
         <GroupBox Margin="2 2 2 0" Header="Graph" Grid.Row="1">
