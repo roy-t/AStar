@@ -13,9 +13,6 @@ namespace Roy_T.AStar.Viewer
 {
     internal sealed class MainWindowViewModel : ReactiveObject
     {
-        private readonly SourceList<ReactiveObject> ModelSource;
-        private readonly ReadOnlyObservableCollection<ReactiveObject> ModelList;
-
         private readonly Dictionary<INode, NodeModel> NodeDict;
         private readonly Dictionary<IEdge, AEdgeModel> EdgeDict;
 
@@ -27,12 +24,7 @@ namespace Roy_T.AStar.Viewer
 
         public MainWindowViewModel()
         {
-            this.ModelSource = new SourceList<ReactiveObject>();
-            this.ModelSource
-             .Connect()
-             .ObserveOn(RxApp.MainThreadScheduler)
-             .Bind(out this.ModelList)
-             .Subscribe();
+            this.Nodes = new ObservableCollection<ReactiveObject>();
 
             this.NodeDict = new Dictionary<INode, NodeModel>();
             this.EdgeDict = new Dictionary<IEdge, AEdgeModel>();
@@ -55,8 +47,6 @@ namespace Roy_T.AStar.Viewer
 
             var grid = new Grid(5, 5, 100, 100, Settings.MaxSpeed);
             this.PopupulateModelList(grid.GetAllNodes());
-
-            //var o = new ObservableCollection<ReactiveObject>();
         }
 
         public string Outcome
@@ -65,7 +55,7 @@ namespace Roy_T.AStar.Viewer
             set => this.RaiseAndSetIfChanged(ref this.outcome, value);
         }
 
-        public ReadOnlyObservableCollection<ReactiveObject> Nodes => this.ModelList;
+        public ObservableCollection<ReactiveObject> Nodes { get; }
 
         public IReactiveCommand ExitCommand { get; }
 
@@ -103,12 +93,12 @@ namespace Roy_T.AStar.Viewer
                 }
             }
 
-            this.ModelSource.AddRange(toAdd);
+            this.Nodes.AddRange(toAdd);
         }
 
         private void SetSpeedLimits(Func<Velocity> speedLimitFunc)
         {
-            foreach (var edge in this.ModelSource.Items.OfType<AEdgeModel>())
+            foreach (var edge in this.Nodes.OfType<AEdgeModel>())
             {
                 edge.Velocity = speedLimitFunc();
             }
@@ -177,7 +167,7 @@ namespace Roy_T.AStar.Viewer
             node.Outgoing.Clear();
             node.Incoming.Clear();
 
-            this.ModelSource.RemoveMany(toRemove);
+            this.Nodes.RemoveMany(toRemove);
 
             this.startNode = this.startNode != model ? this.startNode : null;
             this.endNode = this.endNode != model ? this.endNode : null;
@@ -202,7 +192,7 @@ namespace Roy_T.AStar.Viewer
                     toAdd.Add(edgeModel);
                 }
 
-                this.ModelSource.AddRange(toAdd);
+                this.Nodes.AddRange(toAdd);
             }
             else
             {
@@ -213,12 +203,12 @@ namespace Roy_T.AStar.Viewer
         private void ClearPath()
         {
             var toRemove = new List<PathEdgeModel>();
-            foreach (var edge in this.ModelSource.Items.OfType<PathEdgeModel>())
+            foreach (var edge in this.Nodes.OfType<PathEdgeModel>())
             {
                 toRemove.Add(edge);
             }
 
-            this.ModelSource.RemoveMany(toRemove);
+            this.Nodes.RemoveMany(toRemove);
         }
     }
 }

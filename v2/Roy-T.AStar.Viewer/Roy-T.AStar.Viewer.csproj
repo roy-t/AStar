@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DynamicData" Version="6.14.3" />
     <PackageReference Include="ReactiveUI" Version="11.1.12" />
     <PackageReference Include="ReactiveUI.WPF" Version="11.1.12" />
   </ItemGroup>
