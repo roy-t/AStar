@@ -1,4 +1,6 @@
 - Use nodes and edges in the algorithm to make it more flexible
 - Block nodes by removing connections (making pathfinding truly cheaper)
-- Implement 'corner cutting' by removing more edges
+- Implement 'corner cutting' by removing more edges around a blocked node
 - Use improvments from TrafficSim for MinHeap
+
+- Rewrite the minheap: store nodes in a list<> instead of a fake linked list this will also prevent circular loops between min heap nodes
