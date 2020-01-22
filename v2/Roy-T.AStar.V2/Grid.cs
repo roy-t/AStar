@@ -82,20 +82,18 @@ namespace Roy_T.AStar.V2
         {
             var node = this.Nodes[x, y];
 
-            for (var i = 0; i < node.Incoming.Count; i++)
+            foreach (var outgoingEdge in node.Outgoing)
             {
-                var edge = node.Incoming[i];
-                var neighbour = edge.GetOppositeNode(node);
-                neighbour.Outgoing.Remove(edge);
+                var opposite = outgoingEdge.End;
+                opposite.Incoming.Remove(outgoingEdge);
             }
 
             node.Incoming.Clear();
 
-            for (var i = 0; i < node.Outgoing.Count; i++)
+            foreach (var incomingEdge in node.Incoming)
             {
-                var edge = node.Outgoing[i];
-                var neighbour = edge.GetOppositeNode(node);
-                neighbour.Incoming.Remove(edge);
+                var opposite = incomingEdge.Start;
+                opposite.Outgoing.Remove(incomingEdge);
             }
 
             node.Outgoing.Clear();

@@ -3,9 +3,9 @@ using Roy_T.AStar.V2;
 
 namespace Roy_T.AStar.Viewer.Model
 {
-    internal abstract class AEdgeModel : ReactiveObject
+    internal class EdgeModel : ReactiveObject
     {
-        public AEdgeModel(IEdge edge)
+        public EdgeModel(IEdge edge)
         {
             this.Edge = edge;
         }
@@ -22,11 +22,11 @@ namespace Roy_T.AStar.Viewer.Model
 
         public IEdge Edge { get; }
 
-        public float X1 => this.Edge.A.X;
-        public float Y1 => this.Edge.A.Y;
-        public float X2 => this.Edge.B.X;
-        public float Y2 => this.Edge.B.Y;
+        public float X1 => this.Edge.Start.X;
+        public float Y1 => this.Edge.Start.Y;
+        public float X2 => this.Edge.End.X;
+        public float Y2 => this.Edge.End.Y;
 
-        public float Z => 0;
+        public float Z => 1;
     }
 }

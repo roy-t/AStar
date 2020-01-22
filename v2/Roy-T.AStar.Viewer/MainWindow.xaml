@@ -6,34 +6,21 @@
         xmlns:local="clr-namespace:Roy_T.AStar.Viewer"
         xmlns:model="clr-namespace:Roy_T.AStar.Viewer.Model"
         mc:Ignorable="d"
-        Height="700" Width="700"
+        Height="900" Width="1550"
         Background="WhiteSmoke" 
         Title="Roy-T.AStar.v2 - Viewer" d:DataContext="{d:DesignInstance local:MainWindowViewModel, IsDesignTimeCreatable=True}">
     <Window.Resources>
         <local:GraphDataTemplateSelector x:Key="selector" />
         <local:NodeStateColorConverter x:Key="stateConvertor" />
         <local:EdgeSpeedColorConverter x:Key="speedConvertor" />
-        <DataTemplate x:Key="IncomingEdgeDataTemplate" DataType="{x:Type model:IncomingEdgeModel}">
+        <DataTemplate x:Key="EdgeDataTemplate" DataType="{x:Type model:EdgeModel}">
             <Grid>
-                <Line X1="{Binding X1}" Y1="{Binding Y1}" X2="{Binding X2}" Y2="{Binding Y2}" Stroke="{Binding Velocity, Converter={StaticResource speedConvertor}}" StrokeThickness="1" StrokeDashArray="3 3">
-                    <Line.RenderTransform>
-                        <TranslateTransform X="-1.5" Y="-5" />
-                    </Line.RenderTransform>
-                </Line>
-            </Grid>
-        </DataTemplate>
-        <DataTemplate x:Key="OutgoingEdgeDataTemplate" DataType="{x:Type model:OutgoingEdgeModel}">
-            <Grid>
-                <Line X1="{Binding X1}" Y1="{Binding Y1}" X2="{Binding X2}" Y2="{Binding Y2}" Stroke="{Binding Velocity, Converter={StaticResource speedConvertor}}" StrokeThickness="1">
-                    <Line.RenderTransform>
-                        <TranslateTransform X="1.5" Y="5" />
-                    </Line.RenderTransform>
-                </Line>
+                <Line X1="{Binding X1}" Y1="{Binding Y1}" X2="{Binding X2}" Y2="{Binding Y2}" Stroke="{Binding Velocity, Converter={StaticResource speedConvertor}}" StrokeThickness="2"/>
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="PathEdgeDataTemplate" DataType="{x:Type model:PathEdgeModel}">
             <Grid>
-                <Line X1="{Binding X1}" Y1="{Binding Y1}" X2="{Binding X2}" Y2="{Binding Y2}" Stroke="Blue" StrokeThickness="1"/>
+                <Line X1="{Binding X1}" Y1="{Binding Y1}" X2="{Binding X2}" Y2="{Binding Y2}" Stroke="Blue" StrokeThickness="6"/>
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="NodeDataTemplate" DataType="{x:Type model:NodeModel}">
@@ -137,22 +124,19 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="Incoming edge" Margin="2" Grid.Row="0" Grid.Column="0"/>
-                <Line X1="0" X2="20" Y1="10" Y2="10" StrokeThickness="1" Stroke="Black" StrokeDashArray="3 3" Grid.Row="0" Grid.Column="1" />
-                <TextBlock Text="Outgoing edge" Margin="2" Grid.Row="1" Grid.Column="0"/>
-                <Line X1="0" X2="20" Y1="10" Y2="10" StrokeThickness="1" Stroke="Black" Grid.Row="1" Grid.Column="1" />
-                <TextBlock Text="Path" Margin="2" Grid.Row="2" Grid.Column="0"/>
-                <Line X1="0" X2="20" Y1="10" Y2="10" StrokeThickness="1" Stroke="Blue" Grid.Row="2" Grid.Column="1" />
-                <TextBlock Text="Start node" Margin="2" Grid.Row="3" Grid.Column="0"/>
-                <Rectangle Margin="2" Width="16" Height="16" Fill="LightGreen" Grid.Row="3" Grid.Column="1"  />
-                <TextBlock Text="End node" Margin="2" Grid.Row="4" Grid.Column="0"/>
-                <Rectangle Margin="2" Width="16" Height="16" Fill="DarkGreen" Grid.Row="4" Grid.Column="1"  />
+                <TextBlock Text="Edge" Margin="2" Grid.Row="0" Grid.Column="0"/>
+                <Line X1="0" X2="20" Y1="10" Y2="10" StrokeThickness="2" Stroke="Black" Grid.Row="0" Grid.Column="1" />
+                <TextBlock Text="Edge on path" Margin="2" Grid.Row="1" Grid.Column="0"/>
+                <Line X1="0" X2="20" Y1="10" Y2="10" StrokeThickness="1" Stroke="Blue" Grid.Row="1" Grid.Column="1" />
+                <TextBlock Text="Start node" Margin="2" Grid.Row="2" Grid.Column="0"/>
+                <Rectangle Margin="2" Width="16" Height="16" Fill="LightGreen" Grid.Row="2" Grid.Column="1"  />
+                <TextBlock Text="End node" Margin="2" Grid.Row="3" Grid.Column="0"/>
+                <Rectangle Margin="2" Width="16" Height="16" Fill="DarkGreen" Grid.Row="3" Grid.Column="1"  />
             </Grid>
         </GroupBox>
     </Grid>

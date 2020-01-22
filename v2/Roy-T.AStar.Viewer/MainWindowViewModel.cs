@@ -15,7 +15,7 @@ namespace Roy_T.AStar.Viewer
     internal sealed class MainWindowViewModel : ReactiveObject
     {
         private readonly Dictionary<INode, NodeModel> NodeDict;
-        private readonly Dictionary<IEdge, AEdgeModel> EdgeDict;
+        private readonly Dictionary<IEdge, EdgeModel> EdgeDict;
 
         private readonly Random Random;
 
@@ -28,7 +28,7 @@ namespace Roy_T.AStar.Viewer
             this.Nodes = new ObservableCollection<ReactiveObject>();
 
             this.NodeDict = new Dictionary<INode, NodeModel>();
-            this.EdgeDict = new Dictionary<IEdge, AEdgeModel>();
+            this.EdgeDict = new Dictionary<IEdge, EdgeModel>();
 
             this.Random = new Random();
             this.outcome = string.Empty;
@@ -59,8 +59,15 @@ namespace Roy_T.AStar.Viewer
             this.MaxCommand = ReactiveCommand.Create(() => this.SetSpeedLimits(() => Settings.MaxSpeed));
             this.MinCommand = ReactiveCommand.Create(() => this.SetSpeedLimits(() => Settings.MinSpeed));
 
-            var grid = new Grid(5, 5, 100, 100, Settings.MaxSpeed);
+            var grid = new Grid(14, 7, 100, 100, Settings.MaxSpeed);
             this.PopupulateModelList(grid.GetAllNodes());
+
+            this.startNode = this.NodeDict[grid.GetNode(0, 0)];
+            this.startNode.NodeState = NodeState.Start;
+
+            this.endNode = this.NodeDict[grid.GetNode(grid.Columns - 1, grid.Rows - 1)];
+            this.endNode.NodeState = NodeState.End;
+            this.CalculatePath();
         }
 
         public string Outcome
@@ -92,17 +99,10 @@ namespace Roy_T.AStar.Viewer
                 this.NodeDict.Add(node, model);
                 toAdd.Add(model);
 
-                foreach (var outgoingEdge in node.Outgoing)
+                foreach (var edge in node.Outgoing)
                 {
-                    var edgeModel = new IncomingEdgeModel(outgoingEdge);
-                    this.EdgeDict.Add(outgoingEdge, edgeModel);
-                    toAdd.Add(edgeModel);
-                }
-
-                foreach (var incomingEdge in node.Incoming)
-                {
-                    var edgeModel = new OutgoingEdgeModel(incomingEdge);
-                    this.EdgeDict.Add(incomingEdge, edgeModel);
+                    var edgeModel = new EdgeModel(edge);
+                    this.EdgeDict.Add(edge, edgeModel);
                     toAdd.Add(edgeModel);
                 }
             }
@@ -112,7 +112,7 @@ namespace Roy_T.AStar.Viewer
 
         private void SetSpeedLimits(Func<Velocity> speedLimitFunc)
         {
-            foreach (var edge in this.Nodes.OfType<AEdgeModel>())
+            foreach (var edge in this.Nodes.OfType<EdgeModel>())
             {
                 edge.Velocity = speedLimitFunc();
             }
@@ -156,31 +156,27 @@ namespace Roy_T.AStar.Viewer
 
             var node = model.Node;
 
-            foreach (var outgoingEdge in node.Outgoing)
-            {
-                var opposite = outgoingEdge.GetOppositeNode(node);
-                var incomingEdge = opposite.GetEdgeFrom(node);
-                opposite.Incoming.Remove(incomingEdge);
-
-                toRemove.Add(this.EdgeDict[outgoingEdge]);
-                toRemove.Add(this.EdgeDict[incomingEdge]);
-            }
-
             foreach (var incomingEdge in node.Incoming)
             {
-                var opposite = incomingEdge.GetOppositeNode(node);
-                var outgoingEdge = opposite.GetEdgeTo(node);
-                opposite.Outgoing.Remove(outgoingEdge);
+                var opposite = incomingEdge.Start;
+                opposite.Outgoing.Remove(incomingEdge);
 
                 toRemove.Add(this.EdgeDict[incomingEdge]);
+            }
+
+            node.Incoming.Clear();
+
+            foreach (var outgoingEdge in node.Outgoing)
+            {
+                var opposite = outgoingEdge.End;
+                opposite.Incoming.Remove(outgoingEdge);
+
                 toRemove.Add(this.EdgeDict[outgoingEdge]);
             }
 
-            toRemove.Add(model);
-
             node.Outgoing.Clear();
-            node.Incoming.Clear();
 
+            toRemove.Add(model);
             this.Nodes.RemoveMany(toRemove);
 
             this.startNode = this.startNode != model ? this.startNode : null;
@@ -202,7 +198,7 @@ namespace Roy_T.AStar.Viewer
 
                 foreach (var edge in path.Edges)
                 {
-                    var edgeModel = new PathEdgeModel(edge.A.X, edge.A.Y, edge.B.X, edge.B.Y);
+                    var edgeModel = new PathEdgeModel(edge.Start.X, edge.Start.Y, edge.End.X, edge.End.Y);
                     toAdd.Add(edgeModel);
                 }
 

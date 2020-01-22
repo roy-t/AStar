@@ -35,21 +35,21 @@ namespace Roy_T.AStar.V2
 
                 foreach (var edge in current.Node.Outgoing)
                 {
-                    var nextJunction = edge.GetOppositeNode(current.Node);
+                    var oppositeNode = edge.End;
                     var costSoFar = current.TimeSoFar + ExpectedTime(edge);
 
-                    if (nodes.TryGetValue(nextJunction, out var node))
+                    if (nodes.TryGetValue(oppositeNode, out var node))
                     {
                         if (node.TimeSoFar > costSoFar)
                         {
-                            node = new MinHeapNode(nextJunction, current, edge, costSoFar, ExpectedTime(nextJunction, goal, maximumVelocity));
+                            node = new MinHeapNode(oppositeNode, current, edge, costSoFar, ExpectedTime(oppositeNode, goal, maximumVelocity));
                             open.Push(node);
-                            nodes[nextJunction] = node;
+                            nodes[oppositeNode] = node;
                         }
                     }
                     else
                     {
-                        node = new MinHeapNode(nextJunction, current, edge, costSoFar, ExpectedTime(nextJunction, goal, maximumVelocity));
+                        node = new MinHeapNode(oppositeNode, current, edge, costSoFar, ExpectedTime(oppositeNode, goal, maximumVelocity));
                         open.Push(node);
                         nodes.Add(node.Node, node);
                     }
@@ -69,7 +69,7 @@ namespace Roy_T.AStar.V2
             {
                 var edge = current.CameVia;
                 edges.Add(edge);
-                distance += MathUtil.Distance(edge.A.X, edge.A.Y, edge.B.X, edge.B.Y);
+                distance += MathUtil.Distance(edge.Start.X, edge.Start.Y, edge.End.X, edge.End.Y);
 
                 current = current.CameFrom;
             }
@@ -80,7 +80,7 @@ namespace Roy_T.AStar.V2
         }
 
         private static Duration ExpectedTime(IEdge edge)
-            => MathUtil.ExpectedTime(edge.A.X, edge.A.Y, edge.B.X, edge.B.Y, edge.TraversalVelocity);
+            => MathUtil.ExpectedTime(edge.Start.X, edge.Start.Y, edge.End.X, edge.End.Y, edge.TraversalVelocity);
 
 
 

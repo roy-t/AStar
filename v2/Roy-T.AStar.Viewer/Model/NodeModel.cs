@@ -24,7 +24,7 @@ namespace Roy_T.AStar.Viewer.Model
             set => this.RaiseAndSetIfChanged(ref this.nodeState, value);
         }
 
-        public float Z => 1;
+        public float Z => 2;
 
         public IReactiveCommand LeftClickCommand { get; set; }
         public IReactiveCommand RightClickCommand { get; set; }

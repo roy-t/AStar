@@ -4,9 +4,7 @@
     {
         Velocity TraversalVelocity { get; set; }
 
-        INode A { get; }
-        INode B { get; }
-
-        INode GetOppositeNode(INode node);
+        INode Start { get; }
+        INode End { get; }
     }
 }

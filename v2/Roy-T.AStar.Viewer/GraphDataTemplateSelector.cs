@@ -11,14 +11,9 @@ namespace Roy_T.AStar.Viewer
         {
             var element = container as FrameworkElement;
 
-            if (item is IncomingEdgeModel)
+            if (item is EdgeModel)
             {
-                return element.FindResource("IncomingEdgeDataTemplate") as DataTemplate;
-            }
-
-            if (item is OutgoingEdgeModel)
-            {
-                return element.FindResource("OutgoingEdgeDataTemplate") as DataTemplate;
+                return element.FindResource("EdgeDataTemplate") as DataTemplate;
             }
 
             if (item is PathEdgeModel)
