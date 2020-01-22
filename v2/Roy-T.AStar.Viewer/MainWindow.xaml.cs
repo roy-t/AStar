@@ -10,9 +10,10 @@ namespace Roy_T.AStar.Viewer
         public MainWindow()
         {
             InitializeComponent();
-
-            // Poor man's data binding
-            this.DataContext = new MainWindowViewModel();
+            this.Loaded += this.MainWindow_Loaded;
         }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+            => this.DataContext = new MainWindowViewModel();
     }
 }

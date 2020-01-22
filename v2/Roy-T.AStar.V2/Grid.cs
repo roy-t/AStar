@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Roy_T.AStar.V2
 {
@@ -6,18 +7,18 @@ namespace Roy_T.AStar.V2
     {
         private readonly INode[,] Nodes;
 
-        public Grid(int width, int height, Velocity defaultSpeed, Connections connections = Connections.LateralAndDiagonal)
+        public Grid(int columns, int rows, float xDistance, float yDistance, Velocity defaultSpeed, Connections connections = Connections.LateralAndDiagonal)
         {
-            if (width < 1)
+            if (columns < 1)
             {
                 throw new ArgumentOutOfRangeException(
-                    nameof(width), $"Argument {nameof(width)} is {width} but should be >= 1");
+                    nameof(columns), $"Argument {nameof(columns)} is {columns} but should be >= 1");
             }
 
-            if (height < 1)
+            if (rows < 1)
             {
                 throw new ArgumentOutOfRangeException(
-                    nameof(height), $"Argument {nameof(height)} is {height} but should be >= 1");
+                    nameof(rows), $"Argument {nameof(rows)} is {rows} but should be >= 1");
             }
 
             if (defaultSpeed.MetersPerSecond <= 0.0f)
@@ -26,12 +27,24 @@ namespace Roy_T.AStar.V2
                     nameof(defaultSpeed), $"Argument {nameof(defaultSpeed)} is {defaultSpeed} but should be > 0.0 m/s");
             }
 
-            this.Width = width;
-            this.Height = height;
+            if (xDistance <= 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(xDistance), $"Argument {nameof(xDistance)} is {xDistance} but should be > 0");
+            }
 
-            this.Nodes = new INode[width, height];
+            if (yDistance <= 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(yDistance), $"Argument {nameof(yDistance)} is {yDistance} but should be > 0");
+            }
 
-            this.CreateNodes();
+            this.Columns = columns;
+            this.Rows = rows;
+
+            this.Nodes = new INode[columns, rows];
+
+            this.CreateNodes(xDistance, yDistance);
 
             switch (connections)
             {
@@ -49,6 +62,21 @@ namespace Roy_T.AStar.V2
         }
 
         public INode GetNode(int x, int y) => this.Nodes[x, y];
+
+        public IReadOnlyList<INode> GetAllNodes()
+        {
+            var list = new List<INode>(this.Columns * this.Rows);
+
+            for (var x = 0; x < this.Columns; x++)
+            {
+                for (var y = 0; y < this.Rows; y++)
+                {
+                    list.Add(this.Nodes[x, y]);
+                }
+            }
+
+            return list;
+        }
 
         public void BlockNode(int x, int y)
         {
@@ -73,22 +101,22 @@ namespace Roy_T.AStar.V2
             node.Outgoing.Clear();
         }
 
-        private void CreateNodes()
+        private void CreateNodes(float xDistance, float yDistance)
         {
-            for (var x = 0; x < this.Width; x++)
+            for (var x = 0; x < this.Columns; x++)
             {
-                for (var y = 0; y < this.Height; y++)
+                for (var y = 0; y < this.Rows; y++)
                 {
-                    this.Nodes[x, y] = new Node(x, y);
+                    this.Nodes[x, y] = new Node(x * xDistance, y * yDistance);
                 }
             }
         }
 
         private void CreateLateralConnections(Velocity defaultSpeed)
         {
-            for (var x = 0; x < this.Width; x++)
+            for (var x = 0; x < this.Columns; x++)
             {
-                for (var y = 0; y < this.Height; y++)
+                for (var y = 0; y < this.Rows; y++)
                 {
                     var node = this.Nodes[x, y];
                     if (x > 0)
@@ -105,14 +133,14 @@ namespace Roy_T.AStar.V2
                         northNode.Connect(node, defaultSpeed);
                     }
 
-                    if (x < this.Width - 1)
+                    if (x < this.Columns - 1)
                     {
                         var eastNode = this.Nodes[x + 1, y];
                         node.Connect(eastNode, defaultSpeed);
                         eastNode.Connect(node, defaultSpeed);
                     }
 
-                    if (y < this.Height - 1)
+                    if (y < this.Rows - 1)
                     {
                         var southNode = this.Nodes[x, y + 1];
                         node.Connect(southNode, defaultSpeed);
@@ -124,9 +152,9 @@ namespace Roy_T.AStar.V2
 
         private void CreateDiagonalConnections(Velocity defaultSpeed)
         {
-            for (var x = 0; x < this.Width; x++)
+            for (var x = 0; x < this.Columns; x++)
             {
-                for (var y = 0; y < this.Height; y++)
+                for (var y = 0; y < this.Rows; y++)
                 {
                     var node = this.Nodes[x, y];
                     if (x > 0 && y > 0)
@@ -136,21 +164,21 @@ namespace Roy_T.AStar.V2
                         northWestNode.Connect(node, defaultSpeed);
                     }
 
-                    if (x < this.Width - 1 && y > 0)
+                    if (x < this.Columns - 1 && y > 0)
                     {
                         var northEastNode = this.Nodes[x + 1, y - 1];
                         node.Connect(northEastNode, defaultSpeed);
                         northEastNode.Connect(node, defaultSpeed);
                     }
 
-                    if (x < this.Width - 1 && y < this.Height - 1)
+                    if (x < this.Columns - 1 && y < this.Rows - 1)
                     {
                         var southEastNode = this.Nodes[x + 1, y + 1];
                         node.Connect(southEastNode, defaultSpeed);
                         southEastNode.Connect(node, defaultSpeed);
                     }
 
-                    if (x > 0 && y < this.Height - 1)
+                    if (x > 0 && y < this.Rows - 1)
                     {
                         var southWestNode = this.Nodes[x, y + 1];
                         node.Connect(southWestNode, defaultSpeed);
@@ -160,7 +188,7 @@ namespace Roy_T.AStar.V2
             }
         }
 
-        public int Width { get; }
-        public int Height { get; }
+        public int Columns { get; }
+        public int Rows { get; }
     }
 }

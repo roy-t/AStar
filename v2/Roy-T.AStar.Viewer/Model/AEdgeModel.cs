@@ -12,13 +12,13 @@ namespace Roy_T.AStar.Viewer.Model
             this.Edge = edge;
         }
 
-        public float TraversalVelocity
+        public Velocity Velocity
         {
-            get => this.Edge.TraversalVelocity.KilometersPerHour;
+            get => this.Edge.TraversalVelocity;
             set
             {
-                this.Edge.TraversalVelocity = Velocity.FromKilometersPerHour(value);
-                this.RaisePropertyChanged(nameof(this.TraversalVelocity));
+                this.Edge.TraversalVelocity = value;
+                this.RaisePropertyChanged(nameof(this.Velocity));
             }
         }
 

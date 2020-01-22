@@ -27,33 +27,33 @@ namespace Viewer
 
             this.StartCommand = ReactiveCommand.Create(
                 () =>
-                {                                        
+                {
                     this.ReplayController.Start(this.cells);
                     UpdatePathBindings();
                 });
 
             this.EndCommand = ReactiveCommand.Create(
                 () =>
-                {                                        
+                {
                     this.ReplayController.End(this.cells);
                     UpdatePathBindings();
                 });
 
             this.ForwardCommand = ReactiveCommand.Create(
                 () =>
-                {                                        
+                {
                     this.ReplayController.Forward(this.cells);
                     UpdatePathBindings();
                 });
 
             this.BackwardCommand = ReactiveCommand.Create(
                 () =>
-                {                                        
+                {
                     this.ReplayController.Backward(this.cells);
                     UpdatePathBindings();
                 });
 
-            this.SaveCommand = ReactiveCommand.Create(() => IO.Save(this.Cells));            
+            this.SaveCommand = ReactiveCommand.Create(() => IO.Save(this.Cells));
             this.ExitCommand = ReactiveCommand.Create(() => Application.Current.Shutdown());
 
             this.LoadCommand = ReactiveCommand.Create(
@@ -93,14 +93,14 @@ namespace Viewer
 #else
             this.IsDebugBuild = false;
 #endif            
-        }        
+        }
 
         public IReadOnlyList<Cell> Cells
         {
             get => this.cells;
             set => this.RaiseAndSetIfChanged(ref this.cells, value.ToList());
         }
-        
+
         public ReactiveCommand StartCommand { get; }
         public ReactiveCommand EndCommand { get; }
         public ReactiveCommand ForwardCommand { get; }
@@ -108,7 +108,7 @@ namespace Viewer
         public ReactiveCommand SaveCommand { get; }
         public ReactiveCommand LoadCommand { get; }
         public ReactiveCommand ExitCommand { get; }
-       
+
         public int StepCount => ReplayController.GetMaxStep();
 
         public int CurrentStep
@@ -122,15 +122,15 @@ namespace Viewer
             }
         }
 
-        
+
 
         public string IterationLimit
         {
             get => this.iterationLimit.ToString();
             set
             {
-                this.iterationLimit = int.TryParse(value, out int result) 
-                    ? result 
+                this.iterationLimit = int.TryParse(value, out int result)
+                    ? result
                     : DefaultIterationLimit;
 
                 UpdatePath();
@@ -153,15 +153,15 @@ namespace Viewer
             }
 
             this.Cells = ioCells;
-          
+
             UpdatePath();
         }
 
         // Shows the edit window, and makes sure a new path is calculated after anything changed
         private void EditCell(Cell cell)
-        {            
+        {
             var vm = new EditWindowViewModel(cell.X, cell.Y, cell.CellState, cell.Cost);
-            var window = new EditWindow {DataContext = vm, Owner = Application.Current.MainWindow};
+            var window = new EditWindow { DataContext = vm, Owner = Application.Current.MainWindow };
             window.ShowDialog();
 
             if (cell.CellState != CellState.Start && vm.CellState == CellState.Start)
@@ -176,7 +176,7 @@ namespace Viewer
 
             cell.CellState = vm.CellState;
             cell.Cost = vm.Cost;
-           
+
             UpdatePath();
         }
 
@@ -200,7 +200,7 @@ namespace Viewer
             {
                 if (c.CellState == state)
                 {
-                    c.CellState = CellState.Normal;                    
+                    c.CellState = CellState.Normal;
                 }
             }
         }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Roy_T.AStar.V2
 {
@@ -9,7 +8,7 @@ namespace Roy_T.AStar.V2
         {
             if (start == goal)
             {
-                return new Path(PathType.Complete, Duration.Zero, new List<IEdge>());
+                return new Path(PathType.Complete, Duration.Zero, 0.0f, new List<IEdge>());
             }
 
             var open = new MinHeap();
@@ -65,34 +64,26 @@ namespace Roy_T.AStar.V2
             var edges = new List<IEdge>();
 
             var current = node;
+            var distance = 0.0f;
             while (current != null && current.CameVia != null)
             {
-                edges.Add(current.CameVia);
+                var edge = current.CameVia;
+                edges.Add(edge);
+                distance += MathUtil.Distance(edge.A.X, edge.A.Y, edge.B.X, edge.B.Y);
+
                 current = current.CameFrom;
             }
 
             edges.Reverse();
 
-            return new Path(type, node.TimeSoFar, edges);
+            return new Path(type, node.TimeSoFar, distance, edges);
         }
 
         private static Duration ExpectedTime(IEdge edge)
-            => ExpectedTime(edge.A.X, edge.A.Y, edge.B.X, edge.B.Y, edge.TraversalVelocity);
+            => MathUtil.ExpectedTime(edge.A.X, edge.A.Y, edge.B.X, edge.B.Y, edge.TraversalVelocity);
 
-        private static Duration ExpectedTime(float sX, float sY, float eX, float eY, Velocity velocity)
-        {
-            var distance = Distance(sX, sY, eX, eY);
-            return Duration.FromSeconds(distance / velocity.MetersPerSecond);
-        }
 
-        private static float Distance(float sX, float sY, float eX, float eY)
-        {
-            var d0 = (eX - sX) * (eX - sX);
-            var d1 = (eY - sY) * (eY - sY);
 
-            return (float)Math.Sqrt(d0 + d1);
-        }
-
-        private static Duration ExpectedTime(INode from, INode to, Velocity maximumVelocity) => ExpectedTime(from.X, from.Y, to.X, to.Y, maximumVelocity);
+        private static Duration ExpectedTime(INode from, INode to, Velocity maximumVelocity) => MathUtil.ExpectedTime(from.X, from.Y, to.X, to.Y, maximumVelocity);
     }
 }

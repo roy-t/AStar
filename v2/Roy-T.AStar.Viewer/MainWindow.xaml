@@ -6,30 +6,33 @@
         xmlns:local="clr-namespace:Roy_T.AStar.Viewer"
         xmlns:model="clr-namespace:Roy_T.AStar.Viewer.Model"
         mc:Ignorable="d"
-        Height="450" Width="800"
+        Height="700" Width="700"
         Title="Roy-T.AStar.v2 - Viewer" d:DataContext="{d:DesignInstance local:MainWindowViewModel, IsDesignTimeCreatable=True}">
     <Window.Resources>
+        <local:GraphDataTemplateSelector x:Key="selector" />
+        <local:NodeStateColorConverter x:Key="stateConvertor" />
+        <local:EdgeSpeedColorConverter x:Key="speedConvertor" />
         <DataTemplate x:Key="IncomingEdgeDataTemplate" DataType="{x:Type model:IncomingEdgeModel}">
             <Grid>
-                <Line X1="{Binding X1}" Y1="{Binding Y1}" X2="{Binding X2}" Y2="{Binding Y2}" Stroke="Blue" StrokeThickness="1">
+                <Line X1="{Binding X1}" Y1="{Binding Y1}" X2="{Binding X2}" Y2="{Binding Y2}" Stroke="{Binding Velocity, Converter={StaticResource speedConvertor}}" StrokeThickness="1" StrokeDashArray="3 3">
                     <Line.RenderTransform>
-                        <TranslateTransform X="0" Y="-10" />
+                        <TranslateTransform X="-1.5" Y="-5" />
                     </Line.RenderTransform>
                 </Line>
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="OutgoingEdgeDataTemplate" DataType="{x:Type model:OutgoingEdgeModel}">
             <Grid>
-                <Line X1="{Binding X1}" Y1="{Binding Y1}" X2="{Binding X2}" Y2="{Binding Y2}" Stroke="Green" StrokeThickness="1">
+                <Line X1="{Binding X1}" Y1="{Binding Y1}" X2="{Binding X2}" Y2="{Binding Y2}" Stroke="{Binding Velocity, Converter={StaticResource speedConvertor}}" StrokeThickness="1">
                     <Line.RenderTransform>
-                        <TranslateTransform X="0" Y="10" />
+                        <TranslateTransform X="1.5" Y="5" />
                     </Line.RenderTransform>
                 </Line>
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="PathEdgeDataTemplate" DataType="{x:Type model:PathEdgeModel}">
             <Grid>
-                <Line X1="{Binding X1}" Y1="{Binding Y1}" X2="{Binding X2}" Y2="{Binding Y2}" Stroke="Red" StrokeThickness="1"/>
+                <Line X1="{Binding X1}" Y1="{Binding Y1}" X2="{Binding X2}" Y2="{Binding Y2}" Stroke="Blue" StrokeThickness="1"/>
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="NodeDataTemplate" DataType="{x:Type model:NodeModel}">
@@ -37,7 +40,7 @@
                 <Border.RenderTransform>
                     <TranslateTransform X="-25" Y="-25" />
                 </Border.RenderTransform>
-                <Button Width="50" Height="50" Command="{Binding ClickCommand}">
+                <Button Width="50" Height="50" Command="{Binding ClickCommand}" Background="{Binding NodeState, Converter={StaticResource stateConvertor}}">
                     <Button.Content>
                         <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12" FontFamily="Lucida Sans Typewriter">
                             <TextBlock.Text>
@@ -51,7 +54,6 @@
                 </Button>
             </Border>
         </DataTemplate>
-        <local:GraphDataTemplateSelector x:Key="selector" />
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -67,33 +69,58 @@
             <MenuItem Header="_File">
                 <MenuItem Header="E_xit" Command="{Binding ExitCommand}"/>
             </MenuItem>
+            <MenuItem Header="_Graph">
+                <MenuItem Header="_Randomize speed limits" Command="{Binding RandomizeCommand}" />
+                <MenuItem Header="Set 100km/h speed limit" Command="{Binding MaxCommand}" />
+                <MenuItem Header="Set 10km/h speed limit" Command="{Binding MinCommand}" />
+            </MenuItem>
         </Menu>
-        <TabControl Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="2">
-            <TabItem Header="Graph">
-                <Grid>
-                    <ItemsControl ItemsSource="{Binding Nodes}" ItemTemplateSelector="{StaticResource selector}">
+        <GroupBox Margin="2 2 2 0" Header="Graph" Grid.Row="1">
+            <Grid>
+                <ItemsControl ItemsSource="{Binding Nodes}" ItemTemplateSelector="{StaticResource selector}">
                     <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Canvas></Canvas>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemContainerStyle>
-                            <Style>
-                                <Setter Property="Canvas.Left" Value="{Binding Path=X}" />
-                                <Setter Property="Canvas.Top" Value="{Binding Path=Y}" />
-                                <Setter Property="Canvas.ZIndex" Value="{Binding Path=Z}" />
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>
-                    </ItemsControl>
+                        <ItemsPanelTemplate>
+                            <Canvas Margin="50"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style>
+                            <Setter Property="Canvas.Left" Value="{Binding Path=X}" />
+                            <Setter Property="Canvas.Top" Value="{Binding Path=Y}" />
+                            <Setter Property="Canvas.ZIndex" Value="{Binding Path=Z}" />
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                </ItemsControl>
+            </Grid>
+        </GroupBox>
+        <GroupBox Margin="0 2 2 0" Header="HeatMap" Grid.Row="1" Grid.Column="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                
+                <Grid Grid.Row="0" Grid.RowSpan="3">
+                    <Grid.Background>
+                        <LinearGradientBrush>
+                            <GradientStop Color="Green" Offset="0"/>
+                            <GradientStop Color="Red" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Grid.Background>
                 </Grid>
-            </TabItem>
-            <TabItem Header="Grid">
-
-            </TabItem>
-        </TabControl>
-        <GroupBox Header="Legend" Grid.Row="2" Grid.Column="1">
+                <TextBlock Margin="2" HorizontalAlignment="Center" Text="100km/h" />
+                <TextBlock Margin="2" HorizontalAlignment="Center" Text="10km/h" Grid.Row="2" />
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Result" Grid.Row="2" Margin="2 0 2 2" >
+            <TextBlock Text="{Binding Outcome}" TextWrapping="Wrap" />
+        </GroupBox>
+        <GroupBox Header="Legend" Grid.Row="2" Grid.Column="1" Margin="0 0 2 2">
             <Grid >
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
@@ -103,11 +130,15 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="Incoming edge" Margin="2" Grid.Row="0" Grid.Column="0"/>
-                <Line X1="0" X2="20" Y1="10" Y2="10" StrokeThickness="1" Stroke="Blue" Grid.Row="0" Grid.Column="1" />
+                <Line X1="0" X2="20" Y1="10" Y2="10" StrokeThickness="1" Stroke="Black" StrokeDashArray="3 3" Grid.Row="0" Grid.Column="1" />
                 <TextBlock Text="Outgoing edge" Margin="2" Grid.Row="1" Grid.Column="0"/>
-                <Line X1="0" X2="20" Y1="10" Y2="10" StrokeThickness="1" Stroke="Green" Grid.Row="1" Grid.Column="1" />
+                <Line X1="0" X2="20" Y1="10" Y2="10" StrokeThickness="1" Stroke="Black" Grid.Row="1" Grid.Column="1" />
                 <TextBlock Text="Path" Margin="2" Grid.Row="2" Grid.Column="0"/>
-                <Line X1="0" X2="20" Y1="10" Y2="10" StrokeThickness="1" Stroke="Red" Grid.Row="2" Grid.Column="1" />
+                <Line X1="0" X2="20" Y1="10" Y2="10" StrokeThickness="1" Stroke="Blue" Grid.Row="2" Grid.Column="1" />
+                <TextBlock Text="Start node" Margin="2" Grid.Row="3" Grid.Column="0"/>
+                <Rectangle Margin="2" Width="16" Height="16" Fill="LightGreen" Grid.Row="3" Grid.Column="1"  />
+                <TextBlock Text="End node" Margin="2" Grid.Row="4" Grid.Column="0"/>
+                <Rectangle Margin="2" Width="16" Height="16" Fill="DarkGreen" Grid.Row="4" Grid.Column="1"  />
             </Grid>
         </GroupBox>
     </Grid>

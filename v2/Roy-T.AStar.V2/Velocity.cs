@@ -18,7 +18,7 @@
         public static Velocity FromKilometersPerHour(float kilometersPerHour)
             => new Velocity(kilometersPerHour / 3.6f);
 
-        public override string ToString() => $"{this.MetersPerSecond} m/s";
+        public override string ToString() => $"{this.MetersPerSecond:F2} m/s";
         public override bool Equals(object obj) => obj is Velocity velocity && this.MetersPerSecond == velocity.MetersPerSecond;
         public override int GetHashCode() => -1419927970 + this.MetersPerSecond.GetHashCode();
     }

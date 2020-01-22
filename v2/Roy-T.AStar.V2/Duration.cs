@@ -38,7 +38,7 @@
         public static bool operator !=(Duration a, Duration b)
             => a.Seconds != b.Seconds;
 
-        public override string ToString() => $"{this.Seconds}s";
+        public override string ToString() => $"{this.Seconds:F2}s";
 
         public override bool Equals(object obj) => obj is Duration duration && this.Seconds == duration.Seconds;
         public override int GetHashCode() => -1609761766 + this.Seconds.GetHashCode();
