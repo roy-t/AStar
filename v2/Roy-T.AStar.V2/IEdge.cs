@@ -2,7 +2,7 @@
 {
     public interface IEdge
     {
-        Velocity TraversalVelocity { get; }
+        Velocity TraversalVelocity { get; set; }
 
         INode A { get; }
         INode B { get; }

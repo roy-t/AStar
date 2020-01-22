@@ -12,10 +12,10 @@
         public float KilometersPerHour => this.MetersPerSecond * 3.6f;
 
 
-        public Velocity FromMetersPerSecond(float metersPerSecond)
+        public static Velocity FromMetersPerSecond(float metersPerSecond)
             => new Velocity(metersPerSecond);
 
-        public Velocity FromKilometersPerHour(float kilometersPerHour)
+        public static Velocity FromKilometersPerHour(float kilometersPerHour)
             => new Velocity(kilometersPerHour / 3.6f);
 
         public override string ToString() => $"{this.MetersPerSecond} m/s";

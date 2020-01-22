@@ -9,7 +9,7 @@
             this.TraversalVelocity = traversalVelocity;
         }
 
-        public Velocity TraversalVelocity { get; }
+        public Velocity TraversalVelocity { get; set; }
         public INode A { get; }
         public INode B { get; }
 
