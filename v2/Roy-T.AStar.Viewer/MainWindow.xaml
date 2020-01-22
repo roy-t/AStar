@@ -40,7 +40,11 @@
                 <Border.RenderTransform>
                     <TranslateTransform X="-25" Y="-25" />
                 </Border.RenderTransform>
-                <Button Width="50" Height="50" Command="{Binding ClickCommand}" Background="{Binding NodeState, Converter={StaticResource stateConvertor}}">
+                <Button Width="50" Height="50" Background="{Binding NodeState, Converter={StaticResource stateConvertor}}">
+                    <Button.InputBindings>
+                        <MouseBinding Gesture="LeftClick" Command="{Binding LeftClickCommand}" />
+                        <MouseBinding Gesture="RightClick" Command="{Binding RightClickCommand}" />
+                    </Button.InputBindings>
                     <Button.Content>
                         <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12" FontFamily="Lucida Sans Typewriter">
                             <TextBlock.Text>

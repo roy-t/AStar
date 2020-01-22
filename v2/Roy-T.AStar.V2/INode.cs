@@ -11,5 +11,8 @@ namespace Roy_T.AStar.V2
         IList<IEdge> Outgoing { get; }
 
         void Connect(INode node, Velocity traversalVelocity);
+        IEdge GetEdgeTo(INode node);
+
+        IEdge GetEdgeFrom(INode node);
     }
 }

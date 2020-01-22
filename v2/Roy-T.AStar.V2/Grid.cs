@@ -119,19 +119,6 @@ namespace Roy_T.AStar.V2
                 for (var y = 0; y < this.Rows; y++)
                 {
                     var node = this.Nodes[x, y];
-                    if (x > 0)
-                    {
-                        var westNode = this.Nodes[x - 1, y];
-                        node.Connect(westNode, defaultSpeed);
-                        westNode.Connect(node, defaultSpeed);
-                    }
-
-                    if (y > 0)
-                    {
-                        var northNode = this.Nodes[x, y - 1];
-                        node.Connect(northNode, defaultSpeed);
-                        northNode.Connect(node, defaultSpeed);
-                    }
 
                     if (x < this.Columns - 1)
                     {
@@ -157,19 +144,6 @@ namespace Roy_T.AStar.V2
                 for (var y = 0; y < this.Rows; y++)
                 {
                     var node = this.Nodes[x, y];
-                    if (x > 0 && y > 0)
-                    {
-                        var northWestNode = this.Nodes[x - 1, y - 1];
-                        node.Connect(northWestNode, defaultSpeed);
-                        northWestNode.Connect(node, defaultSpeed);
-                    }
-
-                    if (x < this.Columns - 1 && y > 0)
-                    {
-                        var northEastNode = this.Nodes[x + 1, y - 1];
-                        node.Connect(northEastNode, defaultSpeed);
-                        northEastNode.Connect(node, defaultSpeed);
-                    }
 
                     if (x < this.Columns - 1 && y < this.Rows - 1)
                     {
@@ -180,7 +154,7 @@ namespace Roy_T.AStar.V2
 
                     if (x > 0 && y < this.Rows - 1)
                     {
-                        var southWestNode = this.Nodes[x, y + 1];
+                        var southWestNode = this.Nodes[x - 1, y + 1];
                         node.Connect(southWestNode, defaultSpeed);
                         southWestNode.Connect(node, defaultSpeed);
                     }

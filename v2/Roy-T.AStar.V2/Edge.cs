@@ -14,5 +14,7 @@
         public INode B { get; }
 
         public INode GetOppositeNode(INode oppositeTo) => this.A == oppositeTo ? this.B : this.A;
+
+        public override string ToString() => $"{this.A} -> {this.B} @ {this.TraversalVelocity}";
     }
 }

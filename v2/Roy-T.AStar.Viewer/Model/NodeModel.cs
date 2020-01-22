@@ -26,6 +26,7 @@ namespace Roy_T.AStar.Viewer.Model
 
         public float Z => 1;
 
-        public IReactiveCommand ClickCommand { get; set; }
+        public IReactiveCommand LeftClickCommand { get; set; }
+        public IReactiveCommand RightClickCommand { get; set; }
     }
 }

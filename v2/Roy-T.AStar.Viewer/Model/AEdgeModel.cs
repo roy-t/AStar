@@ -5,8 +5,6 @@ namespace Roy_T.AStar.Viewer.Model
 {
     internal abstract class AEdgeModel : ReactiveObject
     {
-        private readonly IEdge Edge;
-
         public AEdgeModel(IEdge edge)
         {
             this.Edge = edge;
@@ -21,6 +19,8 @@ namespace Roy_T.AStar.Viewer.Model
                 this.RaisePropertyChanged(nameof(this.Velocity));
             }
         }
+
+        public IEdge Edge { get; }
 
         public float X1 => this.Edge.A.X;
         public float Y1 => this.Edge.A.Y;

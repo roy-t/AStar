@@ -20,9 +20,44 @@ namespace Roy_T.AStar.V2
 
         public void Connect(INode node, Velocity traversalVelocity)
         {
-            var edge = new Edge(this, node, traversalVelocity);
-            this.Outgoing.Add(edge);
-            node.Incoming.Add(edge);
+            var outgoingEdge = new Edge(this, node, traversalVelocity);
+            this.Outgoing.Add(outgoingEdge);
+
+            var incomingEdge = new Edge(node, this, traversalVelocity);
+            node.Incoming.Add(incomingEdge);
         }
+
+        public IEdge GetEdgeTo(INode node)
+        {
+            for (var i = 0; i < this.Outgoing.Count; i++)
+            {
+                var edge = this.Outgoing[i];
+                var opposite = edge.GetOppositeNode(this);
+                if (opposite == node)
+                {
+                    return edge;
+                }
+            }
+
+            return null;
+        }
+
+        public IEdge GetEdgeFrom(INode node)
+        {
+            for (var i = 0; i < this.Incoming.Count; i++)
+            {
+                var edge = this.Incoming[i];
+                var opposite = edge.GetOppositeNode(this);
+                if (opposite == node)
+                {
+                    return edge;
+                }
+            }
+
+            return null;
+        }
+
+
+        public override string ToString() => $"({this.X:F2}, {this.Y:F2})";
     }
 }
