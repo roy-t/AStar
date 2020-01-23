@@ -24,11 +24,11 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="NodeDataTemplate" DataType="{x:Type model:NodeModel}">
-            <Border BorderBrush="Black" BorderThickness="1">
+            <Border BorderBrush="{Binding NodeState, Converter={StaticResource stateConvertor}}" BorderThickness="2" Background="White">
                 <Border.RenderTransform>
                     <TranslateTransform X="-25" Y="-25" />
                 </Border.RenderTransform>
-                <Button Width="50" Height="50" Background="{Binding NodeState, Converter={StaticResource stateConvertor}}">
+                <Button Width="60" Height="60" Background="{Binding NodeState, Converter={StaticResource stateConvertor}}">
                     <Button.InputBindings>
                         <MouseBinding Gesture="LeftClick" Command="{Binding LeftClickCommand}" />
                         <MouseBinding Gesture="RightClick" Command="{Binding RightClickCommand}" />
@@ -62,7 +62,9 @@
                 <MenuItem Header="E_xit" Command="{Binding ExitCommand}"/>
             </MenuItem>
             <MenuItem Header="_Graph">
-                <MenuItem Header="_Randomize speed limits" Command="{Binding RandomizeCommand}" />
+                <MenuItem Header="_Reset" Command="{Binding ResetCommand}" />
+                <Separator />
+                <MenuItem Header="Randomize speed limits" Command="{Binding RandomizeCommand}" />
                 <MenuItem Header="Set 100km/h speed limit" Command="{Binding MaxCommand}" />
                 <MenuItem Header="Set 10km/h speed limit" Command="{Binding MinCommand}" />
             </MenuItem>
