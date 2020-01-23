@@ -13,7 +13,7 @@ namespace Roy_T.AStar.Benchmark
         private readonly Grid GradientGrid;
         private readonly Grid GridWithHole;
         private readonly Grid GridWithRandomLimits;
-        private readonly Grid GridWithRandomLimitsAndHoles;
+        private readonly Grid GridWithRandomHoles;
         private readonly Grid GridWithUnreachableTarget;
 
         public AStarBenchmark()
@@ -27,9 +27,8 @@ namespace Roy_T.AStar.Benchmark
             this.GridWithRandomLimits = new Grid(100, 100, 1, 1, MaxSpeed);
             GridBuilder.SetRandomTraversalVelocities(this.GridWithRandomLimits);
 
-            this.GridWithRandomLimitsAndHoles = new Grid(100, 100, 1, 1, MaxSpeed);
-            GridBuilder.SetRandomTraversalVelocities(this.GridWithRandomLimitsAndHoles);
-            GridBuilder.DisconnectRandomNodes(this.GridWithRandomLimitsAndHoles);
+            this.GridWithRandomHoles = new Grid(100, 100, 1, 1, MaxSpeed);
+            GridBuilder.DisconnectRandomNodes(this.GridWithRandomHoles);
 
             this.GridWithUnreachableTarget = new Grid(100, 100, 1, 1, MaxSpeed);
             GridBuilder.DisconnectRightHalf(this.GridWithUnreachableTarget);
@@ -64,11 +63,11 @@ namespace Roy_T.AStar.Benchmark
         }
 
         [Benchmark]
-        public void GridWithRandomLimitsAndHolesBench()
+        public void GridWithRandomHolesBench()
         {
             PathFinder.FindPath(
-                this.GridWithRandomLimitsAndHoles.GetNode(0, 0),
-                this.GridWithRandomLimitsAndHoles.GetNode(this.GridWithRandomLimitsAndHoles.Columns - 1, this.GridWithRandomLimitsAndHoles.Rows - 1),
+                this.GridWithRandomHoles.GetNode(0, 0),
+                this.GridWithRandomHoles.GetNode(this.GridWithRandomHoles.Columns - 1, this.GridWithRandomHoles.Rows - 1),
                 MaxSpeed);
         }
 

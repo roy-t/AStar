@@ -89,7 +89,7 @@ namespace Roy_T.AStar.Benchmark
         }
 
         /// <summary>
-        /// Pseudo randomly assigns traversal velocities in [1..100km/h] to edges.
+        /// Pseudo randomly assigns traversal velocities in [80..100km/h] to edges.
         /// </summary>        
         public static void SetRandomTraversalVelocities(Grid grid)
         {
@@ -101,7 +101,8 @@ namespace Roy_T.AStar.Benchmark
                     var node = grid.GetNode(x, y);
                     foreach (var edge in node.Incoming)
                     {
-                        edge.TraversalVelocity = Velocity.FromKilometersPerHour(RandomNumbers[z]);
+                        var speed = ((RandomNumbers[z] / 100.0f) * 20) + 80;
+                        edge.TraversalVelocity = Velocity.FromKilometersPerHour(speed);
                         z = (z + 1) % RandomNumbers.Length;
                     }
                 }
