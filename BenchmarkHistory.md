@@ -1,0 +1,66 @@
+# Benchmarks overview
+For all benchmarks the graph is layed out in a grid like pattern and contains 10,000 nodes and 8,000 edges. All benchmarks try to find a path from the top-left node to the bottom-right node.
+
+## GridBench
+All edges have the same traversal velocity.The A* algorithm will guess 100% right all the time. This benchmark is useful because it shows the absolute best case scenario. Note that this benchmark is so fast that the measuring error is usually several times greater than the mean, so it is hard to say how fast it really ran.  
+
+## GridWithHoleBench 
+All edges have the same traversal velocity. All nodes, on a diagonal from the top right to the bottom left, have had their incoming edges removed. Except for the node next to the center node of which all edges remain intact.
+
+This benchmark is designed to see how fast the algorithm can find the node to pass through. It is useful because it shows that the heuristic searches through the best candidate nodes first. This should be a very fast benchmark.
+
+## GridWithRandomHoles
+All edges have the same traversal velocity, pseudo-randomly 50% of the nodes have been disconnected.
+
+This benchmark is useful because it shows you how the A* algorithm will behave in a realistic setting, in a sparsely connected graph. The heuristic guides the search, but is not always right.
+
+## GridWithRandomLimitsBench
+All edges have pseudo random traversal velocities between 80 and 100km/h. This benchmark was designed so that the A* heuristic has more trouble figuring out what the best path is. The general direction will be correct, but there will be a lot of small detours in the best path.
+
+This benchmark is useful because it shows how you how the A* algorithm will behave in a realistic setting, in a well connected graph.
+
+## GridWithUnreachableTargetBench
+Disconnects the left part of the graph from the right part of the graph. Forcing the A* algorithm to inspect a lot of edges, before it can conclude that the target is unreachable. 
+
+This benchmark is useful because it shows the worst-case performance of the A* algorithm. Because it has to search through all reachable nodes before it can definitely conclude that the target is unreachable.
+
+## GridWithGradientBench 
+Edges in the top left of the grid have the highest traversal velocity, while edges in the bottom right have the lowest traversal velocity. This means that the A* algorithm continously guesses wrong and has to search through almost the entire grid before finding the answer. This should be considered an adversial/torture benchmarks and an absolute worst case scenario. It is useful because it benchmarks the speed of our algorithm, without the heuristic getting in the way. 
+
+This benchmark is compararable to the `Gradient100X100` benchmark from older versions.
+
+# Benchmarks
+_From newest to oldest_
+## 2020-01-23
+_git hash `bbadc1325c942b9f2175b4d045cc5254c2cb04e6`_
+
+BenchmarkDotNet=v0.12.0, OS=Windows 10.0.17763.973 (1809/October2018Update/Redstone5)
+Intel Core i9-9900K CPU 3.60GHz (Coffee Lake), 1 CPU, 16 logical and 8 physical cores
+.NET Core SDK=3.0.100
+-  [Host]     : .NET Core 3.0.0 (CoreCLR 4.700.19.46205, CoreFX 4.700.19.46214), X64 RyuJIT
+-  DefaultJob : .NET Core 3.0.0 (CoreCLR 4.700.19.46205, CoreFX 4.700.19.46214), X64 RyuJIT
+
+|                         Method |            Mean |         Error |        StdDev |
+|------------------------------- |----------------:|--------------:|--------------:|
+|                      GridBench |    326,209.3 ns |   1,109.91 ns |   1,038.21 ns |
+|              GridWithHoleBench |        100.7 ns |       0.15 ns |       0.12 ns |
+|       GridWithRandomHolesBench |    278,367.3 ns |     899.29 ns |     797.20 ns |
+|      GridWithRandomLimitsBench | 22,880,403.8 ns |  97,026.26 ns |  86,011.25 ns |
+| GridWithUnreachableTargetBench | 24,213,165.6 ns | 242,178.42 ns | 226,533.85 ns |
+|          GridWithGradientBench | 31,464,366.2 ns | 115,321.25 ns | 107,871.57 ns |
+
+# Benchmarks scores for V1
+_Note: Gradient100X100 is an approximately similar benchmark as GradientGridBench in v2_
+
+## 2020-01-23
+_git hash `eaedfb12d9918977a8a3cde49a461e932f1a4e2b`_
+
+BenchmarkDotNet=v0.12.0, OS=Windows 10.0.17763.973 (1809/October2018Update/Redstone5)
+Intel Core i9-9900K CPU 3.60GHz (Coffee Lake), 1 CPU, 16 logical and 8 physical cores
+.NET Core SDK=3.0.100
+-  [Host]     : .NET Core 3.0.0 (CoreCLR 4.700.19.46205, CoreFX 4.700.19.46214), X64 RyuJIT
+-  DefaultJob : .NET Core 3.0.0 (CoreCLR 4.700.19.46205, CoreFX 4.700.19.46214), X64 RyuJIT
+
+|          Method |     Mean |    Error |   StdDev |
+|---------------- |---------:|---------:|---------:|
+| Gradient100X100 | 21.51 ms | 0.128 ms | 0.119 ms |
