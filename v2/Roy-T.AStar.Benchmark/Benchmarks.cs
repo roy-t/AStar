@@ -10,7 +10,8 @@ namespace Roy_T.AStar.Benchmark
     {
         private static readonly Velocity MaxSpeed = Velocity.FromKilometersPerHour(100);
 
-        private readonly Grid GradientGrid;
+        private readonly Grid Grid;
+        private readonly Grid GridWithGradient;
         private readonly Grid GridWithHole;
         private readonly Grid GridWithRandomLimits;
         private readonly Grid GridWithRandomHoles;
@@ -18,8 +19,10 @@ namespace Roy_T.AStar.Benchmark
 
         public AStarBenchmark()
         {
-            this.GradientGrid = new Grid(100, 100, 1, 1, MaxSpeed);
-            GridBuilder.SetGradientLimits(this.GradientGrid);
+            this.Grid = new Grid(100, 100, 1, 1, MaxSpeed);
+
+            this.GridWithGradient = new Grid(100, 100, 1, 1, MaxSpeed);
+            GridBuilder.SetGradientLimits(this.GridWithGradient);
 
             this.GridWithHole = new Grid(100, 100, 1, 1, MaxSpeed);
             GridBuilder.DisconnectDiagonallyExceptForOneNode(this.GridWithHole);
@@ -35,13 +38,12 @@ namespace Roy_T.AStar.Benchmark
         }
 
         [Benchmark]
-        public void GradientGridBench()
+        public void GridBench()
         {
-            var maxSpeed = Velocity.FromKilometersPerHour((this.GradientGrid.Rows * this.GradientGrid.Columns) + 1);
             PathFinder.FindPath(
-                this.GradientGrid.GetNode(0, 0),
-                this.GradientGrid.GetNode(this.GradientGrid.Columns - 1, this.GradientGrid.Rows - 1),
-                maxSpeed);
+                this.Grid.GetNode(0, 0),
+                this.Grid.GetNode(this.Grid.Columns - 1, this.Grid.Rows - 1),
+                MaxSpeed);
         }
 
         [Benchmark]
@@ -50,15 +52,6 @@ namespace Roy_T.AStar.Benchmark
             PathFinder.FindPath(
                 this.GridWithHole.GetNode(0, 0),
                 this.GridWithHole.GetNode(this.GridWithHole.Columns - 1, this.GridWithHole.Rows - 1),
-                MaxSpeed);
-        }
-
-        [Benchmark]
-        public void GridWithRandomLimitsBench()
-        {
-            PathFinder.FindPath(
-                this.GridWithRandomLimits.GetNode(0, 0),
-                this.GridWithRandomLimits.GetNode(this.GridWithRandomLimits.Columns - 1, this.GridWithRandomLimits.Rows - 1),
                 MaxSpeed);
         }
 
@@ -72,6 +65,15 @@ namespace Roy_T.AStar.Benchmark
         }
 
         [Benchmark]
+        public void GridWithRandomLimitsBench()
+        {
+            PathFinder.FindPath(
+                this.GridWithRandomLimits.GetNode(0, 0),
+                this.GridWithRandomLimits.GetNode(this.GridWithRandomLimits.Columns - 1, this.GridWithRandomLimits.Rows - 1),
+                MaxSpeed);
+        }
+
+        [Benchmark]
         public void GridWithUnreachableTargetBench()
         {
             PathFinder.FindPath(
@@ -80,6 +82,14 @@ namespace Roy_T.AStar.Benchmark
                 MaxSpeed);
         }
 
-
+        [Benchmark]
+        public void GridWithGradientBench()
+        {
+            var maxSpeed = Velocity.FromKilometersPerHour((this.GridWithGradient.Rows * this.GridWithGradient.Columns) + 1);
+            PathFinder.FindPath(
+                this.GridWithGradient.GetNode(0, 0),
+                this.GridWithGradient.GetNode(this.GridWithGradient.Columns - 1, this.GridWithGradient.Rows - 1),
+                maxSpeed);
+        }
     }
 }
