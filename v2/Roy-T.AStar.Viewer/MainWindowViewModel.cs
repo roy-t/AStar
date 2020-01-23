@@ -51,23 +51,17 @@ namespace Roy_T.AStar.Viewer
                 Process.Start(psi);
             });
 
+            this.ResetCommand = ReactiveCommand.Create(() => CreateNodes());
             this.RandomizeCommand = ReactiveCommand.Create(() => this.SetSpeedLimits(() =>
             {
                 var value = this.Random.Next((int)Settings.MinSpeed.MetersPerSecond, (int)Settings.MaxSpeed.MetersPerSecond + 1);
                 return Velocity.FromMetersPerSecond(value);
             }));
+
             this.MaxCommand = ReactiveCommand.Create(() => this.SetSpeedLimits(() => Settings.MaxSpeed));
             this.MinCommand = ReactiveCommand.Create(() => this.SetSpeedLimits(() => Settings.MinSpeed));
 
-            var grid = new Grid(14, 7, 100, 100, Settings.MaxSpeed);
-            this.PopupulateModelList(grid.GetAllNodes());
-
-            this.startNode = this.NodeDict[grid.GetNode(0, 0)];
-            this.startNode.NodeState = NodeState.Start;
-
-            this.endNode = this.NodeDict[grid.GetNode(grid.Columns - 1, grid.Rows - 1)];
-            this.endNode.NodeState = NodeState.End;
-            this.CalculatePath();
+            this.CreateNodes();
         }
 
         public string Outcome
@@ -80,15 +74,39 @@ namespace Roy_T.AStar.Viewer
 
         public IReactiveCommand ExitCommand { get; }
         public IReactiveCommand OpenGitHubCommand { get; }
+
+        public IReactiveCommand ResetCommand { get; }
         public IReactiveCommand RandomizeCommand { get; }
         public IReactiveCommand MaxCommand { get; }
         public IReactiveCommand MinCommand { get; }
 
-        private void PopupulateModelList(IEnumerable<INode> nodes)
+        private void CreateNodes()
+        {
+            this.Clear();
+
+            var grid = new Grid(14, 7, 100, 100, Settings.MaxSpeed);
+            this.PopupulateModelList(grid.GetAllNodes());
+
+            this.startNode = this.NodeDict[grid.GetNode(0, 0)];
+            this.startNode.NodeState = NodeState.Start;
+
+            this.endNode = this.NodeDict[grid.GetNode(grid.Columns - 1, grid.Rows - 1)];
+            this.endNode.NodeState = NodeState.End;
+            this.CalculatePath();
+        }
+
+        private void Clear()
         {
             this.NodeDict.Clear();
             this.EdgeDict.Clear();
+            this.startNode = null;
+            this.endNode = null;
+            this.outcome = string.Empty;
+            this.Nodes.Clear();
+        }
 
+        private void PopupulateModelList(IEnumerable<INode> nodes)
+        {
             var toAdd = new List<ReactiveObject>();
             foreach (var node in nodes)
             {

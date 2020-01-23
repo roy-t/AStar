@@ -5,6 +5,7 @@ VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7484E05D-3E03-498B-AA98-A49AE2D9D488}"
 	ProjectSection(SolutionItems) = preProject
+		BenchmarkHistory.md = BenchmarkHistory.md
 		LICENSE = LICENSE
 		README.md = README.md
 		versions.md = versions.md
@@ -27,7 +28,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "v2", "v2", "{C60CC5AB-915F-
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Roy-T.AStar.V2", "v2\Roy-T.AStar.V2\Roy-T.AStar.V2.csproj", "{A69D95C2-B46A-49DA-9596-9ABAB10D3F1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roy-T.AStar.Viewer", "v2\Roy-T.AStar.Viewer\Roy-T.AStar.Viewer.csproj", "{3EE30C73-6978-4062-8E3A-C04C369DD18E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Roy-T.AStar.Viewer", "v2\Roy-T.AStar.Viewer\Roy-T.AStar.Viewer.csproj", "{3EE30C73-6978-4062-8E3A-C04C369DD18E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roy-T.AStar.Benchmark", "v2\Roy-T.AStar.Benchmark\Roy-T.AStar.Benchmark.csproj", "{880782E5-A6A1-447B-A1D4-F602E15D4FFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +62,10 @@ Global
 		{3EE30C73-6978-4062-8E3A-C04C369DD18E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EE30C73-6978-4062-8E3A-C04C369DD18E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EE30C73-6978-4062-8E3A-C04C369DD18E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{880782E5-A6A1-447B-A1D4-F602E15D4FFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{880782E5-A6A1-447B-A1D4-F602E15D4FFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{880782E5-A6A1-447B-A1D4-F602E15D4FFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{880782E5-A6A1-447B-A1D4-F602E15D4FFB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,6 +77,7 @@ Global
 		{A30DC8F8-7278-4A2D-BDCF-3215CCE85E30} = {CE7CBD74-507A-45D1-BF02-CF1B433A7D0D}
 		{A69D95C2-B46A-49DA-9596-9ABAB10D3F1B} = {C60CC5AB-915F-43AF-A6C5-1D579A48E49F}
 		{3EE30C73-6978-4062-8E3A-C04C369DD18E} = {C60CC5AB-915F-43AF-A6C5-1D579A48E49F}
+		{880782E5-A6A1-447B-A1D4-F602E15D4FFB} = {C60CC5AB-915F-43AF-A6C5-1D579A48E49F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0444D9DA-E5C8-4826-BE0F-4EB151D23592}

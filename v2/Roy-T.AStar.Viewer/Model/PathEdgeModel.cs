@@ -18,5 +18,9 @@ namespace Roy_T.AStar.Viewer.Model
         public float Y2 { get; }
 
         public float Z => 0;
+
+        // To prevent binding errors (or complicated content presenter logic) we also define an X and Y component on edges
+        public float X => 0;
+        public float Y => 0;
     }
 }

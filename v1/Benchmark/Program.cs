@@ -38,16 +38,16 @@ namespace Benchmark
                 AgentShapes.Dot);
         }
 
-        [Benchmark]
-        public void Gradient100X100Limited()
-        {
-            this.GridWithSlope.GetPath(
-                new Position(0, 0),
-                new Position(this.GridWithSlope.DimX - 1, this.GridWithSlope.DimY - 1),
-                MovementPatterns.Full,
-                AgentShapes.Dot,
-                int.MaxValue);
-        }
+        //[Benchmark]
+        //public void Gradient100X100Limited()
+        //{
+        //    this.GridWithSlope.GetPath(
+        //        new Position(0, 0),
+        //        new Position(this.GridWithSlope.DimX - 1, this.GridWithSlope.DimY - 1),
+        //        MovementPatterns.Full,
+        //        AgentShapes.Dot,
+        //        int.MaxValue);
+        //}
     }
 
     public class Program
