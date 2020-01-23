@@ -1,5 +1,5 @@
 # Benchmarks overview
-For all benchmarks the graph is layed out in a grid like pattern and contains 10,000 nodes and 8,000 edges. All benchmarks try to find a path from the top-left node to the bottom-right node.
+For all benchmarks the graph is layed out in a grid like pattern and contains 10,000 nodes and 78,804 edges. All benchmarks try to find a path from the top-left node to the bottom-right node.
 
 ## GridBench
 All edges have the same traversal velocity.The A* algorithm will guess 100% right all the time. This benchmark is useful because it shows the absolute best case scenario. Note that this benchmark is so fast that the measuring error is usually several times greater than the mean, so it is hard to say how fast it really ran.  
