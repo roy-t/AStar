@@ -2,7 +2,8 @@
 
 namespace Roy_T.AStar.V2
 {
-    // For a good explanation of min heaps see: https://robin-thomas.github.io/min-heap/
+    // C# Adaptation of a min heap built for C++ by Robin Thomas
+    // Original source code at: https://github.com/robin-thomas/min-heap
 
     public sealed class MinHeap
     {

@@ -31,7 +31,27 @@ This benchmark is compararable to the `Gradient100X100` benchmark from older ver
 
 # Benchmarks
 _From newest to oldest_
-## 2020-01-23
+
+## 2020-01-26 Moving from a linked list to a binary min heap
+_git hash `a58f52404bb77a5a836768488809eb9c8b6f4ad0`_
+
+BenchmarkDotNet=v0.12.0, OS=Windows 10.0.17763.973 (1809/October2018Update/Redstone5)
+Intel Core i9-9900K CPU 3.60GHz (Coffee Lake), 1 CPU, 16 logical and 8 physical cores
+.NET Core SDK=3.0.100
+-  [Host]     : .NET Core 3.0.0 (CoreCLR 4.700.19.46205, CoreFX 4.700.19.46214), X64 RyuJIT
+- DefaultJob : .NET Core 3.0.0 (CoreCLR 4.700.19.46205, CoreFX 4.700.19.46214), X64 RyuJIT
+
+|                         Method |            Mean |         Error |        StdDev |
+|------------------------------- |----------------:|--------------:|--------------:|
+|                      GridBench |     95,021.7 ns |     350.61 ns |     327.96 ns |
+|              GridWithHoleBench |        129.7 ns |       0.73 ns |       0.68 ns |
+|       GridWithRandomHolesBench |    118,499.2 ns |     576.81 ns |     450.33 ns |
+|      GridWithRandomLimitsBench |  7,289,230.7 ns |  25,773.80 ns |  24,108.83 ns |
+| GridWithUnreachableTargetBench |  8,004,423.0 ns |  55,038.19 ns |  51,482.75 ns |
+|          GridWithGradientBench | 15,575,041.1 ns | 169,958.60 ns | 158,979.38 ns |
+
+
+## 2020-01-23 Re-implementation using a graph
 _git hash `bbadc1325c942b9f2175b4d045cc5254c2cb04e6`_
 
 BenchmarkDotNet=v0.12.0, OS=Windows 10.0.17763.973 (1809/October2018Update/Redstone5)
