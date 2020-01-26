@@ -1,57 +1,71 @@
-﻿namespace Roy_T.AStar.V2
+﻿using System.Collections.Generic;
+
+namespace Roy_T.AStar.V2
 {
-    /// <summary>
-    /// Heap which keeps the node with the minimal expected path cost on the head position
-    /// </summary>
-    internal sealed class MinHeap
+    // For a good explanation of min heaps see: https://robin-thomas.github.io/min-heap/
+
+    public sealed class MinHeap
     {
-        private MinHeapNode head;
+        private readonly List<MinHeapNode> Items;
 
-        /// <summary>
-        /// If the heap has a next element
-        /// </summary>        
-        public bool HasNext => this.head != null;
-
-        /// <summary>
-        /// Pushes a node onto the heap        
-        /// </summary>
-        public void Push(MinHeapNode node)
+        public MinHeap()
         {
-            // If the heap is empty, just add the item to the top
-            if (this.head == null)
-            {
-                this.head = node;
-            }
-            else if (node.ExpectedTotalTime < this.head.ExpectedTotalTime)
-            {
-                node.Next = this.head;
-                this.head = node;
-            }
-            else
-            {
-                var current = this.head;
-                while (current.Next != null && current.Next.ExpectedTotalTime <= node.ExpectedTotalTime)
-                {
-                    current = current.Next;
-                }
+            this.Items = new List<MinHeapNode>();
+        }
 
-                node.Next = current.Next;
-                current.Next = node;
+        public int Count => this.Items.Count;
+
+        public MinHeapNode Peak() => this.Items[0];
+
+        public MinHeapNode Insert(INode pathNode, MinHeapNode cameFrom, IEdge cameVia, Duration timeSoFar, Duration expectedRemainingTime)
+        {
+            var heapNode = new MinHeapNode(pathNode, cameFrom, cameVia, timeSoFar, expectedRemainingTime);
+            this.Items.Add(heapNode);
+
+            var index = this.Items.Count - 1;
+            while (index > 0 && heapNode.ExpectedTotalTime < this.Items[Parent(index)].ExpectedTotalTime)
+            {
+                this.Items[index] = this.Items[Parent(index)];
+                index = Parent(index);
+            }
+
+            this.Items[index] = heapNode;
+
+            return heapNode;
+        }
+
+        public MinHeapNode Extract()
+        {
+            var node = this.Items[0];
+
+            this.Items[0] = this.Items[this.Items.Count - 1];
+            this.Items.RemoveAt(this.Items.Count - 1);
+
+            this.Heapify(0);
+
+            return node;
+        }
+
+        private void Heapify(int index)
+        {
+            var smallest = (LeftChild(index) < this.Items.Count && this.Items[LeftChild(index)].ExpectedTotalTime < this.Items[index].ExpectedTotalTime) ? LeftChild(index) : index;
+            if (RightChild(index) < this.Items.Count && this.Items[RightChild(index)].ExpectedTotalTime < this.Items[smallest].ExpectedTotalTime)
+            {
+                smallest = RightChild(index);
+            }
+
+            if (smallest != index)
+            {
+                var temp = this.Items[smallest];
+                this.Items[smallest] = this.Items[index];
+                this.Items[index] = temp;
+
+                this.Heapify(smallest);
             }
         }
 
-        public void Clear() => this.head = null;
-
-        /// <summary>
-        /// Pops a node from the heap, this node is always the node
-        /// with the cheapest expected path cost
-        /// </summary>
-        public MinHeapNode Pop()
-        {
-            var top = this.head;
-            this.head = this.head.Next;
-
-            return top;
-        }
+        private static int Parent(int i) => (i - 1) / 2;
+        private static int LeftChild(int i) => (2 * i) + 1;
+        private static int RightChild(int i) => (2 * i) + 2;
     }
 }

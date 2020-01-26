@@ -14,15 +14,14 @@ namespace Roy_T.AStar.V2
             var open = new MinHeap();
             var nodes = new Dictionary<INode, MinHeapNode>();
 
-            var head = new MinHeapNode(start, null, null, Duration.Zero, ExpectedTime(start, goal, maximumVelocity));
-            open.Push(head);
+            var head = open.Insert(start, null, null, Duration.Zero, ExpectedTime(start, goal, maximumVelocity));
             nodes.Add(head.Node, head);
 
             var closestApproach = head;
 
-            while (open.HasNext)
+            while (open.Count > 0)
             {
-                var current = open.Pop();
+                var current = open.Extract();
                 if (current.Node == goal)
                 {
                     return ReconstructPath(PathType.Complete, current);
@@ -42,15 +41,13 @@ namespace Roy_T.AStar.V2
                     {
                         if (node.TimeSoFar > costSoFar)
                         {
-                            node = new MinHeapNode(oppositeNode, current, edge, costSoFar, ExpectedTime(oppositeNode, goal, maximumVelocity));
-                            open.Push(node);
+                            node = open.Insert(oppositeNode, current, edge, costSoFar, ExpectedTime(oppositeNode, goal, maximumVelocity));
                             nodes[oppositeNode] = node;
                         }
                     }
                     else
                     {
-                        node = new MinHeapNode(oppositeNode, current, edge, costSoFar, ExpectedTime(oppositeNode, goal, maximumVelocity));
-                        open.Push(node);
+                        node = open.Insert(oppositeNode, current, edge, costSoFar, ExpectedTime(oppositeNode, goal, maximumVelocity));
                         nodes.Add(node.Node, node);
                     }
                 }

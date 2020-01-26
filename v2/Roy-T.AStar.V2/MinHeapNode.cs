@@ -1,6 +1,6 @@
 ﻿namespace Roy_T.AStar.V2
 {
-    internal sealed class MinHeapNode
+    public sealed class MinHeapNode
     {
         public MinHeapNode(INode node, MinHeapNode cameFrom, IEdge cameVia, Duration timeSoFar, Duration expectedRemainingTime)
         {
