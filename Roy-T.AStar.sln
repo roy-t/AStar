@@ -30,7 +30,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Roy-T.AStar.V2", "v2\Roy-T.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Roy-T.AStar.Viewer", "v2\Roy-T.AStar.Viewer\Roy-T.AStar.Viewer.csproj", "{3EE30C73-6978-4062-8E3A-C04C369DD18E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roy-T.AStar.Benchmark", "v2\Roy-T.AStar.Benchmark\Roy-T.AStar.Benchmark.csproj", "{880782E5-A6A1-447B-A1D4-F602E15D4FFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Roy-T.AStar.Benchmark", "v2\Roy-T.AStar.Benchmark\Roy-T.AStar.Benchmark.csproj", "{880782E5-A6A1-447B-A1D4-F602E15D4FFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roy-T.AStar.V2.Tests", "v2\Roy-T.AStar.V2.Tests\Roy-T.AStar.V2.Tests.csproj", "{60FF9918-90FE-4B2E-BAD6-0A2758E8274A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,6 +68,10 @@ Global
 		{880782E5-A6A1-447B-A1D4-F602E15D4FFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{880782E5-A6A1-447B-A1D4-F602E15D4FFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{880782E5-A6A1-447B-A1D4-F602E15D4FFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60FF9918-90FE-4B2E-BAD6-0A2758E8274A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60FF9918-90FE-4B2E-BAD6-0A2758E8274A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60FF9918-90FE-4B2E-BAD6-0A2758E8274A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60FF9918-90FE-4B2E-BAD6-0A2758E8274A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,6 +84,7 @@ Global
 		{A69D95C2-B46A-49DA-9596-9ABAB10D3F1B} = {C60CC5AB-915F-43AF-A6C5-1D579A48E49F}
 		{3EE30C73-6978-4062-8E3A-C04C369DD18E} = {C60CC5AB-915F-43AF-A6C5-1D579A48E49F}
 		{880782E5-A6A1-447B-A1D4-F602E15D4FFB} = {C60CC5AB-915F-43AF-A6C5-1D579A48E49F}
+		{60FF9918-90FE-4B2E-BAD6-0A2758E8274A} = {C60CC5AB-915F-43AF-A6C5-1D579A48E49F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0444D9DA-E5C8-4826-BE0F-4EB151D23592}
