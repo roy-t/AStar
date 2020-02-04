@@ -32,6 +32,24 @@ This benchmark is compararable to the `Gradient100X100` benchmark from older ver
 # Benchmarks
 _From newest to oldest_
 
+## 2020-02-04 Precalculate travel duration over edges
+_git hash `973d6b86f5adaecf22e0db4401ee878817ab1b6c`_
+BenchmarkDotNet=v0.12.0, OS=Windows 10.0.17763.973 (1809/October2018Update/Redstone5)
+Intel Core i9-9900K CPU 3.60GHz (Coffee Lake), 1 CPU, 16 logical and 8 physical cores
+.NET Core SDK=3.0.100
+-  [Host]     : .NET Core 3.0.0 (CoreCLR 4.700.19.46205, CoreFX 4.700.19.46214), X64 RyuJIT
+- DefaultJob : .NET Core 3.0.0 (CoreCLR 4.700.19.46205, CoreFX 4.700.19.46214), X64 RyuJIT
+
+|                         Method |            Mean |         Error |        StdDev |
+|------------------------------- |----------------:|--------------:|--------------:|
+|                      GridBench |     83,950.3 ns |     283.08 ns |     264.79 ns |
+|              GridWithHoleBench |        138.4 ns |       1.21 ns |       1.07 ns |
+|       GridWithRandomHolesBench |    104,597.0 ns |     342.93 ns |     320.77 ns |
+|      GridWithRandomLimitsBench |  6,582,456.5 ns |  46,309.74 ns |  43,318.16 ns |
+| GridWithUnreachableTargetBench |  7,065,479.0 ns |  60,852.18 ns |  50,814.33 ns |
+|          GridWithGradientBench | 13,863,809.2 ns | 142,322.59 ns | 133,128.63 ns |
+
+
 ## 2020-01-26 Moving from a linked list to a binary min heap
 _git hash `a58f52404bb77a5a836768488809eb9c8b6f4ad0`_
 
