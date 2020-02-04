@@ -76,9 +76,7 @@ namespace Roy_T.AStar.V2
             return new Path(type, node.TimeSoFar, distance, edges);
         }
 
-        private static Duration ExpectedTime(IEdge edge)
-            => MathUtil.ExpectedTime(edge.Start.X, edge.Start.Y, edge.End.X, edge.End.Y, edge.TraversalVelocity);
-
+        private static Duration ExpectedTime(IEdge edge) => edge.TraversalDuration;
 
 
         private static Duration ExpectedTime(INode from, INode to, Velocity maximumVelocity) => MathUtil.ExpectedTime(from.X, from.Y, to.X, to.Y, maximumVelocity);

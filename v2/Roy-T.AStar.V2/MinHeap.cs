@@ -16,13 +16,19 @@ namespace Roy_T.AStar.V2
 
         public int Count => this.Items.Count;
 
-        public MinHeapNode Peak() => this.Items[0];
+        public MinHeapNode Peek() => this.Items[0];
 
         public MinHeapNode Insert(INode pathNode, MinHeapNode cameFrom, IEdge cameVia, Duration timeSoFar, Duration expectedRemainingTime)
         {
             var heapNode = new MinHeapNode(pathNode, cameFrom, cameVia, timeSoFar, expectedRemainingTime);
             this.Items.Add(heapNode);
+            this.Insert(heapNode);
 
+            return heapNode;
+        }
+
+        private void Insert(MinHeapNode heapNode)
+        {
             var index = this.Items.Count - 1;
             while (index > 0 && heapNode.ExpectedTotalTime < this.Items[Parent(index)].ExpectedTotalTime)
             {
@@ -31,8 +37,6 @@ namespace Roy_T.AStar.V2
             }
 
             this.Items[index] = heapNode;
-
-            return heapNode;
         }
 
         public MinHeapNode Extract()
