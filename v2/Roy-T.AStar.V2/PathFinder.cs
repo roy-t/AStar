@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Roy_T.AStar.V2.Graph;
 
 namespace Roy_T.AStar.V2
 {
@@ -11,10 +12,12 @@ namespace Roy_T.AStar.V2
                 return new Path(PathType.Complete, Duration.Zero, 0.0f, new List<IEdge>());
             }
 
-            var open = new MinHeap();
+            var open = new MinHeap<MinHeapNode>();
             var nodes = new Dictionary<INode, MinHeapNode>();
 
-            var head = open.Insert(start, null, null, Duration.Zero, ExpectedTime(start, goal, maximumVelocity));
+
+            var head = new MinHeapNode(start, null, null, Duration.Zero, ExpectedTime(start, goal, maximumVelocity));
+            open.Insert(head);
             nodes.Add(head.Node, head);
 
             var closestApproach = head;
@@ -41,13 +44,15 @@ namespace Roy_T.AStar.V2
                     {
                         if (node.TimeSoFar > costSoFar)
                         {
-                            node = open.Insert(oppositeNode, current, edge, costSoFar, ExpectedTime(oppositeNode, goal, maximumVelocity));
+                            node = new MinHeapNode(oppositeNode, current, edge, costSoFar, ExpectedTime(oppositeNode, goal, maximumVelocity));
+                            open.Insert(node);
                             nodes[oppositeNode] = node;
                         }
                     }
                     else
                     {
-                        node = open.Insert(oppositeNode, current, edge, costSoFar, ExpectedTime(oppositeNode, goal, maximumVelocity));
+                        node = new MinHeapNode(oppositeNode, current, edge, costSoFar, ExpectedTime(oppositeNode, goal, maximumVelocity));
+                        open.Insert(node);
                         nodes.Add(node.Node, node);
                     }
                 }

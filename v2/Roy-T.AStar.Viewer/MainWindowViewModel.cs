@@ -8,6 +8,7 @@ using System.Windows;
 using DynamicData;
 using ReactiveUI;
 using Roy_T.AStar.V2;
+using Roy_T.AStar.V2.Graph;
 using Roy_T.AStar.Viewer.Model;
 
 namespace Roy_T.AStar.Viewer

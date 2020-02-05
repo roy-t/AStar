@@ -1,6 +1,9 @@
-﻿namespace Roy_T.AStar.V2
+﻿using System;
+using Roy_T.AStar.V2.Graph;
+
+namespace Roy_T.AStar.V2
 {
-    public sealed class MinHeapNode
+    public sealed class MinHeapNode : IComparable<MinHeapNode>
     {
         public MinHeapNode(INode node, MinHeapNode cameFrom, IEdge cameVia, Duration timeSoFar, Duration expectedRemainingTime)
         {
@@ -20,6 +23,7 @@
         public Duration ExpectedTotalTime => this.TimeSoFar + ExpectedRemainingTime;
         public MinHeapNode Next { get; set; }
 
+        public int CompareTo(MinHeapNode other) => this.ExpectedTotalTime.CompareTo(other.ExpectedTotalTime);
         public override string ToString() => $"📍{{{this.Node.X}, {this.Node.Y}}}, ⏱~{this.ExpectedTotalTime}";
     }
 }

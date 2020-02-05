@@ -1,76 +1,111 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Roy_T.AStar.V2
 {
     // C# Adaptation of a min heap built for C++ by Robin Thomas
     // Original source code at: https://github.com/robin-thomas/min-heap
 
-    public sealed class MinHeap
+    public sealed class MinHeap<T>
+        where T : IComparable<T>
     {
-        private readonly List<MinHeapNode> Items;
+        private readonly List<T> Items;
 
         public MinHeap()
         {
-            this.Items = new List<MinHeapNode>();
+            this.Items = new List<T>();
         }
 
         public int Count => this.Items.Count;
 
-        public MinHeapNode Peek() => this.Items[0];
+        public T Peek() => this.Items[0];
 
-        public MinHeapNode Insert(INode pathNode, MinHeapNode cameFrom, IEdge cameVia, Duration timeSoFar, Duration expectedRemainingTime)
+        public void Insert(T item)
         {
-            var heapNode = new MinHeapNode(pathNode, cameFrom, cameVia, timeSoFar, expectedRemainingTime);
-            this.Items.Add(heapNode);
-            this.Insert(heapNode);
-
-            return heapNode;
+            this.Items.Add(item);
+            this.SortItem(item);
         }
 
-        private void Insert(MinHeapNode heapNode)
-        {
-            var index = this.Items.Count - 1;
-            while (index > 0 && heapNode.ExpectedTotalTime < this.Items[Parent(index)].ExpectedTotalTime)
-            {
-                this.Items[index] = this.Items[Parent(index)];
-                index = Parent(index);
-            }
-
-            this.Items[index] = heapNode;
-        }
-
-        public MinHeapNode Extract()
+        public T Extract()
         {
             var node = this.Items[0];
 
-            this.Items[0] = this.Items[this.Items.Count - 1];
-            this.Items.RemoveAt(this.Items.Count - 1);
-
+            this.ReplaceFirstItemWithLastItem();
             this.Heapify(0);
 
             return node;
         }
 
-        private void Heapify(int index)
+        private void ReplaceFirstItemWithLastItem()
         {
-            var smallest = (LeftChild(index) < this.Items.Count && this.Items[LeftChild(index)].ExpectedTotalTime < this.Items[index].ExpectedTotalTime) ? LeftChild(index) : index;
-            if (RightChild(index) < this.Items.Count && this.Items[RightChild(index)].ExpectedTotalTime < this.Items[smallest].ExpectedTotalTime)
+            this.Items[0] = this.Items[this.Items.Count - 1];
+            this.Items.RemoveAt(this.Items.Count - 1);
+        }
+
+        private void SortItem(T item)
+        {
+            var index = this.Items.Count - 1;
+
+            while (HasParent(index))
             {
-                smallest = RightChild(index);
+                var parentIndex = GetParentIndex(index);
+                if (ItemAIsSmallerThanItemB(item, this.Items[parentIndex]))
+                {
+                    this.Items[index] = this.Items[parentIndex];
+                    index = parentIndex;
+                }
+                else
+                {
+                    break;
+                }
             }
 
-            if (smallest != index)
-            {
-                var temp = this.Items[smallest];
-                this.Items[smallest] = this.Items[index];
-                this.Items[index] = temp;
+            this.Items[index] = item;
+        }
 
-                this.Heapify(smallest);
+        private void Heapify(int startIndex)
+        {
+            var bestIndex = startIndex;
+
+            if (this.HasLeftChild(startIndex))
+            {
+                var leftChildIndex = GetLeftChildIndex(startIndex);
+                if (ItemAIsSmallerThanItemB(this.Items[leftChildIndex], this.Items[bestIndex]))
+                {
+                    bestIndex = leftChildIndex;
+                }
+            }
+
+            if (this.HasRightChild(startIndex))
+            {
+                var rightChildIndex = GetRightChildIndex(startIndex);
+                if (ItemAIsSmallerThanItemB(this.Items[rightChildIndex], this.Items[bestIndex]))
+                {
+                    bestIndex = rightChildIndex;
+                }
+            }
+
+            if (bestIndex != startIndex)
+            {
+                var temp = this.Items[bestIndex];
+                this.Items[bestIndex] = this.Items[startIndex];
+                this.Items[startIndex] = temp;
+                this.Heapify(bestIndex);
             }
         }
 
-        private static int Parent(int i) => (i - 1) / 2;
-        private static int LeftChild(int i) => (2 * i) + 1;
-        private static int RightChild(int i) => (2 * i) + 2;
+        private static bool ItemAIsSmallerThanItemB(T a, T b) => a.CompareTo(b) < 0;
+
+        private T GetParent(int index) => this.Items[GetParentIndex(index)];
+        private T GetLeftChild(int index) => this.Items[GetLeftChildIndex(index)];
+        private T GetRightChild(int index) => this.Items[GetRightChildIndex(index)];
+
+        private static bool HasParent(int index) => index > 0;
+        private bool HasLeftChild(int index) => GetLeftChildIndex(index) < this.Items.Count;
+        private bool HasRightChild(int index) => GetRightChildIndex(index) < this.Items.Count;
+
+        private static int GetParentIndex(int i) => (i - 1) / 2;
+        private static int GetLeftChildIndex(int i) => (2 * i) + 1;
+        private static int GetRightChildIndex(int i) => (2 * i) + 2;
     }
 }

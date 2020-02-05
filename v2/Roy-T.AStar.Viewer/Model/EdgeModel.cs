@@ -1,5 +1,6 @@
 ﻿using ReactiveUI;
 using Roy_T.AStar.V2;
+using Roy_T.AStar.V2.Graph;
 
 namespace Roy_T.AStar.Viewer.Model
 {

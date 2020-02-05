@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Roy_T.AStar.V2.Graph;
 
 namespace Roy_T.AStar.V2
 {

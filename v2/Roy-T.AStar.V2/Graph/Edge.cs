@@ -1,9 +1,8 @@
-﻿namespace Roy_T.AStar.V2
+﻿namespace Roy_T.AStar.V2.Graph
 {
     public sealed class Edge : IEdge
     {
         private Velocity traversalVelocity;
-        private Duration traversalDuration;
 
         public Edge(INode start, INode end, Velocity traversalVelocity)
         {
@@ -18,11 +17,11 @@
             set
             {
                 this.traversalVelocity = value;
-                this.traversalDuration = MathUtil.ExpectedTime(this.Start.X, this.Start.Y, this.End.X, this.End.Y, value);
+                this.TraversalDuration = MathUtil.ExpectedTime(this.Start.X, this.Start.Y, this.End.X, this.End.Y, value);
             }
         }
 
-        public Duration TraversalDuration => this.traversalDuration;
+        public Duration TraversalDuration { get; private set; }
 
         public INode Start { get; }
         public INode End { get; }

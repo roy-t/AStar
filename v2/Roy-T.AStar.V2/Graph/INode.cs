@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Roy_T.AStar.V2
+namespace Roy_T.AStar.V2.Graph
 {
     public interface INode
     {

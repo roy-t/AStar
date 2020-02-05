@@ -32,12 +32,29 @@ This benchmark is compararable to the `Gradient100X100` benchmark from older ver
 # Benchmarks
 _From newest to oldest_
 
+## 2020-02-05 WIP
+BenchmarkDotNet=v0.12.0, OS=Windows 10.0.17763.973 (1809/October2018Update/Redstone5)
+Intel Core i9-9900K CPU 3.60GHz (Coffee Lake), 1 CPU, 16 logical and 8 physical cores
+.NET Core SDK=3.0.100
+-  [Host]     : .NET Core 3.0.0 (CoreCLR 4.700.19.46205, CoreFX 4.700.19.46214), X64 RyuJIT
+-  DefaultJob : .NET Core 3.0.0 (CoreCLR 4.700.19.46205, CoreFX 4.700.19.46214), X64 RyuJIT
+
+|                         Method |            Mean |         Error |       StdDev |
+|------------------------------- |----------------:|--------------:|-------------:|
+|                      GridBench |     97,650.6 ns |     371.15 ns |    347.17 ns |
+|              GridWithHoleBench |        131.0 ns |       0.42 ns |      0.40 ns |
+|       GridWithRandomHolesBench |    129,677.7 ns |   1,019.50 ns |    903.76 ns |
+|      GridWithRandomLimitsBench |  7,307,563.5 ns |  38,410.84 ns | 35,929.53 ns |
+| GridWithUnreachableTargetBench |  7,738,761.8 ns |  32,977.77 ns | 29,233.93 ns |
+|          GridWithGradientBench | 15,014,864.1 ns | 103,417.45 ns | 96,736.75 ns |
+
+
 ## 2020-02-04 Precalculate travel duration over edges
 _git hash `973d6b86f5adaecf22e0db4401ee878817ab1b6c`_
 BenchmarkDotNet=v0.12.0, OS=Windows 10.0.17763.973 (1809/October2018Update/Redstone5)
 Intel Core i9-9900K CPU 3.60GHz (Coffee Lake), 1 CPU, 16 logical and 8 physical cores
 .NET Core SDK=3.0.100
--  [Host]     : .NET Core 3.0.0 (CoreCLR 4.700.19.46205, CoreFX 4.700.19.46214), X64 RyuJIT
+- [Host]     : .NET Core 3.0.0 (CoreCLR 4.700.19.46205, CoreFX 4.700.19.46214), X64 RyuJIT
 - DefaultJob : .NET Core 3.0.0 (CoreCLR 4.700.19.46205, CoreFX 4.700.19.46214), X64 RyuJIT
 
 |                         Method |            Mean |         Error |        StdDev |
@@ -56,7 +73,7 @@ _git hash `a58f52404bb77a5a836768488809eb9c8b6f4ad0`_
 BenchmarkDotNet=v0.12.0, OS=Windows 10.0.17763.973 (1809/October2018Update/Redstone5)
 Intel Core i9-9900K CPU 3.60GHz (Coffee Lake), 1 CPU, 16 logical and 8 physical cores
 .NET Core SDK=3.0.100
--  [Host]     : .NET Core 3.0.0 (CoreCLR 4.700.19.46205, CoreFX 4.700.19.46214), X64 RyuJIT
+- [Host]     : .NET Core 3.0.0 (CoreCLR 4.700.19.46205, CoreFX 4.700.19.46214), X64 RyuJIT
 - DefaultJob : .NET Core 3.0.0 (CoreCLR 4.700.19.46205, CoreFX 4.700.19.46214), X64 RyuJIT
 
 |                         Method |            Mean |         Error |        StdDev |

@@ -1,6 +1,8 @@
-﻿namespace Roy_T.AStar.V2
+﻿using System;
+
+namespace Roy_T.AStar.V2
 {
-    public struct Duration
+    public struct Duration : IComparable<Duration>, IEquatable<Duration>
     {
         public static Duration Zero => new Duration(0);
 
@@ -40,7 +42,9 @@
 
         public override string ToString() => $"{this.Seconds:F2}s";
 
-        public override bool Equals(object obj) => obj is Duration duration && this.Seconds == duration.Seconds;
+        public override bool Equals(object obj) => obj is Duration duration && this.Equals(duration);
         public override int GetHashCode() => -1609761766 + this.Seconds.GetHashCode();
+        public int CompareTo(Duration other) => this.Seconds.CompareTo(other.Seconds);
+        public bool Equals(Duration other) => this.Seconds == other.Seconds;
     }
 }
