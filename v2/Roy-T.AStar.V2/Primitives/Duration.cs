@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Roy_T.AStar.V2
+namespace Roy_T.AStar.V2.Primitives
 {
     public struct Duration : IComparable<Duration>, IEquatable<Duration>
     {

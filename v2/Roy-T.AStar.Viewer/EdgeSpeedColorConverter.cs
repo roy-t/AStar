@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 using Roy_T.AStar.V2;
+using Roy_T.AStar.V2.Primitives;
 
 namespace Roy_T.AStar.Viewer
 {

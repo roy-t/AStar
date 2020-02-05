@@ -7,8 +7,10 @@ using System.Reactive.Linq;
 using System.Windows;
 using DynamicData;
 using ReactiveUI;
-using Roy_T.AStar.V2;
-using Roy_T.AStar.V2.Graph;
+using Roy_T.AStar.V2.Graphs;
+using Roy_T.AStar.V2.Grids;
+using Roy_T.AStar.V2.Paths;
+using Roy_T.AStar.V2.Primitives;
 using Roy_T.AStar.Viewer.Model;
 
 namespace Roy_T.AStar.Viewer
@@ -19,6 +21,7 @@ namespace Roy_T.AStar.Viewer
         private readonly Dictionary<IEdge, EdgeModel> EdgeDict;
 
         private readonly Random Random;
+        private readonly PathFinder PathFinder;
 
         private NodeModel startNode;
         private NodeModel endNode;
@@ -26,6 +29,8 @@ namespace Roy_T.AStar.Viewer
 
         public MainWindowViewModel()
         {
+            this.PathFinder = new PathFinder();
+
             this.Nodes = new ObservableCollection<ReactiveObject>();
 
             this.NodeDict = new Dictionary<INode, NodeModel>();
@@ -52,7 +57,7 @@ namespace Roy_T.AStar.Viewer
                 Process.Start(psi);
             });
 
-            this.ResetCommand = ReactiveCommand.Create(() => CreateNodes());
+            this.ResetCommand = ReactiveCommand.Create(() => this.CreateNodes());
             this.RandomizeCommand = ReactiveCommand.Create(() => this.SetSpeedLimits(() =>
             {
                 var value = this.Random.Next((int)Settings.MinSpeed.MetersPerSecond, (int)Settings.MaxSpeed.MetersPerSecond + 1);
@@ -207,9 +212,9 @@ namespace Roy_T.AStar.Viewer
         {
             if (this.startNode != null && this.endNode != null)
             {
-                var path = PathFinder.FindPath(this.startNode.Node, this.endNode.Node, Settings.MaxSpeed);
-                var averageSpeed = Velocity.FromMetersPerSecond(path.Distance / path.ExpectedDuration.Seconds);
-                this.Outcome = $"Found path, type: {path.Type}, distance {path.Distance:F2}m, average speed {averageSpeed}, expected duration {path.ExpectedDuration}";
+                var path = this.PathFinder.FindPath(this.startNode.Node, this.endNode.Node, Settings.MaxSpeed);
+                var averageSpeed = Velocity.FromMetersPerSecond(path.Distance.Meters / path.Duration.Seconds);
+                this.Outcome = $"Found path, type: {path.Type}, distance {path.Distance:F2}m, average speed {averageSpeed}, expected duration {path.Duration}";
 
                 this.ClearPath();
 
@@ -217,7 +222,7 @@ namespace Roy_T.AStar.Viewer
 
                 foreach (var edge in path.Edges)
                 {
-                    var edgeModel = new PathEdgeModel(edge.Start.X, edge.Start.Y, edge.End.X, edge.End.Y);
+                    var edgeModel = new PathEdgeModel(edge.Start.Position.X, edge.Start.Position.Y, edge.End.Position.X, edge.End.Position.Y);
                     toAdd.Add(edgeModel);
                 }
 

@@ -1,4 +1,5 @@
-﻿using Roy_T.AStar.V2;
+﻿using Roy_T.AStar.V2.Grids;
+using Roy_T.AStar.V2.Primitives;
 
 namespace Roy_T.AStar.Benchmark
 {
@@ -101,7 +102,7 @@ namespace Roy_T.AStar.Benchmark
                     var node = grid.GetNode(x, y);
                     foreach (var edge in node.Incoming)
                     {
-                        var speed = ((RandomNumbers[z] / 100.0f) * 20) + 80;
+                        var speed = (RandomNumbers[z] / 100.0f * 20) + 80;
                         edge.TraversalVelocity = Velocity.FromKilometersPerHour(speed);
                         z = (z + 1) % RandomNumbers.Length;
                     }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Roy_T.AStar.V2
+namespace Roy_T.AStar.V2.Collections
 {
     // C# Adaptation of a min heap built for C++ by Robin Thomas
     // Original source code at: https://github.com/robin-thomas/min-heap
@@ -35,6 +35,27 @@ namespace Roy_T.AStar.V2
 
             return node;
         }
+
+        public void Remove(T item)
+        {
+            if (this.Count < 2)
+            {
+                this.Clear();
+            }
+            else
+            {
+                var index = this.Items.IndexOf(item);
+                if (index >= 0)
+                {
+                    this.Items[index] = this.Items[this.Items.Count - 1];
+                    this.Items.RemoveAt(this.Items.Count - 1);
+
+                    this.Heapify(0);
+                }
+            }
+        }
+
+        public void Clear() => this.Items.Clear();
 
         private void ReplaceFirstItemWithLastItem()
         {
@@ -95,10 +116,6 @@ namespace Roy_T.AStar.V2
         }
 
         private static bool ItemAIsSmallerThanItemB(T a, T b) => a.CompareTo(b) < 0;
-
-        private T GetParent(int index) => this.Items[GetParentIndex(index)];
-        private T GetLeftChild(int index) => this.Items[GetLeftChildIndex(index)];
-        private T GetRightChild(int index) => this.Items[GetRightChildIndex(index)];
 
         private static bool HasParent(int index) => index > 0;
         private bool HasLeftChild(int index) => GetLeftChildIndex(index) < this.Items.Count;

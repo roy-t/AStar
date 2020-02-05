@@ -1,22 +1,22 @@
 ﻿using System.Collections.Generic;
+using Roy_T.AStar.V2.Primitives;
 
-namespace Roy_T.AStar.V2.Graph
+namespace Roy_T.AStar.V2.Graphs
 {
     public sealed class Node : INode
     {
-        public Node(float x, float y)
+        public Node(Position position)
         {
-            this.X = x;
-            this.Y = y;
             this.Incoming = new List<IEdge>(0);
             this.Outgoing = new List<IEdge>(0);
+
+            this.Position = position;
         }
 
         public IList<IEdge> Incoming { get; }
         public IList<IEdge> Outgoing { get; }
 
-        public float X { get; }
-        public float Y { get; }
+        public Position Position { get; }
 
         internal void Connect(INode node, Velocity traversalVelocity)
         {
@@ -25,6 +25,6 @@ namespace Roy_T.AStar.V2.Graph
             node.Incoming.Add(edge);
         }
 
-        public override string ToString() => $"({this.X:F2}, {this.Y:F2})";
+        public override string ToString() => this.Position.ToString();
     }
 }

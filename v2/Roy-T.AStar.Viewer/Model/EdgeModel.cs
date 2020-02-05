@@ -1,6 +1,6 @@
 ﻿using ReactiveUI;
-using Roy_T.AStar.V2;
-using Roy_T.AStar.V2.Graph;
+using Roy_T.AStar.V2.Graphs;
+using Roy_T.AStar.V2.Primitives;
 
 namespace Roy_T.AStar.Viewer.Model
 {
@@ -23,10 +23,10 @@ namespace Roy_T.AStar.Viewer.Model
 
         public IEdge Edge { get; }
 
-        public float X1 => this.Edge.Start.X;
-        public float Y1 => this.Edge.Start.Y;
-        public float X2 => this.Edge.End.X;
-        public float Y2 => this.Edge.End.Y;
+        public float X1 => this.Edge.Start.Position.X;
+        public float Y1 => this.Edge.Start.Position.Y;
+        public float X2 => this.Edge.End.Position.X;
+        public float Y2 => this.Edge.End.Position.Y;
 
         public float Z => 1;
 

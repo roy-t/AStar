@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
+using Roy_T.AStar.V2.Primitives;
 
-namespace Roy_T.AStar.V2.Graph
+namespace Roy_T.AStar.V2.Graphs
 {
     public interface INode
     {
-        float X { get; }
-        float Y { get; }
-
+        Position Position { get; }
         IList<IEdge> Incoming { get; }
         IList<IEdge> Outgoing { get; }
     }

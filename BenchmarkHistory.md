@@ -39,14 +39,14 @@ Intel Core i9-9900K CPU 3.60GHz (Coffee Lake), 1 CPU, 16 logical and 8 physical 
 -  [Host]     : .NET Core 3.0.0 (CoreCLR 4.700.19.46205, CoreFX 4.700.19.46214), X64 RyuJIT
 -  DefaultJob : .NET Core 3.0.0 (CoreCLR 4.700.19.46205, CoreFX 4.700.19.46214), X64 RyuJIT
 
-|                         Method |            Mean |         Error |       StdDev |
-|------------------------------- |----------------:|--------------:|-------------:|
-|                      GridBench |     97,650.6 ns |     371.15 ns |    347.17 ns |
-|              GridWithHoleBench |        131.0 ns |       0.42 ns |      0.40 ns |
-|       GridWithRandomHolesBench |    129,677.7 ns |   1,019.50 ns |    903.76 ns |
-|      GridWithRandomLimitsBench |  7,307,563.5 ns |  38,410.84 ns | 35,929.53 ns |
-| GridWithUnreachableTargetBench |  7,738,761.8 ns |  32,977.77 ns | 29,233.93 ns |
-|          GridWithGradientBench | 15,014,864.1 ns | 103,417.45 ns | 96,736.75 ns |
+|                         Method |            Mean |        Error |       StdDev |
+|------------------------------- |----------------:|-------------:|-------------:|
+|                      GridBench |     94,226.3 ns |    218.65 ns |    182.58 ns |
+|              GridWithHoleBench |        109.3 ns |      0.34 ns |      0.28 ns |
+|       GridWithRandomHolesBench |    126,349.0 ns |    526.48 ns |    492.47 ns |
+|      GridWithRandomLimitsBench |  7,333,704.6 ns | 11,727.17 ns | 10,395.83 ns |
+| GridWithUnreachableTargetBench |  4,726,044.3 ns | 19,130.20 ns | 16,958.42 ns |
+|          GridWithGradientBench | 10,886,012.4 ns | 59,810.30 ns | 55,946.59 ns |
 
 
 ## 2020-02-04 Precalculate travel duration over edges

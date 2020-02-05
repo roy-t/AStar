@@ -1,4 +1,4 @@
-﻿using Roy_T.AStar.V2;
+﻿using Roy_T.AStar.V2.Primitives;
 
 namespace Roy_T.AStar.Viewer
 {

@@ -1,5 +1,5 @@
 ﻿using ReactiveUI;
-using Roy_T.AStar.V2.Graph;
+using Roy_T.AStar.V2.Graphs;
 
 namespace Roy_T.AStar.Viewer.Model
 {
@@ -15,8 +15,8 @@ namespace Roy_T.AStar.Viewer.Model
 
         public INode Node { get; }
 
-        public float X => this.Node.X;
-        public float Y => this.Node.Y;
+        public float X => this.Node.Position.X;
+        public float Y => this.Node.Position.Y;
 
         public NodeState NodeState
         {

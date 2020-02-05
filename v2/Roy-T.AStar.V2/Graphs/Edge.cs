@@ -1,4 +1,6 @@
-﻿namespace Roy_T.AStar.V2.Graph
+﻿using Roy_T.AStar.V2.Primitives;
+
+namespace Roy_T.AStar.V2.Graphs
 {
     public sealed class Edge : IEdge
     {
@@ -8,6 +10,8 @@
         {
             this.Start = start;
             this.End = end;
+
+            this.Distance = Distance.BeweenPositions(start.Position, end.Position);
             this.TraversalVelocity = traversalVelocity;
         }
 
@@ -17,11 +21,13 @@
             set
             {
                 this.traversalVelocity = value;
-                this.TraversalDuration = MathUtil.ExpectedTime(this.Start.X, this.Start.Y, this.End.X, this.End.Y, value);
+                this.TraversalDuration = this.Distance / value;
             }
         }
 
         public Duration TraversalDuration { get; private set; }
+
+        public Distance Distance { get; }
 
         public INode Start { get; }
         public INode End { get; }

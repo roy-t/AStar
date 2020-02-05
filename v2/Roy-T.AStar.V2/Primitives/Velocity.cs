@@ -1,4 +1,4 @@
-﻿namespace Roy_T.AStar.V2
+﻿namespace Roy_T.AStar.V2.Primitives
 {
     public struct Velocity
     {

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Roy_T.AStar.V2.Graph;
+using Roy_T.AStar.V2.Graphs;
+using Roy_T.AStar.V2.Primitives;
 
-namespace Roy_T.AStar.V2
+namespace Roy_T.AStar.V2.Grids
 {
     public class Grid
     {
@@ -106,7 +107,7 @@ namespace Roy_T.AStar.V2
             {
                 for (var y = 0; y < this.Rows; y++)
                 {
-                    this.Nodes[x, y] = new Node(x * xDistance, y * yDistance);
+                    this.Nodes[x, y] = new Node(new Position(x * xDistance, y * yDistance));
                 }
             }
         }
