@@ -6,7 +6,7 @@ namespace Roy_T.AStar.V2
 {
     public class Grid
     {
-        private readonly INode[,] Nodes;
+        private readonly Node[,] Nodes;
 
         public Grid(int columns, int rows, float xDistance, float yDistance, Velocity defaultSpeed, Connections connections = Connections.LateralAndDiagonal)
         {
@@ -43,7 +43,7 @@ namespace Roy_T.AStar.V2
             this.Columns = columns;
             this.Rows = rows;
 
-            this.Nodes = new INode[columns, rows];
+            this.Nodes = new Node[columns, rows];
 
             this.CreateNodes(xDistance, yDistance);
 

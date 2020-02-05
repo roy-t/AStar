@@ -9,7 +9,5 @@ namespace Roy_T.AStar.V2.Graph
 
         IList<IEdge> Incoming { get; }
         IList<IEdge> Outgoing { get; }
-
-        void Connect(INode node, Velocity traversalVelocity);
     }
 }

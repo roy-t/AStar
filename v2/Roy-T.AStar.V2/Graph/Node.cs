@@ -18,7 +18,7 @@ namespace Roy_T.AStar.V2.Graph
         public float X { get; }
         public float Y { get; }
 
-        public void Connect(INode node, Velocity traversalVelocity)
+        internal void Connect(INode node, Velocity traversalVelocity)
         {
             var edge = new Edge(this, node, traversalVelocity);
             this.Outgoing.Add(edge);
