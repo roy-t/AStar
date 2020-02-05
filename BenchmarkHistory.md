@@ -32,7 +32,8 @@ This benchmark is compararable to the `Gradient100X100` benchmark from older ver
 # Benchmarks
 _From newest to oldest_
 
-## 2020-02-05 WIP
+## 2020-02-05 Remove superseded nodes during search
+_git hash `302e2685743700d48d63f08c13df6794aed0e936`_
 BenchmarkDotNet=v0.12.0, OS=Windows 10.0.17763.973 (1809/October2018Update/Redstone5)
 Intel Core i9-9900K CPU 3.60GHz (Coffee Lake), 1 CPU, 16 logical and 8 physical cores
 .NET Core SDK=3.0.100
@@ -41,12 +42,12 @@ Intel Core i9-9900K CPU 3.60GHz (Coffee Lake), 1 CPU, 16 logical and 8 physical 
 
 |                         Method |            Mean |        Error |       StdDev |
 |------------------------------- |----------------:|-------------:|-------------:|
-|                      GridBench |     94,226.3 ns |    218.65 ns |    182.58 ns |
-|              GridWithHoleBench |        109.3 ns |      0.34 ns |      0.28 ns |
-|       GridWithRandomHolesBench |    126,349.0 ns |    526.48 ns |    492.47 ns |
-|      GridWithRandomLimitsBench |  7,333,704.6 ns | 11,727.17 ns | 10,395.83 ns |
-| GridWithUnreachableTargetBench |  4,726,044.3 ns | 19,130.20 ns | 16,958.42 ns |
-|          GridWithGradientBench | 10,886,012.4 ns | 59,810.30 ns | 55,946.59 ns |
+|                      GridBench |     94,338.7 ns |    529.27 ns |    469.18 ns |
+|              GridWithHoleBench |        120.2 ns |      0.88 ns |      0.82 ns |
+|       GridWithRandomHolesBench |    119,319.2 ns |    474.85 ns |    420.94 ns |
+|      GridWithRandomLimitsBench |  6,799,357.4 ns | 30,951.38 ns | 28,951.94 ns |
+| GridWithUnreachableTargetBench |  4,658,572.3 ns | 29,277.32 ns | 27,386.02 ns |
+|          GridWithGradientBench | 10,435,749.8 ns | 91,339.85 ns | 85,439.36 ns |
 
 
 ## 2020-02-04 Precalculate travel duration over edges
