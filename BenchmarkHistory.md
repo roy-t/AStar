@@ -1,8 +1,8 @@
 # Benchmarks overview
-For all benchmarks the graph is layed out in a grid like pattern and contains 10,000 nodes and 78,804 edges. All benchmarks try to find a path from the top-left node to the bottom-right node.
+For all benchmarks the graph is layed out in a grid like pattern and contains 10,000 nodes and 39,204 outgoing edges. All benchmarks try to find a path from the top-left node to the bottom-right node.
 
 ## GridBench
-All edges have the same traversal velocity.The A* algorithm will guess 100% right all the time. This benchmark is useful because it shows the absolute best case scenario. Note that this benchmark is so fast that the measuring error is usually several times greater than the mean, so it is hard to say how fast it really ran.  
+All edges have the same traversal velocity. The A* algorithm will guess 100% right all the time. This benchmark is useful because it shows the absolute best case scenario. Note that this benchmark is so fast that the measuring error is usually several times greater than the mean, so it is hard to say how fast it really ran.  
 
 ## GridWithHoleBench 
 All edges have the same traversal velocity. All nodes, on a diagonal from the top right to the bottom left, have had their incoming edges removed. Except for the node next to the center node of which all edges remain intact.
@@ -105,8 +105,8 @@ Intel Core i9-9900K CPU 3.60GHz (Coffee Lake), 1 CPU, 16 logical and 8 physical 
 | GridWithUnreachableTargetBench | 24,213,165.6 ns | 242,178.42 ns | 226,533.85 ns |
 |          GridWithGradientBench | 31,464,366.2 ns | 115,321.25 ns | 107,871.57 ns |
 
-# Benchmarks scores for V1
-_Note: Gradient100X100 is approximately similar to the GridWithGradientBench benchmark in v2_
+# Benchmarks scores for older versions
+_Note: Gradient100X100 is approximately similar to the GridWithGradientBench benchmark in newer versions_
 
 ## 2020-01-23
 _git hash `eaedfb12d9918977a8a3cde49a461e932f1a4e2b`_

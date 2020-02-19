@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Roy_T.AStar</RootNamespace>
+    <PackageId>RoyT.AStar</PackageId>
+    <Version>3.0.0</Version>
+    <Authors>Roy Triesscheijn</Authors>
+    <Company />
+    <Description>A 2D path finding library based on the A* algorithm for .NETStandard 2.0 and higher. Supports grids and graphs. This library has no external dependencies.</Description>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/roy-t/AStar/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/roy-t/AStar/</RepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
