@@ -57,7 +57,9 @@ namespace Roy_T.AStar.Viewer
                 Process.Start(psi);
             });
 
-            this.ResetCommand = ReactiveCommand.Create(() => this.CreateNodes());
+            this.ResetCommand = ReactiveCommand.Create(() => this.CreateNodes(Connections.LateralAndDiagonal));
+            this.LateralCommand = ReactiveCommand.Create(() => this.CreateNodes(Connections.Lateral));
+            this.DiagonalCommand = ReactiveCommand.Create(() => this.CreateNodes(Connections.Diagonal));
             this.RandomizeCommand = ReactiveCommand.Create(() => this.SetSpeedLimits(() =>
             {
                 var value = this.Random.Next((int)Settings.MinSpeed.MetersPerSecond, (int)Settings.MaxSpeed.MetersPerSecond + 1);
@@ -67,7 +69,7 @@ namespace Roy_T.AStar.Viewer
             this.MaxCommand = ReactiveCommand.Create(() => this.SetSpeedLimits(() => Settings.MaxSpeed));
             this.MinCommand = ReactiveCommand.Create(() => this.SetSpeedLimits(() => Settings.MinSpeed));
 
-            this.CreateNodes();
+            this.CreateNodes(Connections.LateralAndDiagonal);
         }
 
         public string Outcome
@@ -82,21 +84,35 @@ namespace Roy_T.AStar.Viewer
         public IReactiveCommand OpenGitHubCommand { get; }
 
         public IReactiveCommand ResetCommand { get; }
+
+        public IReactiveCommand LateralCommand { get; }
+
+        public IReactiveCommand DiagonalCommand { get; }
         public IReactiveCommand RandomizeCommand { get; }
         public IReactiveCommand MaxCommand { get; }
         public IReactiveCommand MinCommand { get; }
 
-        private void CreateNodes()
+        private void CreateNodes(Connections connections)
         {
             this.Clear();
 
-            var grid = new Grid(14, 7, 100, 100, Settings.MaxSpeed);
+            var gridSize = new GridSize(14, 7);
+            var cellSize = new V2.Primitives.Size(Distance.FromMeters(100), Distance.FromMeters(100));
+
+            var grid = connections switch
+            {
+                Connections.Lateral => Grid.CreateGridWithLateralConnections(gridSize, cellSize, Settings.MaxSpeed),
+                Connections.Diagonal => Grid.CreateGridWithDiagonalConnections(gridSize, cellSize, Settings.MaxSpeed),
+                Connections.LateralAndDiagonal => Grid.CreateGridWithLateralAndDiagonalConnections(gridSize, cellSize, Settings.MaxSpeed),
+                _ => throw new ArgumentOutOfRangeException(nameof(connections), $"Invalid connection type {connections}")
+            };
+
             this.PopupulateModelList(grid.GetAllNodes());
 
-            this.startNode = this.NodeDict[grid.GetNode(0, 0)];
+            this.startNode = this.NodeDict[grid.GetNode(GridPosition.Zero)];
             this.startNode.NodeState = NodeState.Start;
 
-            this.endNode = this.NodeDict[grid.GetNode(grid.Columns - 1, grid.Rows - 1)];
+            this.endNode = this.NodeDict[grid.GetNode(new GridPosition(grid.Columns - 1, grid.Rows - 1))];
             this.endNode.NodeState = NodeState.End;
             this.CalculatePath();
         }
@@ -214,7 +230,7 @@ namespace Roy_T.AStar.Viewer
             {
                 var path = this.PathFinder.FindPath(this.startNode.Node, this.endNode.Node, Settings.MaxSpeed);
                 var averageSpeed = Velocity.FromMetersPerSecond(path.Distance.Meters / path.Duration.Seconds);
-                this.Outcome = $"Found path, type: {path.Type}, distance {path.Distance:F2}m, average speed {averageSpeed}, expected duration {path.Duration}";
+                this.Outcome = $"Found path, type: {path.Type}, distance {path.Distance}, average speed {averageSpeed}, expected duration {path.Duration}";
 
                 this.ClearPath();
 

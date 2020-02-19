@@ -78,7 +78,7 @@ namespace Roy_T.AStar.Benchmark
             {
                 for (var x = 0; x < grid.Columns; x++)
                 {
-                    var node = grid.GetNode(x, y);
+                    var node = grid.GetNode(new GridPosition(x, y));
                     foreach (var edge in node.Incoming)
                     {
                         edge.TraversalVelocity = Velocity.FromKilometersPerHour(speedLimit);
@@ -99,7 +99,7 @@ namespace Roy_T.AStar.Benchmark
             {
                 for (var x = 0; x < grid.Columns; x++)
                 {
-                    var node = grid.GetNode(x, y);
+                    var node = grid.GetNode(new GridPosition(x, y));
                     foreach (var edge in node.Incoming)
                     {
                         var speed = (RandomNumbers[z] / 100.0f * 20) + 80;

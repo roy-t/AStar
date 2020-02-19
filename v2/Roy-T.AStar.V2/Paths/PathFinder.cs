@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Roy_T.AStar.V2.Collections;
 using Roy_T.AStar.V2.Graphs;
+using Roy_T.AStar.V2.Grids;
 using Roy_T.AStar.V2.Primitives;
 
 namespace Roy_T.AStar.V2.Paths
@@ -18,6 +20,24 @@ namespace Roy_T.AStar.V2.Paths
             this.Interesting = new MinHeap<MinHeapNode>();
             this.Nodes = new Dictionary<INode, MinHeapNode>();
             this.PathReconstructor = new PathReconstructor();
+        }
+
+        public Path FindPath(GridPosition start, GridPosition end, Grid grid)
+        {
+            var startNode = grid.GetNode(start);
+            var endNode = grid.GetNode(end);
+
+            var maximumVelocity = grid.GetAllNodes().SelectMany(n => n.Outgoing).Select(e => e.TraversalVelocity).Max();
+
+            return this.FindPath(startNode, endNode, maximumVelocity);
+        }
+
+        public Path FindPath(GridPosition start, GridPosition end, Grid grid, Velocity maximumVelocity)
+        {
+            var startNode = grid.GetNode(start);
+            var endNode = grid.GetNode(end);
+
+            return this.FindPath(startNode, endNode, maximumVelocity);
         }
 
         public Path FindPath(INode start, INode goal, Velocity maximumVelocity)

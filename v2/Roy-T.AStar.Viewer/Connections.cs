@@ -1,6 +1,6 @@
-﻿namespace Roy_T.AStar.V2.Grids
+﻿namespace Roy_T.AStar.Viewer
 {
-    public enum Connections
+    internal enum Connections
     {
         Lateral,
         Diagonal,

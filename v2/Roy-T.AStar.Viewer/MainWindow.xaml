@@ -62,11 +62,13 @@
                 <MenuItem Header="E_xit" Command="{Binding ExitCommand}"/>
             </MenuItem>
             <MenuItem Header="_Graph">
-                <MenuItem Header="_Reset" Command="{Binding ResetCommand}" />
+                <MenuItem Header="Create graph with lateral and diagonal connections" Command="{Binding ResetCommand}" />
+                <MenuItem Header="Create graph with lateral connections" Command="{Binding LateralCommand}" />
+                <MenuItem Header="Create graph with diagonal connections" Command="{Binding DiagonalCommand}" />
                 <Separator />
-                <MenuItem Header="Randomize speed limits" Command="{Binding RandomizeCommand}" />
-                <MenuItem Header="Set 100km/h speed limit" Command="{Binding MaxCommand}" />
-                <MenuItem Header="Set 10km/h speed limit" Command="{Binding MinCommand}" />
+                <MenuItem Header="Randomize edge traveral velocities" Command="{Binding RandomizeCommand}" />
+                <MenuItem Header="Set 100km/h edge traveral velocity" Command="{Binding MaxCommand}" />
+                <MenuItem Header="Set 10km/h edge traveral velocity" Command="{Binding MinCommand}" />
             </MenuItem>
             <MenuItem Header="_Help">
                 <MenuItem Header="_Github Project" Command="{Binding OpenGitHubCommand}" />

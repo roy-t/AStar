@@ -106,7 +106,7 @@ Intel Core i9-9900K CPU 3.60GHz (Coffee Lake), 1 CPU, 16 logical and 8 physical 
 |          GridWithGradientBench | 31,464,366.2 ns | 115,321.25 ns | 107,871.57 ns |
 
 # Benchmarks scores for V1
-_Note: Gradient100X100 is an approximately similar benchmark as GradientGridBench in v2_
+_Note: Gradient100X100 is approximately similar to the GridWithGradientBench benchmark in v2_
 
 ## 2020-01-23
 _git hash `eaedfb12d9918977a8a3cde49a461e932f1a4e2b`_

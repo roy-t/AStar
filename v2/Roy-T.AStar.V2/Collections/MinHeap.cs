@@ -6,7 +6,7 @@ namespace Roy_T.AStar.V2.Collections
     // C# Adaptation of a min heap built for C++ by Robin Thomas
     // Original source code at: https://github.com/robin-thomas/min-heap
 
-    public sealed class MinHeap<T>
+    internal sealed class MinHeap<T>
         where T : IComparable<T>
     {
         private readonly List<T> Items;

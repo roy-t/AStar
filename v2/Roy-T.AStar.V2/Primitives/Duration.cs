@@ -13,7 +13,6 @@ namespace Roy_T.AStar.V2.Primitives
 
         public float Seconds { get; }
 
-
         public static Duration FromSeconds(float seconds) => new Duration(seconds);
 
         public static Duration operator +(Duration a, Duration b)
@@ -35,16 +34,19 @@ namespace Roy_T.AStar.V2.Primitives
             => a.Seconds <= b.Seconds;
 
         public static bool operator ==(Duration a, Duration b)
-            => a.Seconds == b.Seconds;
+            => a.Equals(b);
 
         public static bool operator !=(Duration a, Duration b)
-            => a.Seconds != b.Seconds;
+            => !a.Equals(b);
 
         public override string ToString() => $"{this.Seconds:F2}s";
 
         public override bool Equals(object obj) => obj is Duration duration && this.Equals(duration);
-        public override int GetHashCode() => -1609761766 + this.Seconds.GetHashCode();
-        public int CompareTo(Duration other) => this.Seconds.CompareTo(other.Seconds);
+
         public bool Equals(Duration other) => this.Seconds == other.Seconds;
+
+        public int CompareTo(Duration other) => this.Seconds.CompareTo(other.Seconds);
+
+        public override int GetHashCode() => -1609761766 + this.Seconds.GetHashCode();
     }
 }

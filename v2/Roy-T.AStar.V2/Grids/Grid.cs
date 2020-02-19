@@ -9,18 +9,64 @@ namespace Roy_T.AStar.V2.Grids
     {
         private readonly Node[,] Nodes;
 
-        public Grid(int columns, int rows, float xDistance, float yDistance, Velocity defaultSpeed, Connections connections = Connections.LateralAndDiagonal)
+        public static Grid CreateGridWithLateralConnections(GridSize gridSize, Size cellSize, Velocity traversalVelocity)
         {
-            if (columns < 1)
+            CheckArguments(gridSize, cellSize, traversalVelocity);
+
+            var grid = new Grid(gridSize, cellSize);
+
+            grid.CreateLateralConnections(traversalVelocity);
+
+            return grid;
+        }
+
+        public static Grid CreateGridWithDiagonalConnections(GridSize gridSize, Size cellSize, Velocity traversalVelocity)
+        {
+            CheckArguments(gridSize, cellSize, traversalVelocity);
+
+            var grid = new Grid(gridSize, cellSize);
+
+            grid.CreateDiagonalConnections(traversalVelocity);
+
+            return grid;
+        }
+
+        public static Grid CreateGridWithLateralAndDiagonalConnections(GridSize gridSize, Size cellSize, Velocity traversalVelocity)
+        {
+            CheckArguments(gridSize, cellSize, traversalVelocity);
+
+            var grid = new Grid(gridSize, cellSize);
+
+            grid.CreateDiagonalConnections(traversalVelocity);
+            grid.CreateLateralConnections(traversalVelocity);
+
+            return grid;
+        }
+
+        private static void CheckArguments(GridSize gridSize, Size cellSize, Velocity defaultSpeed)
+        {
+            if (gridSize.Columns < 1)
             {
                 throw new ArgumentOutOfRangeException(
-                    nameof(columns), $"Argument {nameof(columns)} is {columns} but should be >= 1");
+                    nameof(gridSize), $"Argument {nameof(gridSize.Columns)} is {gridSize.Columns} but should be >= 1");
             }
 
-            if (rows < 1)
+            if (gridSize.Rows < 1)
             {
                 throw new ArgumentOutOfRangeException(
-                    nameof(rows), $"Argument {nameof(rows)} is {rows} but should be >= 1");
+                    nameof(gridSize), $"Argument {nameof(gridSize.Rows)} is {gridSize.Rows} but should be >= 1");
+            }
+
+            if (cellSize.Width <= Distance.Zero)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(cellSize), $"Argument {nameof(cellSize.Width)} is {cellSize.Width} but should be > {Distance.Zero}");
+            }
+
+            if (cellSize.Height <= Distance.Zero)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(cellSize), $"Argument {nameof(cellSize.Height)} is {cellSize.Height} but should be > {Distance.Zero}");
             }
 
             if (defaultSpeed.MetersPerSecond <= 0.0f)
@@ -28,86 +74,23 @@ namespace Roy_T.AStar.V2.Grids
                 throw new ArgumentOutOfRangeException(
                     nameof(defaultSpeed), $"Argument {nameof(defaultSpeed)} is {defaultSpeed} but should be > 0.0 m/s");
             }
-
-            if (xDistance <= 0)
-            {
-                throw new ArgumentOutOfRangeException(
-                    nameof(xDistance), $"Argument {nameof(xDistance)} is {xDistance} but should be > 0");
-            }
-
-            if (yDistance <= 0)
-            {
-                throw new ArgumentOutOfRangeException(
-                    nameof(yDistance), $"Argument {nameof(yDistance)} is {yDistance} but should be > 0");
-            }
-
-            this.Columns = columns;
-            this.Rows = rows;
-
-            this.Nodes = new Node[columns, rows];
-
-            this.CreateNodes(xDistance, yDistance);
-
-            switch (connections)
-            {
-                case Connections.Lateral:
-                    this.CreateLateralConnections(defaultSpeed);
-                    break;
-                case Connections.Diagonal:
-                    this.CreateDiagonalConnections(defaultSpeed);
-                    break;
-                default:
-                    this.CreateLateralConnections(defaultSpeed);
-                    this.CreateDiagonalConnections(defaultSpeed);
-                    break;
-            }
         }
 
-        public INode GetNode(int x, int y) => this.Nodes[x, y];
-
-        public IReadOnlyList<INode> GetAllNodes()
+        private Grid(GridSize gridSize, Size cellSize)
         {
-            var list = new List<INode>(this.Columns * this.Rows);
+            this.GridSize = gridSize;
+            this.Nodes = new Node[gridSize.Columns, gridSize.Rows];
 
-            for (var x = 0; x < this.Columns; x++)
-            {
-                for (var y = 0; y < this.Rows; y++)
-                {
-                    list.Add(this.Nodes[x, y]);
-                }
-            }
-
-            return list;
+            this.CreateNodes(cellSize);
         }
 
-        public void BlockNode(int x, int y)
-        {
-            var node = this.Nodes[x, y];
-
-            foreach (var outgoingEdge in node.Outgoing)
-            {
-                var opposite = outgoingEdge.End;
-                opposite.Incoming.Remove(outgoingEdge);
-            }
-
-            node.Incoming.Clear();
-
-            foreach (var incomingEdge in node.Incoming)
-            {
-                var opposite = incomingEdge.Start;
-                opposite.Outgoing.Remove(incomingEdge);
-            }
-
-            node.Outgoing.Clear();
-        }
-
-        private void CreateNodes(float xDistance, float yDistance)
+        private void CreateNodes(Size cellSize)
         {
             for (var x = 0; x < this.Columns; x++)
             {
                 for (var y = 0; y < this.Rows; y++)
                 {
-                    this.Nodes[x, y] = new Node(new Position(x * xDistance, y * yDistance));
+                    this.Nodes[x, y] = new Node(Position.FromOffset(cellSize.Width * x, cellSize.Height * y));
                 }
             }
         }
@@ -162,7 +145,48 @@ namespace Roy_T.AStar.V2.Grids
             }
         }
 
-        public int Columns { get; }
-        public int Rows { get; }
+        public GridSize GridSize { get; }
+
+        public int Columns => this.GridSize.Columns;
+
+        public int Rows => this.GridSize.Rows;
+
+        public INode GetNode(GridPosition position) => this.Nodes[position.X, position.Y];
+
+        public IReadOnlyList<INode> GetAllNodes()
+        {
+            var list = new List<INode>(this.Columns * this.Rows);
+
+            for (var x = 0; x < this.Columns; x++)
+            {
+                for (var y = 0; y < this.Rows; y++)
+                {
+                    list.Add(this.Nodes[x, y]);
+                }
+            }
+
+            return list;
+        }
+
+        public void BlockNode(int x, int y)
+        {
+            var node = this.Nodes[x, y];
+
+            foreach (var outgoingEdge in node.Outgoing)
+            {
+                var opposite = outgoingEdge.End;
+                opposite.Incoming.Remove(outgoingEdge);
+            }
+
+            node.Incoming.Clear();
+
+            foreach (var incomingEdge in node.Incoming)
+            {
+                var opposite = incomingEdge.Start;
+                opposite.Outgoing.Remove(incomingEdge);
+            }
+
+            node.Outgoing.Clear();
+        }
     }
 }
