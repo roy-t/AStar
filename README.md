@@ -1,125 +1,100 @@
 # Roy-T.AStar
+A fast 2D path finding library based on the A* algorithm. Works with both grids and graphs. Supports any .NET variant that supports .NETStandard 2.0 or higher. This library has no external dependencies. The library is licensed under the MIT license, see the `LICENSE` file for more details.
 
-*Current version: 2.1.0*,  [version history](versions.md)
+A* is a greedy, graph based, path finding algorithm. It works by using a heuristic to guide the traveral along the graph. In this library we use the Euclidian distance heuristic. For a comprehensive overview of how the A* algorithm works I recommend this interactive [article](https://www.redblobgames.com/pathfinding/a-star/introduction.html) by Red Blob Games.
 
-A fast 2D path finding library based on the A* algorithm for `.NETStandard 1.0` and `.Net 4.5` and higher. This library has no external dependencies. The library is licensed under the MIT license, see the `LICENSE` file for more details.
-
-You can directly add this library to your project using [NuGet](https://www.nuget.org/packages/RoyT.AStar/):
+## Installation
+Add this library to your project using [NuGet](https://www.nuget.org/packages/RoyT.AStar/):
 
 ```
 Install-Package RoyT.AStar
 ```
 
-For more information about the A* path finding algorithm and this library, please visit my blog at http://roy-t.nl.
-
-## Why choose this library?
-- Its very fast
-- It generates lowest cost, visually appealing, paths using the A* algorithm
-- Its flexible, you can define how your agent moves and this library will accomodate these restrictions
-- Its easy to use, you can generate a path with two lines of code
-- It has zero (0) external dependencies
-- It works on both `.Net Core` and `.Net 4.5` and higher by targetting `.Net standard 1.0`
-
-
-## Tutorial
-
-Below I give short code-first example. If you are more interested in textual explanation you can find it right after the next section.
-
-### Usage example in code
-You can easily search for the lowest cost path for an agent that can move in all directions.
-
+## Usage Example
+### Grids
 ```csharp
-using RoyT.AStar;
+using Roy_T.AStar.Grids;
+using Roy_T.AStar.Primitives;
 
-// Create a new grid and let each cell have a default traversal cost of 1.0
-var grid = new Grid(100, 100, 1.0f);
+// ....
 
-// Block some cells (for example walls)
-grid.BlockCell(new Position(5, 5))
+var gridSize = new GridSize(columns: 10, rows: 10);
+var cellSize = new Size(Distance.FromMeters(10), Distance.FromMeters(10));
+var traversalVelocity = Velocity.FromKilometersPerHour(100);
 
-// Make other cells harder to traverse (for example water)
-grid.SetCellCost(new Position(6, 5), 3.0f);
+// Create a new grid, each cell is laterally connected (like how a king moves over a chess board, other options are available)
+// each cell is 10x10 meters large. The connection between cells can be traversed at 100KM/h.
+var grid = Grid.CreateGridWithLateralConnections(gridSize, cellSize, traversalVelocity);
 
-// And finally start the search for the shortest path form start to end
-Position[] path = grid.GetPath(new Position(0, 0), new Position(99, 99));
+var pathFinder = new PathFinder();
+var path = pathFinder.FindPath(new GridPosition(0, 0), new GridPosition(9, 9), grid);
+
+Console.WriteLine($"type: {path.Type}, distance: {path.Distance}, duration {path.Duration}");
+// prints: "type: Complete, distance: 180.00m, duration 6.48s"
+
+// Use path.Edges to get the actual path
+yourClass.TraversePath(path.Edges);
 
 ```
-It is also posssible to define the agent's movement pattern.
 
+### Graphs
 ```csharp
-// Use one of the built-in ranges of motion
-var path = grid.GetPath(new Position(0, 0), new Position(99, 99), MovementPatterns.DiagonalOnly);
+using Roy_T.AStar.Graphs;
+using Roy_T.AStar.Primitives;
 
-// Or define the movement pattern of an agent yourself
-// For example, here is an agent that can only move left and up
-var movementPattern = new[] {new Offset(-1, 0), new Offset(0, -1)};
-var path = grid.GetPath(new Position(0, 0), new Position(99, 99), movementPattern);
+// ...
 
+// Create directed graph with node a and b, and a one-way direction from a to b
+var nodeA = new Node(Position.Zero);
+var nodeB = new Node(new Position(10, 10));
+
+var traversalVelocity = Velocity.FromKilometersPerHour(100);
+nodeA.Connect(nodeB, traversalVelocity);
+
+var pathFinder = new PathFinder();
+var path = pathFinder.FindPath(nodeA, nodeB, maximumVelocity: traversalVelocity);
+
+Console.WriteLine($"type: {path.Type}, distance: {path.Distance}, duration {path.Duration}");
+// prints: "type: Complete, distance: 14.14m, duration 0.51s"
+
+// Use path.Edges to get the actual path
+yourClass.TraversePath(path.Edges);
 ```
 
-As an optimization, you can limit the number of iterations the algorithm searches for a path before it gives up.
-
-```
-var path = grid.GetPath(new Position(0, 0), new Position(99, 99), MovementPatterns.Full, 300);
-
-```
-
-
-### Usage in text
-Your agent might be able to move fluently through a world with hills and water but that representation is too complex for the A* algorithm. 
-So the first thing you need to do is to is to create an abstract representation of your world that is simple enough for the path finding algorithm to understand.
-In this library we use a grid to represent the traversable, and intraversable, space in your world. 
-
-You can instantiate a grid using the `Grid` class. If you have a world that is a 100 by a 100 meters large, and you
-create a grid of 100x100, each cell will represent a patch of land of 1x1 meters. 
-
-Experiment with the size of the grid, a larger grid
-will give you more fine grained control but it will also make the path finding algorithm slower.
-
-Once you have a grid you need to configure which cells represent obstacles. Some obstacles, like a high wall, are intraversable. Use the `BlockCell` method on your grid to prevent the path finding algorithm from planning paths through that cell.
-Other obstacles, like dense shrubbery, take more time to traverse. In that case give the cell a higher cost using the `SetCellCost` method.
-
-Once you've configured your grid its time to start planning paths. Using the `GetPath` method you can immidately search for a path between two cells for an agent that can move in all directions. 
-You can also plan paths for agents that are more limited in their movent using the overload of `GetPath` that takes a `movementPattern` parameter. In that case you can either select one of the predefined ranges of motion from the `MovementPatterns` class or you can configure yourself what kind of steps an agent can make.
-
-As an optimization, you can limit the number of iterations the algorithm searches for a path before it gives up by using the `GetPath` overload with the iterationLimit parameter.
-
-You can define your own patterns for your agents. Below I have defined the movement pattern for an agent that can only move diagonally. (This movement pattern is included in the library as `MovementPatterns.DiagonalOnly`).
-
+### Incomplete paths
 ```csharp
-var diagonalOnlyMovementPattern = new[] {
-    new Offset(-1, -1), new Offset(1, -1), , new Offset(1, 1), , new Offset(-1, 1)
-};
+// Create a graph with two nodes, but no connection between both nodes
+var nodeA = new Node(Position.Zero);
+var nodeB = new Node(new Position(10, 10));
+
+var pathFinder = new PathFinder();
+var path = pathFinder.FindPath(nodeA, nodeB, maximumVelocity: Velocity.FromKilometersPerHour(100));
+
+Console.WriteLine($"type: {path.Type}, distance: {path.Distance}, duration {path.Duration}");
+// prints: "type: ClosestApproach, distance: 0.00m, duration 0.00s"
 ```
 
-## Things to keep in mind when generating your grid
+## Details
+This library uses a graph for all the underlying path finding. But for convenience there is also a grid class. Using this grid class you will never know that you are dealing with graphs, unless if you want too of course ;).
 
-A* uses a heuristic to guess which way to search first. While searching it should be true that a path cannot be cheaper than initially guessed. (It's ok if a path is more expensive, that happens all the time, for example when finding impassable terrain). Because of this it's important that cells always have a cost of at least `1`. The heuristic I use is the Manhattan distance. So the guess (and performance) is best when most cells have a cost of `1`. This also means that movement patterns that are very different from the predefined movement patterns don't match the heuristic very well, which can lead to worse performance.
+The goal of this library is to make the path finding extremely fast. Even for huge graphs, with 10.000 nodes and 40.000 edges, the algorithm will find a path in 10 miliseconds. For more details please check the [BenchmarkHistory.md](BenchmarkHistory.md) file.
+
+This library is so fast because of the underlying data models we used. Especially the `MinHeap` data structure makes sure that we can efficiently look up the best candidates to advance the path. Another advantage is that most of the calculations (like costs of edges) are precomputed when building the graph. Which saves time when searching for a path.
 
 ## Viewer
-This repository also contains a viewer which you can use to build worlds and visualize paths.
-In debug builds you can even replay the decision making process to get a feeling of what is going on.
+This code repository contains a WPF application which you can use to visualize the pathfinding algorithm. Right click nodes to remove them, it will automatically update the best path. You can also use the options in the graph menu to create different types of grids/graphs, and to randomize the traversal velocity of the edges. Remember: A* will always find the fastest path, not the shortest path!
 
 ![The viewer](viewer.png?raw=true "The viewer")
- 
-Click a cell in the editor to change it properties. A new path will be generated automatically.
-The buttons and slider at the bottom of the window let you control the replay features.
-
-Each cell is color coded
-
-- White: a normal cell
-- Light green: the start cell
-- Dark green: the current cell, or end cell
-- Black a blocked (intraversable) cell
-- Gray: a cell that has been processed, *is closed*
-- Orange: a cell that still needs to be processed, *is open*
-- Purple: the cell that is currently being processed
-- Blue: a cell on, what currently is believed to be, the shortest path
 
 
-## Implementation details
-While making this library I was mostly concerned with performance (how long does it take to find a path) and ease of use.
-I use a custom `MinHeap` data structure to keep track of the best candidates for the shortest path. I've experimented with other data structures, like the standard `SortedSet` but they were consistently slower. 
-Inside the A\* algorithm itself I use flat arrays to store the path and cost information. I use the Manhattan distance heuristic because its cheap to compute and is an admissible heuristic for all predefined movement patterns.
+## Advanced techniques/Migrating from older versions
+Previous versions, before 3.0, had a few features that are no longer available in 3.0. However you can mimic most of these features in a more efficient way, using the new graph-first representation.
 
-While micro-optimizing the code I've used the handy [BenchMark.Net](https://github.com/dotnet/BenchmarkDotNet) library to see if my changes had any effect. The benchmark suite is included in the source code here. So if you would like to try to make this implemention faster you can use the same benchmark and performance metrics I did.
+### Corner cutting
+If you disconnect a node from a grid at grid position (1,1), using `grid.DisconnectNode` you can also remove the diagonal connections from (0, 1) to (1, 0), (1, 0) to (2, 1), (2, 1) to (1, 2), (1, 2), to (0, 1) using the `grid.RemoveDiagonalConnectionsIntersectingWithNode` method. This mimics the behavior of preventing corner cutting, which was available in the path finder settings in previous versions, but is more efficient.
+
+### Movement patterns
+If you have a grid you can mimic certain movement patterns. For example creating a grid using `Grids.CreateGridWithLateralConnections` will give you a grid where every agent can move only up/down and left/right between cells (like a king in chess). You can also use `Grids.CreateGridWithDiagonalConnections` (your agent can move diagonally, like a bishop) or `Grid.CreateGridWithLateralAndDiagonalConnections` (your agent cann move both diagonally and laterally, like a queen). This method mimics movement patterns, but is more efficient.
+
+### Different agent sizes
+In a previous version (which was only available on GitHub, not on Nuget). You can define different agent shapes and sizes. Unfortunately this slowed down the path finding algorithm considerably. Consider having different graphs for different sized agents, where you manually block off corners where they can't fit. If you really want to support different agent shapes in one grid  I recommend using a different algorithm. For example the Explicit Corridor Map Model ([ECCM](https://www.staff.science.uu.nl/~gerae101/UU_crowd_simulation_publications_ecm.html)).

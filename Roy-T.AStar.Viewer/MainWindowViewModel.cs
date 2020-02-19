@@ -104,7 +104,7 @@ namespace Roy_T.AStar.Viewer
 
         private static Grid CreateGrid(Connections connections)
         {
-            var gridSize = new GridSize(14, 7);
+            var gridSize = new GridSize(columns: 14, rows: 7);
             var cellSize = new Primitives.Size(Distance.FromMeters(100), Distance.FromMeters(100));
 
             return connections switch

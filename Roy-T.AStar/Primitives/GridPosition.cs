@@ -21,7 +21,7 @@ namespace Roy_T.AStar.Primitives
         public static bool operator !=(GridPosition a, GridPosition b)
             => !a.Equals(b);
 
-        public override string ToString() => $"({this.X:F2}, {this.Y:F2})";
+        public override string ToString() => $"({this.X}, {this.Y})";
 
         public override bool Equals(object obj) => obj is GridPosition GridPosition && this.Equals(GridPosition);
 
