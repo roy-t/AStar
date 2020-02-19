@@ -15,7 +15,7 @@ namespace Roy_T.AStar.Viewer
                 switch (cellState)
                 {
                     case NodeState.None:
-                        return Brushes.Transparent;
+                        return Brushes.Black;
                     case NodeState.Start:
                         return Brushes.LightGreen;
                     case NodeState.End:

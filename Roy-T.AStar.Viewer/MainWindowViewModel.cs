@@ -7,7 +7,6 @@ using System.Reactive.Linq;
 using System.Windows;
 using DynamicData;
 using ReactiveUI;
-using Roy_T.AStar.Graphs;
 using Roy_T.AStar.Grids;
 using Roy_T.AStar.Paths;
 using Roy_T.AStar.Primitives;
@@ -17,24 +16,19 @@ namespace Roy_T.AStar.Viewer
 {
     internal sealed class MainWindowViewModel : ReactiveObject
     {
-        private readonly Dictionary<INode, NodeModel> NodeDict;
-        private readonly Dictionary<IEdge, EdgeModel> EdgeDict;
-
         private readonly Random Random;
         private readonly PathFinder PathFinder;
 
         private NodeModel startNode;
         private NodeModel endNode;
+        private Grid grid;
         private string outcome;
 
         public MainWindowViewModel()
         {
             this.PathFinder = new PathFinder();
 
-            this.Nodes = new ObservableCollection<ReactiveObject>();
-
-            this.NodeDict = new Dictionary<INode, NodeModel>();
-            this.EdgeDict = new Dictionary<IEdge, EdgeModel>();
+            this.Models = new ObservableCollection<ReactiveObject>();
 
             this.Random = new Random();
             this.outcome = string.Empty;
@@ -78,7 +72,7 @@ namespace Roy_T.AStar.Viewer
             set => this.RaiseAndSetIfChanged(ref this.outcome, value);
         }
 
-        public ObservableCollection<ReactiveObject> Nodes { get; }
+        public ObservableCollection<ReactiveObject> Models { get; }
 
         public IReactiveCommand ExitCommand { get; }
         public IReactiveCommand OpenGitHubCommand { get; }
@@ -95,64 +89,44 @@ namespace Roy_T.AStar.Viewer
         private void CreateNodes(Connections connections)
         {
             this.Clear();
+            this.grid = CreateGrid(connections);
+            var models = ModelBuilder.BuildModel(this.grid, n => this.EditNode(n), n => this.RemoveNode(n));
+            this.Models.AddRange(models);
 
+            this.startNode = this.Models.OfType<NodeModel>().FirstOrDefault();
+            this.startNode.NodeState = NodeState.Start;
+
+            this.endNode = this.Models.OfType<NodeModel>().LastOrDefault();
+            this.endNode.NodeState = NodeState.End;
+
+            this.CalculatePath();
+        }
+
+        private static Grid CreateGrid(Connections connections)
+        {
             var gridSize = new GridSize(14, 7);
             var cellSize = new Primitives.Size(Distance.FromMeters(100), Distance.FromMeters(100));
 
-            var grid = connections switch
+            return connections switch
             {
                 Connections.Lateral => Grid.CreateGridWithLateralConnections(gridSize, cellSize, Settings.MaxSpeed),
                 Connections.Diagonal => Grid.CreateGridWithDiagonalConnections(gridSize, cellSize, Settings.MaxSpeed),
                 Connections.LateralAndDiagonal => Grid.CreateGridWithLateralAndDiagonalConnections(gridSize, cellSize, Settings.MaxSpeed),
                 _ => throw new ArgumentOutOfRangeException(nameof(connections), $"Invalid connection type {connections}")
             };
-
-            this.PopupulateModelList(grid.GetAllNodes());
-
-            this.startNode = this.NodeDict[grid.GetNode(GridPosition.Zero)];
-            this.startNode.NodeState = NodeState.Start;
-
-            this.endNode = this.NodeDict[grid.GetNode(new GridPosition(grid.Columns - 1, grid.Rows - 1))];
-            this.endNode.NodeState = NodeState.End;
-            this.CalculatePath();
         }
 
         private void Clear()
         {
-            this.NodeDict.Clear();
-            this.EdgeDict.Clear();
             this.startNode = null;
             this.endNode = null;
             this.outcome = string.Empty;
-            this.Nodes.Clear();
-        }
-
-        private void PopupulateModelList(IEnumerable<INode> nodes)
-        {
-            var toAdd = new List<ReactiveObject>();
-            foreach (var node in nodes)
-            {
-                var model = new NodeModel(node);
-                model.LeftClickCommand = ReactiveCommand.Create(() => this.EditNode(model));
-                model.RightClickCommand = ReactiveCommand.Create(() => this.RemoveNode(model));
-
-                this.NodeDict.Add(node, model);
-                toAdd.Add(model);
-
-                foreach (var edge in node.Outgoing)
-                {
-                    var edgeModel = new EdgeModel(edge);
-                    this.EdgeDict.Add(edge, edgeModel);
-                    toAdd.Add(edgeModel);
-                }
-            }
-
-            this.Nodes.AddRange(toAdd);
+            this.Models.Clear();
         }
 
         private void SetSpeedLimits(Func<Velocity> speedLimitFunc)
         {
-            foreach (var edge in this.Nodes.OfType<EdgeModel>())
+            foreach (var edge in this.Models.OfType<EdgeModel>())
             {
                 edge.Velocity = speedLimitFunc();
             }
@@ -192,35 +166,32 @@ namespace Roy_T.AStar.Viewer
 
         private void RemoveNode(NodeModel model)
         {
-            var toRemove = new List<ReactiveObject>();
+            this.grid.DisconnectNode(model.GridPosition);
+            this.grid.RemoveDiagonalConnectionsIntersectingWithNode(model.GridPosition);
 
-            var node = model.Node;
+            this.Models.Clear();
+            this.Models.AddRange(ModelBuilder.BuildModel(this.grid, n => this.EditNode(n), n => this.RemoveNode(n)));
 
-            foreach (var incomingEdge in node.Incoming)
+            if (this.startNode != null)
             {
-                var opposite = incomingEdge.Start;
-                opposite.Outgoing.Remove(incomingEdge);
-
-                toRemove.Add(this.EdgeDict[incomingEdge]);
+                this.startNode = this.Models.OfType<NodeModel>().FirstOrDefault(n => n.GridPosition == this.startNode.GridPosition);
             }
 
-            node.Incoming.Clear();
-
-            foreach (var outgoingEdge in node.Outgoing)
+            if (this.startNode != null)
             {
-                var opposite = outgoingEdge.End;
-                opposite.Incoming.Remove(outgoingEdge);
-
-                toRemove.Add(this.EdgeDict[outgoingEdge]);
+                this.startNode.NodeState = NodeState.Start;
             }
 
-            node.Outgoing.Clear();
+            if (this.endNode != null)
+            {
+                this.endNode = this.Models.OfType<NodeModel>().FirstOrDefault(n => n.GridPosition == this.endNode.GridPosition);
+            }
 
-            toRemove.Add(model);
-            this.Nodes.RemoveMany(toRemove);
+            if (this.endNode != null)
+            {
+                this.endNode.NodeState = NodeState.End;
+            }
 
-            this.startNode = this.startNode != model ? this.startNode : null;
-            this.endNode = this.endNode != model ? this.endNode : null;
             this.CalculatePath();
         }
 
@@ -242,7 +213,7 @@ namespace Roy_T.AStar.Viewer
                     toAdd.Add(edgeModel);
                 }
 
-                this.Nodes.AddRange(toAdd);
+                this.Models.AddRange(toAdd);
             }
             else
             {
@@ -253,12 +224,12 @@ namespace Roy_T.AStar.Viewer
         private void ClearPath()
         {
             var toRemove = new List<PathEdgeModel>();
-            foreach (var edge in this.Nodes.OfType<PathEdgeModel>())
+            foreach (var edge in this.Models.OfType<PathEdgeModel>())
             {
                 toRemove.Add(edge);
             }
 
-            this.Nodes.RemoveMany(toRemove);
+            this.Models.RemoveMany(toRemove);
         }
     }
 }

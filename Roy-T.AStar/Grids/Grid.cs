@@ -168,9 +168,9 @@ namespace Roy_T.AStar.Grids
             return list;
         }
 
-        public void BlockNode(int x, int y)
+        public void DisconnectNode(GridPosition position)
         {
-            var node = this.Nodes[x, y];
+            var node = this.Nodes[position.X, position.Y];
 
             foreach (var outgoingEdge in node.Outgoing)
             {
@@ -178,7 +178,7 @@ namespace Roy_T.AStar.Grids
                 opposite.Incoming.Remove(outgoingEdge);
             }
 
-            node.Incoming.Clear();
+            node.Outgoing.Clear();
 
             foreach (var incomingEdge in node.Incoming)
             {
@@ -186,7 +186,49 @@ namespace Roy_T.AStar.Grids
                 opposite.Outgoing.Remove(incomingEdge);
             }
 
-            node.Outgoing.Clear();
+            node.Incoming.Clear();
         }
+
+        public void RemoveDiagonalConnectionsIntersectingWithNode(GridPosition position)
+        {
+            var left = new GridPosition(position.X - 1, position.Y);
+            var top = new GridPosition(position.X, position.Y - 1);
+            var right = new GridPosition(position.X + 1, position.Y);
+            var bottom = new GridPosition(position.X, position.Y + 1);
+
+            if (this.IsInsideGrid(left) && this.IsInsideGrid(top))
+            {
+                this.RemoveEdge(left, top);
+                this.RemoveEdge(top, left);
+            }
+
+            if (this.IsInsideGrid(top) && this.IsInsideGrid(right))
+            {
+                this.RemoveEdge(top, right);
+                this.RemoveEdge(right, top);
+            }
+
+            if (this.IsInsideGrid(right) && this.IsInsideGrid(bottom))
+            {
+                this.RemoveEdge(right, bottom);
+                this.RemoveEdge(bottom, right);
+            }
+
+            if (this.IsInsideGrid(bottom) && this.IsInsideGrid(left))
+            {
+                this.RemoveEdge(bottom, left);
+                this.RemoveEdge(left, bottom);
+            }
+        }
+
+        public void RemoveEdge(GridPosition from, GridPosition to)
+        {
+            var fromNode = this.Nodes[from.X, from.Y];
+            var toNode = this.Nodes[to.X, to.Y];
+
+            fromNode.Disconnect(toNode);
+        }
+
+        private bool IsInsideGrid(GridPosition position) => position.X >= 0 && position.X < this.Columns && position.Y >= 0 && position.Y < this.Rows;
     }
 }

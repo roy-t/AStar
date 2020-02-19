@@ -25,6 +25,19 @@ namespace Roy_T.AStar.Graphs
             node.Incoming.Add(edge);
         }
 
+        internal void Disconnect(INode node)
+        {
+            for (var i = this.Outgoing.Count - 1; i >= 0; i--)
+            {
+                var edge = this.Outgoing[i];
+                if (edge.End == node)
+                {
+                    this.Outgoing.Remove(edge);
+                    node.Incoming.Remove(edge);
+                }
+            }
+        }
+
         public override string ToString() => this.Position.ToString();
     }
 }

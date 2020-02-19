@@ -26,7 +26,7 @@ namespace Roy_T.AStar.Benchmark
         {
             for (var y = 0; y < grid.Rows; y++)
             {
-                grid.BlockNode(grid.Columns / 2, y);
+                grid.DisconnectNode(new GridPosition(grid.Columns / 2, y));
             }
         }
 
@@ -45,7 +45,7 @@ namespace Roy_T.AStar.Benchmark
                     var rand = RandomNumbers[z];
                     if (rand < 50)
                     {
-                        grid.BlockNode(x, y);
+                        grid.DisconnectNode(new GridPosition(x, y));
                     }
                     z = (z + 1) % RandomNumbers.Length;
                 }
@@ -62,7 +62,7 @@ namespace Roy_T.AStar.Benchmark
             {
                 if (i != (grid.Rows / 2) - 1)
                 {
-                    grid.BlockNode(i, i);
+                    grid.DisconnectNode(new GridPosition(i, i));
                 }
             }
         }

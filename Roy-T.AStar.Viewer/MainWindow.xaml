@@ -7,7 +7,7 @@
         xmlns:model="clr-namespace:Roy_T.AStar.Viewer.Model"
         mc:Ignorable="d"
         Height="900" Width="1550"
-        Background="WhiteSmoke" 
+        Background="WhiteSmoke"         
         Title="Roy-T.AStar.v2 - Viewer" d:DataContext="{d:DesignInstance local:MainWindowViewModel, IsDesignTimeCreatable=True}">
     <Window.Resources>
         <local:GraphDataTemplateSelector x:Key="selector" />
@@ -24,17 +24,17 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="NodeDataTemplate" DataType="{x:Type model:NodeModel}">
-            <Border BorderBrush="{Binding NodeState, Converter={StaticResource stateConvertor}}" BorderThickness="2" Background="White">
+            <Border BorderBrush="Black" BorderThickness="1" Padding="19.5 34.5" Background="Transparent">
                 <Border.RenderTransform>
-                    <TranslateTransform X="-25" Y="-25" />
+                    <TranslateTransform X="-50" Y="-50" />
                 </Border.RenderTransform>
-                <Button Width="60" Height="60" Background="{Binding NodeState, Converter={StaticResource stateConvertor}}">
+                <Button Width="60" Height="30" Background="{Binding NodeState, Converter={StaticResource stateConvertor}}">
                     <Button.InputBindings>
                         <MouseBinding Gesture="LeftClick" Command="{Binding LeftClickCommand}" />
                         <MouseBinding Gesture="RightClick" Command="{Binding RightClickCommand}" />
                     </Button.InputBindings>
                     <Button.Content>
-                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12" FontFamily="Lucida Sans Typewriter">
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12" Foreground="White" FontFamily="Lucida Sans Typewriter">
                             <TextBlock.Text>
                                 <MultiBinding StringFormat="{}{0:F0}, {1:F0}">
                                     <Binding Path="X" />
@@ -82,7 +82,7 @@
         </Menu>
         <GroupBox Margin="2 2 2 0" Header="Graph" Grid.Row="1">
             <Grid>
-                <ItemsControl ItemsSource="{Binding Nodes}" ItemTemplateSelector="{StaticResource selector}">
+                <ItemsControl ItemsSource="{Binding Models}" ItemTemplateSelector="{StaticResource selector}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <Canvas Margin="50"/>

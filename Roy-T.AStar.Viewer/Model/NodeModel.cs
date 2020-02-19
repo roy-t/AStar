@@ -1,5 +1,6 @@
 ﻿using ReactiveUI;
 using Roy_T.AStar.Graphs;
+using Roy_T.AStar.Primitives;
 
 namespace Roy_T.AStar.Viewer.Model
 {
@@ -7,13 +8,15 @@ namespace Roy_T.AStar.Viewer.Model
     {
         private NodeState nodeState;
 
-        public NodeModel(INode node)
+        public NodeModel(INode node, GridPosition gridPosition)
         {
             this.Node = node;
+            this.GridPosition = gridPosition;
             this.nodeState = NodeState.None;
         }
 
         public INode Node { get; }
+        public GridPosition GridPosition { get; }
 
         public float X => this.Node.Position.X;
         public float Y => this.Node.Position.Y;
