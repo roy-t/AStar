@@ -43,6 +43,11 @@ namespace Roy_T.AStar.Grids
             return grid;
         }
 
+        public static Grid CreateGridFrom2DArrayOfNodes(Node[,] nodes)
+        {
+            return new Grid(nodes);
+        }
+
         private static void CheckArguments(GridSize gridSize, Size cellSize, Velocity defaultSpeed)
         {
             if (gridSize.Columns < 1)
@@ -74,6 +79,12 @@ namespace Roy_T.AStar.Grids
                 throw new ArgumentOutOfRangeException(
                     nameof(defaultSpeed), $"Argument {nameof(defaultSpeed)} is {defaultSpeed} but should be > 0.0 m/s");
             }
+        }
+
+        private Grid(Node[,] nodes)
+        {
+            this.GridSize = new GridSize(nodes.GetLength(0), nodes.GetLength(1));
+            this.Nodes = nodes;
         }
 
         private Grid(GridSize gridSize, Size cellSize)
@@ -227,6 +238,14 @@ namespace Roy_T.AStar.Grids
             var toNode = this.Nodes[to.X, to.Y];
 
             fromNode.Disconnect(toNode);
+        }
+
+        public void AddEdge(GridPosition from, GridPosition to, Velocity traversalVelocity)
+        {
+            var fromNode = this.Nodes[from.X, from.Y];
+            var toNode = this.Nodes[to.X, to.Y];
+
+            fromNode.Connect(toNode, traversalVelocity);
         }
 
         private bool IsInsideGrid(GridPosition position) => position.X >= 0 && position.X < this.Columns && position.Y >= 0 && position.Y < this.Rows;
