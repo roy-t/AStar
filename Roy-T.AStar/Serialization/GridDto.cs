@@ -2,6 +2,6 @@
 {
     public class GridDto
     {
-        public NodeDto[,] Nodes { get; set; }
+        public NodeDto[][] Nodes { get; set; }
     }
 }

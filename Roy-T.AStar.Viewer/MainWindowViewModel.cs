@@ -115,7 +115,7 @@ namespace Roy_T.AStar.Viewer
         private void SaveGrid()
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "Json file (*.json)|*.json";
+            saveFileDialog.Filter = "XML file (*.xml)|*.xml";
             if (saveFileDialog.ShowDialog() == true)
                 File.WriteAllText(saveFileDialog.FileName, GridSerializer.SerializeGrid(this.grid));
         }
@@ -123,7 +123,7 @@ namespace Roy_T.AStar.Viewer
         private void OpenGrid()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Json file (*.json)|*.json";
+            openFileDialog.Filter = "XML file (*.xml)|*.xml";
             if (openFileDialog.ShowDialog() == true)
             {
                 this.Clear();
