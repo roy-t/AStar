@@ -122,23 +122,24 @@ namespace Roy_T.AStar.Viewer
 
         private void OpenGrid()
         {
-            this.Clear();
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Json file (*.json)|*.json";
             if (openFileDialog.ShowDialog() == true)
+            {
+                this.Clear();
                 this.grid = GridSerializer.DeSerializeGrid(File.ReadAllText(openFileDialog.FileName));
 
+                var models = ModelBuilder.BuildModel(this.grid, n => this.EditNode(n), n => this.RemoveNode(n));
+                this.Models.AddRange(models);
 
-            var models = ModelBuilder.BuildModel(this.grid, n => this.EditNode(n), n => this.RemoveNode(n));
-            this.Models.AddRange(models);
+                this.startNode = this.Models.OfType<NodeModel>().FirstOrDefault();
+                this.startNode.NodeState = NodeState.Start;
 
-            this.startNode = this.Models.OfType<NodeModel>().FirstOrDefault();
-            this.startNode.NodeState = NodeState.Start;
+                this.endNode = this.Models.OfType<NodeModel>().LastOrDefault();
+                this.endNode.NodeState = NodeState.End;
 
-            this.endNode = this.Models.OfType<NodeModel>().LastOrDefault();
-            this.endNode.NodeState = NodeState.End;
-
-            this.CalculatePath();
+                this.CalculatePath();
+            }
         }
 
         private static Grid CreateGrid(Connections connections)
