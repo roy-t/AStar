@@ -60,6 +60,8 @@
         <Menu Grid.Row="0" Background="WhiteSmoke">
             <MenuItem Header="_File">
                 <MenuItem Header="E_xit" Command="{Binding ExitCommand}"/>
+                <MenuItem Header="Open Grid" Command="{Binding OpenGridCommand}"/>
+                <MenuItem Header="Save Grid" Command="{Binding SaveGridCommand}"/>
             </MenuItem>
             <MenuItem Header="_Graph">
                 <MenuItem Header="Create graph with lateral and diagonal connections" Command="{Binding ResetCommand}" />
@@ -105,7 +107,7 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                
+
                 <Grid Grid.Row="0" Grid.RowSpan="3">
                     <Grid.Background>
                         <LinearGradientBrush>

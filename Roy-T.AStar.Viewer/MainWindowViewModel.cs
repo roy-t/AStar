@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
 using DynamicData;
+using Microsoft.Win32;
 using ReactiveUI;
 using Roy_T.AStar.Grids;
 using Roy_T.AStar.Paths;
 using Roy_T.AStar.Primitives;
+using Roy_T.AStar.Serialization;
 using Roy_T.AStar.Viewer.Model;
 
 namespace Roy_T.AStar.Viewer
@@ -63,6 +66,9 @@ namespace Roy_T.AStar.Viewer
             this.MaxCommand = ReactiveCommand.Create(() => this.SetSpeedLimits(() => Settings.MaxSpeed));
             this.MinCommand = ReactiveCommand.Create(() => this.SetSpeedLimits(() => Settings.MinSpeed));
 
+            this.SaveGridCommand = ReactiveCommand.Create(this.SaveGrid);
+            this.OpenGridCommand = ReactiveCommand.Create(this.OpenGrid);
+
             this.CreateNodes(Connections.LateralAndDiagonal);
         }
 
@@ -86,6 +92,10 @@ namespace Roy_T.AStar.Viewer
         public IReactiveCommand MaxCommand { get; }
         public IReactiveCommand MinCommand { get; }
 
+        public IReactiveCommand SaveGridCommand { get; }
+
+        public IReactiveCommand OpenGridCommand { get; }
+
         private void CreateNodes(Connections connections)
         {
             this.Clear();
@@ -100,6 +110,36 @@ namespace Roy_T.AStar.Viewer
             this.endNode.NodeState = NodeState.End;
 
             this.CalculatePath();
+        }
+
+        private void SaveGrid()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "XML file (*.xml)|*.xml";
+            if (saveFileDialog.ShowDialog() == true)
+                File.WriteAllText(saveFileDialog.FileName, GridSerializer.SerializeGrid(this.grid));
+        }
+
+        private void OpenGrid()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "XML file (*.xml)|*.xml";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                this.Clear();
+                this.grid = GridSerializer.DeSerializeGrid(File.ReadAllText(openFileDialog.FileName));
+
+                var models = ModelBuilder.BuildModel(this.grid, n => this.EditNode(n), n => this.RemoveNode(n));
+                this.Models.AddRange(models);
+
+                this.startNode = this.Models.OfType<NodeModel>().FirstOrDefault();
+                this.startNode.NodeState = NodeState.Start;
+
+                this.endNode = this.Models.OfType<NodeModel>().LastOrDefault();
+                this.endNode.NodeState = NodeState.End;
+
+                this.CalculatePath();
+            }
         }
 
         private static Grid CreateGrid(Connections connections)
