@@ -8,7 +8,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		BenchmarkHistory.md = BenchmarkHistory.md
 		LICENSE = LICENSE
 		README.md = README.md
-		versions.md = versions.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Roy-T.AStar", "Roy-T.AStar\Roy-T.AStar.csproj", "{6BAF6D44-A0FA-409F-813E-914AD3C57680}"

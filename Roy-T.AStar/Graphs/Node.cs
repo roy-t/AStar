@@ -18,14 +18,14 @@ namespace Roy_T.AStar.Graphs
 
         public Position Position { get; }
 
-        internal void Connect(INode node, Velocity traversalVelocity)
+        public void Connect(INode node, Velocity traversalVelocity)
         {
             var edge = new Edge(this, node, traversalVelocity);
             this.Outgoing.Add(edge);
             node.Incoming.Add(edge);
         }
 
-        internal void Disconnect(INode node)
+        public void Disconnect(INode node)
         {
             for (var i = this.Outgoing.Count - 1; i >= 0; i--)
             {
