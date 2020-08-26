@@ -15,6 +15,7 @@ Install-Package RoyT.AStar
 ```csharp
 using Roy_T.AStar.Grids;
 using Roy_T.AStar.Primitives;
+using Roy_T.AStar.Paths;
 
 // ....
 
@@ -41,6 +42,7 @@ yourClass.TraversePath(path.Edges);
 ```csharp
 using Roy_T.AStar.Graphs;
 using Roy_T.AStar.Primitives;
+using Roy_T.AStar.Paths;
 
 // ...
 
