@@ -23,7 +23,7 @@ var gridSize = new GridSize(columns: 10, rows: 10);
 var cellSize = new Size(Distance.FromMeters(10), Distance.FromMeters(10));
 var traversalVelocity = Velocity.FromKilometersPerHour(100);
 
-// Create a new grid, each cell is laterally connected (like how a king moves over a chess board, other options are available)
+// Create a new grid, each cell is laterally connected (like how a rook moves over a chess board, other options are available)
 // each cell is 10x10 meters large. The connection between cells can be traversed at 100KM/h.
 var grid = Grid.CreateGridWithLateralConnections(gridSize, cellSize, traversalVelocity);
 
@@ -96,7 +96,7 @@ Previous versions, before 3.0, had a few features that are no longer available i
 If you disconnect a node from a grid at grid position (1,1), using `grid.DisconnectNode` you can also remove the diagonal connections from (0, 1) to (1, 0), (1, 0) to (2, 1), (2, 1) to (1, 2), (1, 2), to (0, 1) using the `grid.RemoveDiagonalConnectionsIntersectingWithNode` method. This mimics the behavior of preventing corner cutting, which was available in the path finder settings in previous versions, but is more efficient.
 
 ### Movement patterns
-If you have a grid you can mimic certain movement patterns. For example creating a grid using `Grids.CreateGridWithLateralConnections` will give you a grid where every agent can move only up/down and left/right between cells (like a king in chess). You can also use `Grids.CreateGridWithDiagonalConnections` (your agent can move diagonally, like a bishop) or `Grid.CreateGridWithLateralAndDiagonalConnections` (your agent cann move both diagonally and laterally, like a queen). This method mimics movement patterns, but is more efficient.
+If you have a grid you can mimic certain movement patterns. For example creating a grid using `Grids.CreateGridWithLateralConnections` will give you a grid where every agent can move only up/down and left/right between cells (like a rook in chess). You can also use `Grids.CreateGridWithDiagonalConnections` (your agent can move diagonally, like a bishop) or `Grid.CreateGridWithLateralAndDiagonalConnections` (your agent cann move both diagonally and laterally, like a queen). This method mimics movement patterns, but is more efficient.
 
 ### Different agent sizes
 In a previous version (which was only available on GitHub, not on Nuget). You can define different agent shapes and sizes. Unfortunately this slowed down the path finding algorithm considerably. Consider having different graphs for different sized agents, where you manually block off corners where they can't fit. If you really want to support different agent shapes in one grid  I recommend using a different algorithm. For example the Explicit Corridor Map Model ([ECCM](https://www.staff.science.uu.nl/~gerae101/UU_crowd_simulation_publications_ecm.html)).
