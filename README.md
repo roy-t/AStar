@@ -44,17 +44,19 @@ using Roy_T.AStar.Graphs;
 using Roy_T.AStar.Primitives;
 using Roy_T.AStar.Paths;
 
-// ...
+// The agent drives a car that can go at most 140KM/h
+var maxAgentSeed = Velocity.FromKilometersPerHour(140);
 
 // Create directed graph with node a and b, and a one-way direction from a to b
 var nodeA = new Node(Position.Zero);
 var nodeB = new Node(new Position(10, 10));
 
-var traversalVelocity = Velocity.FromKilometersPerHour(100);
-nodeA.Connect(nodeB, traversalVelocity);
+// On this road there is a speed limit of 100KM/h
+var speedLimit = Velocity.FromKilometersPerHour(100);
+nodeA.Connect(nodeB, speedLimit);
 
 var pathFinder = new PathFinder();
-var path = pathFinder.FindPath(nodeA, nodeB, maximumVelocity: traversalVelocity);
+var path = pathFinder.FindPath(nodeA, nodeB, maximumVelocity: maxAgentSpeed);
 
 Console.WriteLine($"type: {path.Type}, distance: {path.Distance}, duration {path.Duration}");
 // prints: "type: Complete, distance: 14.14m, duration 0.51s"
