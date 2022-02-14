@@ -30,7 +30,7 @@ namespace Roy_T.AStar.Tests
                 {
                     var gridPosition = new GridPosition(i, j);
                     var originalNode = grid.GetNode(gridPosition);
-                    var deserializedNode = grid.GetNode(gridPosition);
+                    var deserializedNode = deserializedGrid.GetNode(gridPosition);
                     Assert.AreEqual(originalNode.Position, deserializedNode.Position);
                     Assert.AreEqual(originalNode.Outgoing.Count, deserializedNode.Outgoing.Count);
                     Assert.AreEqual(originalNode.Incoming.Count, deserializedNode.Incoming.Count);
